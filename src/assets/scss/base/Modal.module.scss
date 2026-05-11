@@ -1,7 +1,7 @@
 @reference "../../../index.css";
 
 .modalOverlay {
-  @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in;
+  @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 animate-fade-in;
 }
 
 .modalContainer {

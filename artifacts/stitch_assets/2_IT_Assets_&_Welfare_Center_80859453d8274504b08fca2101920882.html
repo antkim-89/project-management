@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SI Ops Manager - IT Asset &amp; Welfare</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#121416",
+                    "error": "#ffb4ab",
+                    "error-container": "#93000a",
+                    "inverse-on-surface": "#2f3133",
+                    "surface-dim": "#121416",
+                    "surface-tint": "#afc6ff",
+                    "on-primary-container": "#00275f",
+                    "on-tertiary": "#68001a",
+                    "surface-bright": "#38393c",
+                    "primary-fixed-dim": "#afc6ff",
+                    "surface-container-highest": "#333537",
+                    "inverse-primary": "#0059c7",
+                    "on-primary-fixed": "#001944",
+                    "surface": "#121416",
+                    "on-primary": "#002d6d",
+                    "primary-container": "#528dff",
+                    "tertiary-fixed": "#ffdada",
+                    "primary-fixed": "#d9e2ff",
+                    "on-secondary-fixed": "#002113",
+                    "on-primary-fixed-variant": "#004299",
+                    "tertiary-container": "#ff5168",
+                    "primary": "#afc6ff",
+                    "secondary": "#4edea3",
+                    "outline": "#8c90a0",
+                    "surface-container-lowest": "#0c0e10",
+                    "surface-container": "#1e2022",
+                    "outline-variant": "#424754",
+                    "on-surface": "#e2e2e5",
+                    "on-surface-variant": "#c2c6d7",
+                    "surface-container-low": "#1a1c1e",
+                    "surface-container-high": "#282a2c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "24px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "stack-sm": "8px",
+                    "gutter": "16px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "data-mono": ["JetBrains Mono"],
+                    "title-sm": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-caps": ["11px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-sm": ["12px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "data-mono": ["14px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(30, 33, 36, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid #1E2124;
+        }
+        .glass-card:hover {
+            border-color: #afc6ff;
+            background: rgba(30, 33, 36, 0.9);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0e10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #424754;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface/70 backdrop-blur-xl border-b border-outline-variant flex justify-between items-center h-16 px-container-padding w-full sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">SI Ops Manager</h1>
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-body-md w-64 focus:outline-none focus:border-primary" placeholder="Search resources..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary-container font-bold rounded-lg hover:opacity-80 transition-all">
+<span class="material-symbols-outlined">add</span>
+                New Project
+            </button>
+<div class="flex items-center gap-2 border-l border-outline-variant pl-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">contrast</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">language</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden ml-2 border border-outline-variant">
+<img alt="Manager Portrait" data-alt="A professional close-up portrait of a technology project manager with a neutral background. The lighting is crisp and modern, reflecting a high-end corporate setting. The overall aesthetic is dark-mode friendly with subtle highlights on the subject's features to ensure professional depth and clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3noya-ra79L3WbAOYBeGZk72aDda3VYpNNbe9L7r0GLNSVpwYj15fQmlFXk9QEAW9qHbm5K1KgSpywlfukC_IHATg3xBuTJiY2cdAzB1d0d45pUjVLgGxDGlSAMvBDf0rzgrtoHpIPrpzltl9OwFlXMQ4FyH1e0-8rzoRE44RQdFB6S3R2K8Gz7aemcj5c0G2Jwz3oSyO1QpXVgc-ncZYWTDr13-5qrQzfmJauFH-Fg6ZWBM4H41IWI9CEmQNG8192CVyJHrgb9U"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex h-[calc(100vh-64px)] overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-lowest border-r border-outline-variant flex flex-col h-full py-stack-md fixed left-0 top-16 h-[calc(100vh-64px)] w-60 z-40">
+<div class="px-4 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container/20 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md font-black text-primary leading-none">SI Ops</div>
+<div class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">Mission Control</div>
+</div>
+</div>
+</div>
+<div class="flex-1 flex flex-col">
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 border-l-4 border-transparent hover:bg-surface-container-high transition-all duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 border-l-4 border-transparent hover:bg-surface-container-high transition-all duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps">Manpower</span>
+</a>
+<a class="border-l-4 border-primary bg-primary-container/10 text-primary flex items-center gap-3 px-4 py-3" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">devices</span>
+<span class="font-label-caps text-label-caps">IT Assets</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 border-l-4 border-transparent hover:bg-surface-container-high transition-all duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">event_available</span>
+<span class="font-label-caps text-label-caps">Leave Flow</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 border-l-4 border-transparent hover:bg-surface-container-high transition-all duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">folder_special</span>
+<span class="font-label-caps text-label-caps">Projects</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 border-l-4 border-transparent hover:bg-surface-container-high transition-all duration-200 hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Reports</span>
+</a>
+</div>
+<div class="px-4 mb-6">
+<button class="w-full py-3 bg-surface-container-high text-on-surface border border-outline-variant rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    Add Resource
+                </button>
+</div>
+<div class="border-t border-outline-variant pt-4">
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 border-l-4 border-transparent hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 border-l-4 border-transparent hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-caps text-label-caps">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-60 flex-1 overflow-y-auto p-container-padding bg-background">
+<div class="flex flex-col gap-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<div class="flex items-center gap-2 text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-sm">home</span>
+<span class="text-xs">/</span>
+<span class="text-xs">Assets &amp; Welfare</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Resource Lifecycle</h2>
+<p class="text-on-surface-variant mt-1">Manage global inventory and employee development programs.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 glass-card rounded-lg flex items-center gap-2 text-body-md hover:bg-surface-container-highest/50">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                            Filter View
+                        </button>
+<button class="px-4 py-2 glass-card rounded-lg flex items-center gap-2 text-body-md hover:bg-surface-container-highest/50">
+<span class="material-symbols-outlined text-sm">download</span>
+                            Export Inventory
+                        </button>
+</div>
+</div>
+<!-- Split Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left Side: IT Assets (8 Columns) -->
+<section class="col-span-12 xl:col-span-8 flex flex-col gap-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-title-sm text-title-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+                                Asset Inventory
+                            </h3>
+<span class="font-data-mono text-body-sm text-on-surface-variant">42 Active Units</span>
+</div>
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low/50 border-b border-outline-variant">
+<th class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">Asset Name</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">Assigned User</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">Life Cycle</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">Status</th>
+<th class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">laptop_mac</span>
+<div>
+<div class="font-bold">MacBook Pro M3</div>
+<div class="text-[10px] font-data-mono text-outline uppercase">SN: 4921-MBP</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] border border-primary/30">JD</div>
+<span class="text-body-md">John Doe</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 85%;"></div>
+</div>
+<div class="text-[10px] text-outline mt-1 font-data-mono">85% Health</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider">Optimal</span>
+</td>
+<td class="px-6 py-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">more_vert</span>
+</td>
+</tr>
+<!-- Row 2 (Urgent) -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors bg-error-container/5">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error">desktop_windows</span>
+<div>
+<div class="font-bold">Dell UltraSharp 32"</div>
+<div class="text-[10px] font-data-mono text-outline uppercase">SN: 1022-MON</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center text-[10px] border border-secondary/30">AS</div>
+<span class="text-body-md">Alice Smith</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-error h-full" style="width: 15%;"></div>
+</div>
+<div class="text-[10px] text-error mt-1 font-data-mono">15% Health</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-error-container text-error text-[10px] font-bold uppercase tracking-wider border border-error/20">Urgent Replacement</span>
+</td>
+<td class="px-6 py-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-error">warning</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">laptop_chromebook</span>
+<div>
+<div class="font-bold">Surface Laptop 5</div>
+<div class="text-[10px] font-data-mono text-outline uppercase">SN: 7712-SLT</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-tertiary/20 flex items-center justify-center text-[10px] border border-tertiary/30">RK</div>
+<span class="text-body-md">Robert King</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 45%;"></div>
+</div>
+<div class="text-[10px] text-outline mt-1 font-data-mono">Mid-Life</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded bg-surface-container-highest text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">In Use</span>
+</td>
+<td class="px-6 py-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">more_vert</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Statistics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md">
+<div class="glass-card p-4 rounded-xl">
+<div class="text-on-surface-variant text-xs mb-1">Replacement Budget</div>
+<div class="text-headline-md font-data-mono">$12,450</div>
+<div class="flex items-center gap-1 text-secondary text-[10px] mt-2">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+                                    -5% from last month
+                                </div>
+</div>
+<div class="glass-card p-4 rounded-xl">
+<div class="text-on-surface-variant text-xs mb-1">Out of Warranty</div>
+<div class="text-headline-md font-data-mono">08</div>
+<div class="flex items-center gap-1 text-error text-[10px] mt-2">
+<span class="material-symbols-outlined text-sm">warning</span>
+                                    Requires auditing
+                                </div>
+</div>
+<div class="glass-card p-4 rounded-xl">
+<div class="text-on-surface-variant text-xs mb-1">Average Age</div>
+<div class="text-headline-md font-data-mono">2.4 <span class="text-sm font-normal">yrs</span></div>
+<div class="flex items-center gap-1 text-primary text-[10px] mt-2">
+<span class="material-symbols-outlined text-sm">info</span>
+                                    Healthy fleet status
+                                </div>
+</div>
+</div>
+</section>
+<!-- Right Side: Welfare & Library (4 Columns) -->
+<section class="col-span-12 xl:col-span-4 flex flex-col gap-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-title-sm text-title-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">self_improvement</span>
+                                Employee Welfare
+                            </h3>
+<button class="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">View All</button>
+</div>
+<!-- Library Grid -->
+<div class="grid grid-cols-2 gap-stack-sm">
+<!-- Course 1 -->
+<div class="glass-card rounded-lg overflow-hidden group">
+<div class="h-24 w-full bg-surface-container-highest relative">
+<img alt="Course" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform" data-alt="A futuristic digital cover for an online technology course, featuring abstract neural network patterns in electric blue and charcoal grey. The design is sleek and professional, using high-contrast lighting to create a sense of advanced learning and intellectual growth in a modern dark-mode corporate UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0_S07uN2i-htDInxiKCwRpfeJSnvVpyAGsCXZMLiwCQQd_BoDOVNcOlghtLi-Ot5udKkplsaLgaEr7RD9L56CSsPVAHsiOMpku8oDuoc73YQyHeJTqwjQt6CyYSdZ_MUHjvakBRgsmg3yMlEiMP6bBWWZZMvn8S900Xbuw_wQ4HzVY3dDbIzU9DWBDZZTM8laP6Y72LRptA9Xnxe3DdBybBG220LRexD4ejGo1z7wbSSSpQl55sopd2gVKnPWROc6F4HlBbdwoDI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<span class="absolute top-2 right-2 px-1.5 py-0.5 bg-background/80 rounded text-[9px] font-bold uppercase">Digital</span>
+</div>
+<div class="p-3">
+<h4 class="font-bold text-xs truncate">AWS Cloud Mastery</h4>
+<p class="text-[10px] text-on-surface-variant mb-3">12 Chapters</p>
+<button class="w-full py-1.5 border border-primary/30 text-primary text-[10px] font-bold rounded hover:bg-primary/10 transition-colors">Request Access</button>
+</div>
+</div>
+<!-- Course 2 -->
+<div class="glass-card rounded-lg overflow-hidden group">
+<div class="h-24 w-full bg-surface-container-highest relative">
+<img alt="Book" class="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform" data-alt="A minimalist book cover design showcasing a title about systems integration. The artwork uses a dark emerald green and deep slate palette, with clean sans-serif typography. The mood is academic and sophisticated, fitting for a professional library management interface within a dark mode design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3wzCk0zmkGKQVlGEQJN1mTsliNEz-KUTIXsJSaC_XnRMppdXP5n3fq8qSX74ondayqkh8I-p3oOylhgv3LBE_2H1x5p9bFk8TBDz7kaD2OuRUtq0QfXoKBNMXM8GabNzm_BOVeBhR7ipGj9N10PggRxLZty3AI_atmhu_FjgrxyRb2h2c8CFRLUu46Lm7uRNRqyqnZsWKq0VEZGLlYyYJ5fCMHQSXvnTdP8zjNM1qb-wdADzFzAKhBoLRFx842uk7UCVMXkIafUE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<span class="absolute top-2 right-2 px-1.5 py-0.5 bg-background/80 rounded text-[9px] font-bold uppercase">Hardcopy</span>
+</div>
+<div class="p-3">
+<h4 class="font-bold text-xs truncate">Systemic Design</h4>
+<p class="text-[10px] text-on-surface-variant mb-3">5 Units Available</p>
+<button class="w-full py-1.5 border border-primary/30 text-primary text-[10px] font-bold rounded hover:bg-primary/10 transition-colors">Borrow</button>
+</div>
+</div>
+</div>
+<!-- CTA & Approvals -->
+<div class="mt-2">
+<button class="w-full py-3 bg-secondary text-on-secondary-container font-black text-xs uppercase tracking-widest rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-secondary/10">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+                                Request Purchase
+                            </button>
+</div>
+<!-- Pending Approvals -->
+<div class="glass-card rounded-xl p-4 mt-2">
+<div class="flex items-center justify-between mb-4">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase">Pending Approvals</div>
+<span class="w-5 h-5 rounded-full bg-error text-error-container text-[10px] font-bold flex items-center justify-center">2</span>
+</div>
+<div class="space-y-4">
+<!-- Approval 1 -->
+<div class="flex items-start gap-3 p-2 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-sm">laptop_mac</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-xs font-bold truncate">MacBook Pro Upgrade</div>
+<div class="text-[10px] text-on-surface-variant">Requested by Michael Chen</div>
+</div>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-secondary/20 text-secondary rounded"><span class="material-symbols-outlined text-sm">check</span></button>
+<button class="p-1 hover:bg-error/20 text-error rounded"><span class="material-symbols-outlined text-sm">close</span></button>
+</div>
+</div>
+<!-- Approval 2 -->
+<div class="flex items-start gap-3 p-2 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-sm">psychology</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-xs font-bold truncate">Advanced PM Training</div>
+<div class="text-[10px] text-on-surface-variant">Requested by Sarah Jenkins</div>
+</div>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-secondary/20 text-secondary rounded"><span class="material-symbols-outlined text-sm">check</span></button>
+<button class="p-1 hover:bg-error/20 text-error rounded"><span class="material-symbols-outlined text-sm">close</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Upcoming Events -->
+<div class="glass-card rounded-xl p-4">
+<div class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-4">Well-being Calendar</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-center justify-center w-12 h-14 bg-primary/10 rounded-lg border border-primary/20">
+<div class="text-[10px] font-bold text-primary">NOV</div>
+<div class="text-lg font-black text-primary leading-none">18</div>
+</div>
+<div>
+<div class="text-xs font-bold">Mental Health Workshop</div>
+<div class="text-[10px] text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[12px]">schedule</span>
+                                        14:00 - 15:30 • Zoom
+                                    </div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

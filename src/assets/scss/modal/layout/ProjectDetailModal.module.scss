@@ -1,0 +1,144 @@
+@reference "../../../../index.css";
+
+.modalOverlay {
+  @apply fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in;
+}
+
+.modalContainer {
+  @apply w-full max-w-4xl bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-2xl overflow-hidden animate-zoom-in flex flex-col;
+}
+
+.modalHeader {
+  @apply relative h-48 bg-gradient-to-br from-primary-container/20 to-surface-container-lowest border-b border-outline-variant p-8 flex flex-col justify-end shrink-0;
+
+  .closeBtn {
+    @apply absolute top-6 right-6 p-2 rounded-full bg-surface-container-highest/50 text-on-surface hover:bg-surface-container-highest transition-colors;
+  }
+}
+
+.headerContent {
+  @apply flex flex-col md:flex-row md:items-end justify-between gap-4;
+}
+
+.badgeWrapper {
+  @apply flex items-center gap-3 mb-2;
+}
+
+.badge {
+  @apply px-2 py-1 bg-secondary/10 rounded text-secondary text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5;
+  .dot { @apply w-1.5 h-1.5 rounded-full bg-secondary; }
+  
+  &.active { @apply text-secondary bg-secondary/10; .dot { @apply bg-secondary; } }
+  &.atRisk { @apply text-error bg-error/10; .dot { @apply bg-error; } }
+  &.completed { @apply text-primary bg-primary/10; .dot { @apply bg-primary; } }
+  &.onHold { @apply text-on-surface-variant bg-surface-container-highest; .dot { @apply bg-on-surface-variant; } }
+}
+
+.projectId {
+  @apply text-on-surface-variant font-mono text-sm;
+}
+
+.projectTitle {
+  @apply text-3xl font-bold text-on-surface mt-1 tracking-tight;
+}
+
+.projectSubtitle {
+  @apply text-on-surface-variant text-base;
+}
+
+.actionButtons {
+  @apply flex gap-2;
+  button {
+    @apply p-2 border border-outline-variant rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors;
+  }
+}
+
+.modalBody {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-0 flex-1 overflow-hidden;
+}
+
+.mainInfo {
+  @apply md:col-span-2 border-r border-outline-variant overflow-y-auto p-8 space-y-8;
+  height: 600px;
+}
+
+.sectionHeader {
+  @apply flex justify-between items-center mb-4;
+  h4 { @apply text-[10px] font-bold text-outline uppercase tracking-widest; }
+  .manageBtn { @apply text-primary text-xs font-semibold hover:underline; }
+}
+
+.scopeText {
+  @apply text-sm text-on-surface-variant leading-relaxed;
+}
+
+.teamGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-3;
+}
+
+.teamMember {
+  @apply flex items-center gap-3 p-2 bg-surface-container border border-outline-variant/30 rounded-lg;
+  img { @apply w-10 h-10 rounded-full object-cover; }
+  .memberName { @apply text-sm font-bold text-on-surface; }
+  .memberRole { @apply text-[11px] text-outline; }
+}
+
+.activityList {
+  @apply space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant;
+}
+
+.activityItem {
+  @apply relative pl-8;
+  .iconBox {
+    @apply absolute left-0 top-1 w-4 h-4 rounded-full flex items-center justify-center;
+    &.success { @apply bg-secondary text-white; }
+    &.info { @apply bg-primary text-white; }
+    &.neutral { @apply bg-surface-container-highest text-outline; }
+  }
+  .activityTitle { @apply text-sm font-semibold text-on-surface; }
+  .activityMeta { @apply text-[11px] text-outline; }
+}
+
+.sidePanel {
+  @apply bg-surface-container-low/50 overflow-y-auto p-8 space-y-8;
+  height: 600px;
+}
+
+.financialCard {
+  @apply p-4 bg-surface-container rounded-xl border border-outline-variant/30 shadow-inner;
+  .label { @apply text-[10px] font-bold text-outline uppercase tracking-widest mb-1; }
+  .value { @apply font-mono text-2xl text-primary; }
+  .trend { @apply flex items-center gap-1 mt-2 text-secondary text-[11px] font-semibold; }
+}
+
+.burnRateCard {
+  @apply p-4 bg-surface-container rounded-xl border border-outline-variant/30 shadow-inner;
+  .label { @apply text-[10px] font-bold text-outline uppercase tracking-widest mb-1; }
+  .value { @apply font-mono text-2xl text-on-surface; }
+  .progressTrack { @apply w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden; }
+  .progressFill { @apply bg-secondary h-full rounded-full; }
+}
+
+.financialDetails {
+  @apply space-y-3 pt-4 border-t border-outline-variant;
+  .detailItem {
+    @apply flex justify-between items-center;
+    .label { @apply text-xs text-on-surface-variant; }
+    .value { @apply font-mono text-xs text-on-surface; }
+  }
+}
+
+.milestoneList {
+  @apply space-y-3;
+}
+
+.milestoneItem {
+  @apply flex items-center gap-3;
+  .checkIcon { @apply text-secondary w-5 h-5; }
+  .pendingIcon { @apply w-5 h-5 border-2 border-outline rounded-full; }
+  .title { @apply text-sm text-on-surface-variant; }
+}
+
+.reportBtn {
+  @apply w-full py-3 bg-surface-container-highest text-on-surface rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-outline-variant transition-colors;
+}

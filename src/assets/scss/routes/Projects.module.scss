@@ -1,53 +1,206 @@
 @reference "../../../index.css";
 
 .container {
-  @apply p-8;
+  @apply flex-1 overflow-y-auto p-6 bg-surface;
 
-  .header {
-    @apply flex justify-between items-center mb-8;
-
-    .title {
-      @apply text-display-lg text-on-surface mb-2;
-    }
-
-    .subtitle {
-      @apply text-body-md text-on-surface-variant;
-    }
+  &::-webkit-scrollbar {
+    width: 4px;
   }
-
-  .actionButton {
-    @apply flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-semibold hover:bg-primary/90 transition-colors;
+  &::-webkit-scrollbar-track {
+    background: var(--surface-container-lowest, #0c0e10);
   }
+  &::-webkit-scrollbar-thumb {
+    background: var(--surface-container-highest, #1b1b1c);
+    border-radius: 4px;
+  }
+}
 
-  .grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+.header {
+  @apply flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4;
+}
 
-    .card {
-      @apply p-6 bg-surface-container rounded-2xl border border-outline-variant hover:border-primary/50 transition-colors cursor-pointer;
+.title {
+  @apply font-bold text-3xl text-on-surface mb-1;
+}
 
-      .cardIconBox {
-        @apply w-12 h-12 rounded-xl bg-surface-bright flex items-center justify-center mb-4 transition-transform;
-        
-        :global(.group):hover & {
-          @apply scale-110;
-        }
-      }
+.subtitle {
+  @apply text-on-surface-variant text-base;
+}
 
-      .cardTitle {
-        @apply text-title-sm text-on-surface mb-2 font-bold;
-      }
+.filterGroup {
+  @apply flex flex-wrap items-center gap-2;
+}
 
-      .cardDesc {
-        @apply text-body-sm text-on-surface-variant mb-4;
-      }
+.filterToggle {
+  @apply flex items-center bg-surface-container-low border border-outline-variant rounded p-1;
 
-      .progressTrack {
-        @apply w-full bg-surface-bright h-2 rounded-full overflow-hidden;
+  button {
+    @apply px-4 py-1.5 text-xs font-bold rounded transition-colors tracking-widest;
 
-        .progressBar {
-          @apply bg-primary h-full;
-        }
-      }
+    &.active {
+      @apply bg-primary-container/20 text-primary;
+    }
+    &:not(.active) {
+      @apply text-on-surface-variant hover:text-on-surface;
     }
   }
+}
+
+.departmentSelect {
+  @apply bg-surface-container-low border border-outline-variant text-on-surface text-sm rounded px-3 py-2 outline-none focus:border-primary;
+}
+
+.iconButton {
+  @apply flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors px-2 py-2;
+}
+
+.grid {
+  @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6;
+}
+
+.glassCard {
+  @apply rounded-xl p-6 flex flex-col transition-all duration-300;
+  background: rgba(30, 33, 36, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--outline-variant, #303030);
+  box-shadow: inset 1px 1px 0px 0px rgba(255, 255, 255, 0.05);
+
+  &:hover {
+    border-color: var(--primary, #3b82f6);
+    background: rgba(30, 33, 36, 0.9);
+  }
+
+  &.borderLeftError {
+    border-left: 4px solid var(--color-error);
+  }
+}
+
+.cardHeader {
+  @apply flex justify-between items-start mb-6;
+}
+
+.badge {
+  @apply text-xs font-bold px-2 py-0.5 rounded tracking-wider;
+
+  &.active {
+    @apply text-secondary bg-secondary/10;
+  }
+  &.atRisk {
+    @apply text-error bg-error/10;
+  }
+  &.completed {
+    @apply text-primary bg-primary/10;
+  }
+  &.onHold {
+    @apply text-on-surface-variant bg-surface-container-highest;
+  }
+}
+
+.cardTitle {
+  @apply text-lg font-bold mt-2 group-hover:text-primary transition-colors;
+}
+
+.cardMenuButton {
+  @apply text-on-surface-variant hover:text-on-surface;
+}
+
+.teamSection {
+  @apply flex items-center gap-2 mb-6;
+}
+
+.avatars {
+  @apply flex -space-x-2;
+  
+  img {
+    @apply w-7 h-7 rounded-full border-2 border-surface-container object-cover;
+  }
+}
+
+.avatarMore {
+  @apply w-7 h-7 rounded-full bg-surface-container-highest border-2 border-surface-container flex items-center justify-center text-[10px] font-bold text-on-surface;
+}
+
+.departmentName {
+  @apply text-sm text-on-surface-variant;
+}
+
+.cardContent {
+  @apply mt-auto space-y-4;
+}
+
+.metricsGrid {
+  @apply grid grid-cols-2 gap-4 bg-surface-container-low p-3 rounded;
+}
+
+.metricLabel {
+  @apply text-[10px] font-bold text-on-surface-variant tracking-wider mb-1;
+}
+
+.metricValue {
+  @apply text-sm font-medium text-on-surface font-mono;
+
+  &.error {
+    @apply text-error;
+  }
+}
+
+.progressContainer {
+  @apply flex items-center gap-2;
+}
+
+.progressPercent {
+  @apply text-sm font-medium font-mono;
+
+  &.secondary { @apply text-secondary; }
+  &.error { @apply text-error; }
+  &.primary { @apply text-primary; }
+  &.neutral { @apply text-on-surface-variant; }
+}
+
+.progressBarTrack {
+  @apply flex-1 h-1 bg-surface-variant rounded-full overflow-hidden;
+}
+
+.progressBarFill {
+  @apply h-full;
+  
+  &.secondary { @apply bg-secondary; }
+  &.error { @apply bg-error; }
+  &.primary { @apply bg-primary; }
+  &.neutral { @apply bg-outline; }
+}
+
+.cardFooter {
+  @apply flex items-center justify-between text-sm text-on-surface-variant pt-2 border-t border-outline-variant/30;
+}
+
+.footerItem {
+  @apply flex items-center gap-1;
+
+  &.secondary { @apply text-secondary; }
+  &.error { @apply text-error; }
+}
+
+.newProjectCard {
+  @apply border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:border-primary transition-colors cursor-pointer;
+}
+
+.newProjectIcon {
+  @apply w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary/10 transition-all;
+}
+
+.newProjectTitle {
+  @apply text-lg font-bold text-on-surface-variant group-hover:text-on-surface mb-1;
+}
+
+.newProjectDesc {
+  @apply text-sm text-on-surface-variant/60;
+}
+
+.loadMoreContainer {
+  @apply mt-8 flex justify-center;
+}
+
+.loadMoreButton {
+  @apply bg-surface-container-low border border-outline-variant px-6 py-2 rounded-full text-xs font-bold tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all flex items-center gap-2;
 }

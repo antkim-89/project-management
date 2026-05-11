@@ -11,7 +11,8 @@
     "logout": "Logout",
     "language": "Language",
     "overview": "Overview",
-    "proPlan": "Pro Plan"
+    "proPlan": "Pro Plan",
+    "copyright": "© 2024 Antigravity"
   },
   "header": {
     "search": "Search projects...",

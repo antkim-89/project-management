@@ -7,18 +7,15 @@ import {
   Calendar,
   Files,
   Settings,
-  ChevronLeft,
-  User as UserIcon
+  ChevronLeft
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useUIStore } from '@/store/useUIStore'
-import { useAuthStore } from '@/store/useAuthStore'
 import styles from '@/assets/scss/layout/Sidebar.module.scss'
 
 export function Sidebar() {
   const { t } = useTranslation()
   const { isSidebarCollapsed, toggleSidebar } = useUIStore()
-  const { user, isAuthenticated } = useAuthStore()
 
   const menuItems = [
     { icon: LayoutDashboard, label: t('common.dashboard'), to: '/' },
@@ -32,12 +29,7 @@ export function Sidebar() {
 
   return (
     <aside className={`${styles.sidebar} ${isSidebarCollapsed ? styles.collapsed : ''}`}>
-      <button
-        className={styles.toggleButton}
-        onClick={toggleSidebar}
-      >
-        <ChevronLeft className="w-4 h-4" />
-      </button>
+
 
       <nav className={styles.nav}>
         {menuItems.map((item) => (
@@ -57,21 +49,17 @@ export function Sidebar() {
       </nav>
 
       <div className={styles.footer}>
-        {isAuthenticated && user ? (
-          <div className={`${styles.userCard} group`}>
-            <div className={styles.avatar}>
-              <UserIcon className="w-4 h-4" />
-            </div>
-            <div className={styles.userInfo}>
-              <span className={styles.userName}>{user.name}</span>
-              <span className={styles.userPlan}>{t('common.proPlan')}</span>
-            </div>
-          </div>
-        ) : (
-          <div className={`${styles.userCard} opacity-50 italic text-xs px-2`}>
-            {t('sidebar.pleaseLogin')}
+        {!isSidebarCollapsed && (
+          <div className={styles.copyright}>
+            {t('common.copyright')}
           </div>
         )}
+        <button
+          className={styles.toggleButton}
+          onClick={toggleSidebar}
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
       </div>
     </aside>
   )

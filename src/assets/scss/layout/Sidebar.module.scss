@@ -1,0 +1,85 @@
+@reference "../../../index.css";
+
+.sidebar {
+  @apply bg-surface-container border-r border-outline-variant flex flex-col transition-all duration-300 ease-in-out relative;
+  width: 16rem;
+
+  &.collapsed {
+    width: 68px;
+
+    .logoText,
+    .linkLabel,
+    .linkChevron,
+    .userInfo {
+      @apply opacity-0 pointer-events-none;
+    }
+
+    .toggleButton {
+      @apply rotate-180;
+    }
+  }
+
+  .toggleButton {
+    @apply absolute -right-3 top-8 w-6 h-6 bg-surface-bright border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-all shadow-sm cursor-pointer z-50;
+  }
+
+  .nav {
+    @apply flex-1 px-2 pt-4 space-y-1 overflow-y-auto overflow-x-hidden;
+
+    .navLink {
+      @apply flex items-center gap-4 px-4 py-3 rounded-sm transition-all duration-200 text-on-surface-variant hover:bg-surface-bright hover:text-on-surface overflow-hidden;
+
+      .linkContent {
+        @apply flex items-center gap-3 flex-1 min-w-0;
+
+        .linkIcon {
+          @apply w-5 h-5 transition-transform shrink-0;
+          
+          :global(.group):hover & {
+            @apply scale-110;
+          }
+        }
+
+        .linkLabel {
+          @apply text-body-md font-medium transition-opacity duration-200 whitespace-nowrap;
+        }
+      }
+
+      .linkChevron {
+        @apply w-4 h-4 opacity-0 -translate-x-2 transition-all shrink-0;
+        
+        :global(.group):hover & {
+          @apply opacity-100 translate-x-0;
+        }
+      }
+    }
+
+    .activeLink {
+      @apply bg-neutral-800 text-white;
+    }
+  }
+
+  .footer {
+    @apply p-4 mt-auto border-t border-outline-variant overflow-hidden;
+
+    .userCard {
+      @apply flex items-center gap-3 p-2 rounded-xl hover:bg-surface-bright transition-colors cursor-pointer;
+
+      .avatar {
+        @apply w-9 h-9 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs flex-shrink-0;
+      }
+
+      .userInfo {
+        @apply flex flex-col transition-opacity duration-200 whitespace-nowrap;
+
+        .userName {
+          @apply text-body-sm font-semibold text-on-surface;
+        }
+
+        .userPlan {
+          @apply text-[10px] text-on-surface-variant;
+        }
+      }
+    }
+  }
+}

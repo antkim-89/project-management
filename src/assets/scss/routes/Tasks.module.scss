@@ -1,0 +1,53 @@
+@reference "../../../index.css";
+
+.container {
+  @apply p-8;
+
+  .header {
+    @apply flex justify-between items-center mb-8;
+
+    .title {
+      @apply text-display-lg text-on-surface mb-2;
+    }
+
+    .subtitle {
+      @apply text-body-md text-on-surface-variant;
+    }
+  }
+
+  .actionButton {
+    @apply flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-semibold hover:bg-primary/90 transition-colors;
+  }
+
+  .list {
+    @apply space-y-3;
+
+    .taskItem {
+      @apply flex items-center justify-between p-4 bg-surface-container rounded-xl border border-outline-variant hover:bg-surface-bright transition-colors cursor-pointer;
+
+      .taskContent {
+        @apply flex items-center gap-4;
+
+        .checkbox {
+          @apply w-6 h-6 rounded border-2 border-outline flex items-center justify-center transition-colors;
+
+          .checkboxInner {
+            @apply w-3 h-3 bg-primary rounded-sm opacity-0 transition-opacity;
+            
+            :global(.group):hover & {
+              @apply opacity-100;
+            }
+          }
+        }
+
+        .taskLabel {
+          @apply text-body-md text-on-surface;
+        }
+      }
+
+      .badge {
+        @apply px-3 py-1 rounded-full bg-surface-bright text-label-caps text-on-surface-variant;
+      }
+    }
+  }
+}

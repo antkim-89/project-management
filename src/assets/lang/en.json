@@ -1,0 +1,29 @@
+{
+  "common": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "tasks": "Tasks",
+    "teams": "Teams",
+    "calendar": "Calendar",
+    "files": "Files",
+    "settings": "Settings",
+    "login": "Login",
+    "logout": "Logout",
+    "language": "Language",
+    "overview": "Overview",
+    "proPlan": "Pro Plan"
+  },
+  "header": {
+    "search": "Search projects...",
+    "notifications": "Notifications"
+  },
+  "sidebar": {
+    "pleaseLogin": "Please log in"
+  },
+  "home": {
+    "title": "Manage Projects with Infinite Precision",
+    "subtitle": "The all-in-one workspace for your team. Built with speed and elegance.",
+    "getStarted": "Get Started",
+    "documentation": "Documentation"
+  }
+}

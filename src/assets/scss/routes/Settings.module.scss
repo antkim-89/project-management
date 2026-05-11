@@ -1,0 +1,47 @@
+@reference "../../../index.css";
+
+.container {
+  @apply p-8 max-w-4xl;
+
+  .title {
+    @apply text-display-lg text-on-surface mb-2;
+  }
+
+  .subtitle {
+    @apply text-body-md text-on-surface-variant mb-8;
+  }
+
+  .list {
+    @apply space-y-6;
+
+    .item {
+      @apply flex items-center gap-6 p-6 bg-surface-container rounded-2xl border border-outline-variant hover:bg-surface-bright transition-colors cursor-pointer;
+
+      .iconBox {
+        @apply w-12 h-12 rounded-xl bg-surface-bright flex items-center justify-center text-on-surface-variant transition-colors;
+      }
+
+      .itemContent {
+        @apply flex-1;
+
+        .itemTitle {
+          @apply text-title-sm text-on-surface font-bold;
+        }
+
+        .itemDesc {
+          @apply text-body-sm text-on-surface-variant;
+        }
+      }
+
+      .editButton {
+        @apply text-primary font-semibold text-body-sm;
+      }
+
+      &:hover {
+        .iconBox {
+          @apply text-primary;
+        }
+      }
+    }
+  }
+}

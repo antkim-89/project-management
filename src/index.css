@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors - Managed by CSS Variables for Theme Support */
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+
+  --color-primary: #3b82f6;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #dbeafe;
+  --color-on-primary-container: #1e3a8a;
+  
+  --color-secondary-container: #e2e8f0;
+  --color-on-secondary-container: #1e293b;
+
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  --color-surface-variant: var(--surface-variant);
+
+  /* Fonts */
+  --font-pretendard: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+
+  /* Typography */
+  --text-display-lg: 3.5rem;
+  --text-display-md: 2.75rem;
+  --text-display-sm: 2.25rem;
+  --text-title-lg: 1.5rem;
+  --text-title-md: 1.25rem;
+  --text-title-sm: 1.125rem;
+  --text-body-lg: 1.125rem;
+  --text-body-md: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-label-caps: 0.75rem;
+
+  /* Custom Animations */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-in-from-top {
+    from { transform: translateY(-0.5rem); }
+    to { transform: translateY(0); }
+  }
+  @keyframes zoom-in {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  --animate-fade-in: fade-in 200ms ease-out;
+  --animate-slide-in-top: slide-in-from-top 200ms ease-out;
+  --animate-zoom-in: zoom-in 200ms ease-out;
+}
+
+/* Default Theme (Dark) */
+:root {
+  --background: #000000;
+  --on-background: #ffffff;
+  --surface: #111112;
+  --surface-dim: #111112;
+  --surface-bright: #303030;
+  --surface-container-lowest: #0c0e10;
+  --surface-container-low: #111112;
+  --surface-container: #111112;
+  --surface-container-high: #161617;
+  --surface-container-highest: #1b1b1c;
+  --on-surface: #e2e2e5;
+  --on-surface-variant: #c2c6d7;
+  --outline: #444746;
+  --outline-variant: #303030;
+  --surface-variant: #303030;
+}
+
+/* Light Theme Overrides */
+[data-theme='light'] {
+  --background: #f8f9fa;
+  --on-background: #121416;
+  --surface: #ffffff;
+  --surface-dim: #f1f3f4;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f8f9fa;
+  --surface-container: #ffffff;
+  --surface-container-high: #f1f3f4;
+  --surface-container-highest: #e8eaed;
+  --on-surface: #1f1f1f;
+  --on-surface-variant: #444746;
+  --outline: #747775;
+  --outline-variant: #dee2e6;
+  --surface-variant: #e1e3e1;
+}
+
+@layer base {
+  * {
+    @apply border-outline-variant;
+  }
+  body {
+    @apply bg-background text-on-background font-pretendard transition-colors duration-300;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-pretendard);
+}

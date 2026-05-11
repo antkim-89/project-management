@@ -1,0 +1,74 @@
+@reference "../../../index.css";
+
+.container {
+  @apply relative overflow-hidden bg-background;
+
+  .backgroundDecoration {
+    @apply absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 overflow-hidden pointer-events-none;
+
+    .glowBlue {
+      @apply absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full;
+    }
+
+    .glowPurple {
+      @apply absolute bottom-[10%] right-[-10%] w-[30%] h-[30%] bg-purple-500/10 blur-[120px] rounded-full;
+    }
+  }
+
+  .heroContent {
+    @apply p-8 md:p-24 max-w-7xl mx-auto flex flex-col items-center text-center;
+
+    .versionBadge {
+      @apply inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8;
+    }
+
+    .heroTitle {
+      @apply text-5xl md:text-7xl font-extrabold tracking-tight text-on-surface mb-8 leading-tight;
+
+      .gradientText {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-emerald-500;
+      }
+    }
+
+    .heroSubtitle {
+      @apply text-xl text-on-surface-variant mb-12 max-w-2xl mx-auto leading-relaxed;
+    }
+
+    .buttonGroup {
+      @apply flex flex-wrap justify-center gap-4 mb-20;
+
+      .primaryButton {
+        @apply px-8 py-4 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all hover:scale-105 flex items-center gap-2 shadow-lg shadow-primary/25;
+      }
+
+      .secondaryButton {
+        @apply px-8 py-4 bg-surface-container hover:bg-surface-container-high text-on-surface font-bold rounded-xl transition-all border border-outline-variant;
+      }
+    }
+
+    .featureGrid {
+      @apply grid grid-cols-1 md:grid-cols-3 gap-8 w-full;
+
+      .featureCard {
+        @apply p-8 rounded-3xl bg-surface-container border border-outline-variant hover:border-primary/50 transition-all hover:-translate-y-1 text-left;
+
+        .featureIconBox {
+          @apply w-12 h-12 rounded-2xl bg-surface-bright flex items-center justify-center mb-6 transition-transform;
+          
+          // group-hover ?€??:global(.group):hoverë¥??¬ìš©?˜ê±°??nesting ?œìš©
+          :global(.group):hover & {
+            @apply scale-110;
+          }
+        }
+
+        .featureTitle {
+          @apply text-xl font-bold text-on-surface mb-3;
+        }
+
+        .featureDesc {
+          @apply text-on-surface-variant leading-relaxed;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+@reference "../../../index.css";
+
+.container {
+  @apply p-8;
+
+  .header {
+    @apply flex justify-between items-center mb-8;
+
+    .title {
+      @apply text-display-lg text-on-surface mb-2;
+    }
+
+    .subtitle {
+      @apply text-body-md text-on-surface-variant;
+    }
+  }
+
+  .grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+
+    .card {
+      @apply p-6 bg-surface-container rounded-2xl border border-outline-variant hover:border-primary/50 transition-all cursor-pointer;
+
+      .cardTop {
+        @apply flex justify-between items-start mb-4;
+
+        .iconBox {
+          @apply w-12 h-12 rounded-xl bg-surface-bright flex items-center justify-center text-2xl;
+        }
+
+        .moreButton {
+          @apply p-1 hover:bg-surface-bright rounded-lg text-on-surface-variant;
+        }
+      }
+
+      .cardTitle {
+        @apply text-title-sm text-on-surface font-bold mb-1;
+      }
+
+      .cardInfo {
+        @apply flex justify-between text-body-sm text-on-surface-variant;
+      }
+    }
+  }
+}

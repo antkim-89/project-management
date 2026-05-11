@@ -1,0 +1,38 @@
+@reference "../../../index.css";
+
+.modalOverlay {
+  @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in;
+}
+
+.modalContainer {
+  @apply bg-surface-container border border-outline-variant rounded-3xl w-full overflow-hidden shadow-2xl animate-zoom-in relative flex flex-col;
+}
+
+/* Size variants - Defined as top-level classes for CSS Modules */
+.sm { @apply max-w-sm; }
+.md { @apply max-w-lg; }
+.lg { @apply max-w-2xl; }
+.xl { @apply max-w-4xl; }
+.full { @apply max-w-[95vw] h-[90vh]; }
+
+.modalHeader {
+  @apply flex items-center justify-between p-6 border-b border-outline-variant shrink-0;
+
+  .modalTitle {
+    @apply text-title-md font-bold text-on-surface;
+  }
+
+  .closeBtn {
+    @apply p-2 rounded-full hover:bg-surface-bright text-on-surface-variant transition-colors;
+  }
+}
+
+.modalContent {
+  @apply p-6 overflow-auto flex-1;
+  /* Ensure content doesn't exceed screen height */
+  max-height: calc(90vh - 140px); 
+}
+
+.modalFooter {
+  @apply p-6 bg-surface-container-high flex justify-end gap-3 shrink-0;
+}

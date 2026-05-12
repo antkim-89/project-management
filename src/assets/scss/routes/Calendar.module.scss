@@ -19,16 +19,16 @@
     @apply flex items-center gap-2;
 
     .controlButton {
-      @apply p-2 bg-surface-container border border-outline-variant rounded-lg hover:bg-surface-bright transition-colors;
+      @apply p-2 bg-surface-container border border-outline-variant rounded hover:bg-interaction-hover transition-colors;
     }
 
     .currentMonth {
-      @apply text-title-sm font-bold px-4;
+      @apply text-headline-md font-bold px-4 text-on-surface;
     }
   }
 
   .calendarBoard {
-    @apply bg-surface-container rounded-3xl border border-outline-variant overflow-hidden;
+    @apply bg-surface-container rounded-lg border border-outline-variant overflow-hidden;
 
     .weekDays {
       @apply grid grid-cols-7 border-b border-outline-variant bg-surface-bright/50;
@@ -42,10 +42,10 @@
       @apply grid grid-cols-7 h-[500px];
 
       .dayCell {
-        @apply p-4 border-r border-b border-outline-variant last:border-r-0 hover:bg-surface-bright/30 transition-colors cursor-pointer;
+        @apply p-4 border-r border-b border-outline-variant last:border-r-0 hover:bg-interaction-hover transition-colors cursor-pointer;
 
         .dayNumber {
-          @apply text-body-sm text-on-surface-variant;
+          @apply text-label-sm text-on-surface-variant;
         }
       }
     }

@@ -7,10 +7,10 @@
     width: 4px;
   }
   &::-webkit-scrollbar-track {
-    background: var(--surface-container-lowest, #0c0e10);
+    background: var(--surface-container-lowest);
   }
   &::-webkit-scrollbar-thumb {
-    background: var(--surface-container-highest, #1b1b1c);
+    background: var(--surface-container-highest);
     border-radius: 4px;
   }
 }
@@ -20,11 +20,11 @@
 }
 
 .title {
-  @apply font-bold text-3xl text-on-surface mb-1;
+  @apply font-bold text-display-lg text-on-surface mb-1;
 }
 
 .subtitle {
-  @apply text-on-surface-variant text-base;
+  @apply text-on-surface-variant text-body-md;
 }
 
 .filterGroup {
@@ -35,7 +35,7 @@
   @apply flex items-center bg-surface-container-low border border-outline-variant rounded p-1;
 
   button {
-    @apply px-4 py-1.5 text-xs font-bold rounded transition-colors tracking-widest;
+    @apply px-4 py-1.5 text-label-caps font-bold rounded transition-colors tracking-widest;
 
     &.active {
       @apply bg-primary-container/20 text-primary;
@@ -47,11 +47,11 @@
 }
 
 .departmentSelect {
-  @apply bg-surface-container-low border border-outline-variant text-on-surface text-sm rounded px-3 py-2 outline-none focus:border-primary;
+  @apply bg-surface-container-low border border-outline-variant text-on-surface text-label-md rounded px-3 py-2 outline-none focus:border-primary;
 }
 
 .iconButton {
-  @apply flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors px-2 py-2;
+  @apply flex items-center gap-2 text-on-surface-variant transition-all px-2 py-2 rounded cursor-pointer hover:bg-interaction-hover hover:text-on-surface active:bg-interaction-pressed active:scale-90;
 }
 
 .grid {
@@ -59,15 +59,20 @@
 }
 
 .glassCard {
-  @apply rounded-xl p-6 flex flex-col transition-all duration-300;
-  background: rgba(30, 33, 36, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--outline-variant, #303030);
-  box-shadow: inset 1px 1px 0px 0px rgba(255, 255, 255, 0.05);
+  @apply rounded p-6 flex flex-col transition-all duration-300 bg-surface-container/40 border border-outline-variant/30;
 
   &:hover {
-    border-color: var(--primary, #3b82f6);
-    background: rgba(30, 33, 36, 0.9);
+    @apply border-primary/20 bg-surface-container/60 shadow-lg -translate-y-1;
+    
+    &::after {
+      content: '';
+      @apply absolute inset-0 rounded pointer-events-none;
+      background: var(--interaction-hover);
+    }
+  }
+
+  &:active {
+    @apply scale-[0.98];
   }
 
   &.borderLeftError {
@@ -80,24 +85,16 @@
 }
 
 .badge {
-  @apply text-xs font-bold px-2 py-0.5 rounded tracking-wider;
+  @apply text-label-caps font-bold px-2 py-0.5 rounded tracking-wider;
 
-  &.active {
-    @apply text-secondary bg-secondary/10;
-  }
-  &.atRisk {
-    @apply text-error bg-error/10;
-  }
-  &.completed {
-    @apply text-primary bg-primary/10;
-  }
-  &.onHold {
-    @apply text-on-surface-variant bg-surface-container-highest;
-  }
+  &.active { @apply text-secondary bg-secondary/10; }
+  &.atRisk { @apply text-error bg-error/10; }
+  &.completed { @apply text-primary bg-primary/10; }
+  &.onHold { @apply text-on-surface-variant bg-surface-container-highest; }
 }
 
 .cardTitle {
-  @apply text-lg font-bold mt-2 group-hover:text-primary transition-colors;
+  @apply text-headline-md font-bold mt-2 group-hover:text-primary transition-colors text-on-surface;
 }
 
 .cardMenuButton {
@@ -121,7 +118,7 @@
 }
 
 .departmentName {
-  @apply text-sm text-on-surface-variant;
+  @apply text-label-sm text-on-surface-variant;
 }
 
 .cardContent {
@@ -133,15 +130,12 @@
 }
 
 .metricLabel {
-  @apply text-[10px] font-bold text-on-surface-variant tracking-wider mb-1;
+  @apply text-label-caps font-bold text-on-surface-variant tracking-wider mb-1;
 }
 
 .metricValue {
-  @apply text-sm font-medium text-on-surface font-mono;
-
-  &.error {
-    @apply text-error;
-  }
+  @apply text-label-md font-medium text-on-surface font-mono;
+  &.error { @apply text-error; }
 }
 
 .progressContainer {
@@ -149,8 +143,7 @@
 }
 
 .progressPercent {
-  @apply text-sm font-medium font-mono;
-
+  @apply text-label-md font-medium font-mono text-on-surface;
   &.secondary { @apply text-secondary; }
   &.error { @apply text-error; }
   &.primary { @apply text-primary; }
@@ -163,7 +156,6 @@
 
 .progressBarFill {
   @apply h-full;
-  
   &.secondary { @apply bg-secondary; }
   &.error { @apply bg-error; }
   &.primary { @apply bg-primary; }
@@ -171,18 +163,17 @@
 }
 
 .cardFooter {
-  @apply flex items-center justify-between text-sm text-on-surface-variant pt-2 border-t border-outline-variant/30;
+  @apply flex items-center justify-between text-label-sm text-on-surface-variant pt-2 border-t border-outline-variant/30;
 }
 
 .footerItem {
   @apply flex items-center gap-1;
-
   &.secondary { @apply text-secondary; }
   &.error { @apply text-error; }
 }
 
 .newProjectCard {
-  @apply border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:border-primary transition-colors cursor-pointer;
+  @apply border-2 border-dashed border-outline-variant rounded p-6 flex flex-col items-center justify-center gap-4 hover:border-primary transition-colors cursor-pointer;
 }
 
 .newProjectIcon {
@@ -190,11 +181,11 @@
 }
 
 .newProjectTitle {
-  @apply text-lg font-bold text-on-surface-variant group-hover:text-on-surface mb-1;
+  @apply text-headline-md font-bold text-on-surface-variant group-hover:text-on-surface mb-1;
 }
 
 .newProjectDesc {
-  @apply text-sm text-on-surface-variant/60;
+  @apply text-label-md text-on-surface-variant/60;
 }
 
 .loadMoreContainer {
@@ -202,5 +193,5 @@
 }
 
 .loadMoreButton {
-  @apply bg-surface-container-low border border-outline-variant px-6 py-2 rounded-full text-xs font-bold tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all flex items-center gap-2;
+  @apply h-10 px-6 bg-surface-container-low border border-outline-variant rounded text-label-md font-bold tracking-wider text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all flex items-center gap-2;
 }

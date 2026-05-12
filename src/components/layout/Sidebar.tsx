@@ -2,11 +2,9 @@ import { Link } from '@tanstack/react-router'
 import {
   LayoutDashboard,
   Briefcase,
-  CheckSquare,
   Users,
   Monitor,
   Calendar,
-  Files,
   Settings,
   ChevronLeft
 } from 'lucide-react'
@@ -21,11 +19,9 @@ export function Sidebar() {
   const menuItems = [
     { icon: LayoutDashboard, label: t('common.dashboard'), to: '/' },
     { icon: Briefcase, label: t('common.projects'), to: '/projects' },
-    { icon: CheckSquare, label: t('common.tasks'), to: '/tasks' },
     { icon: Users, label: t('common.teams'), to: '/teams' },
     { icon: Monitor, label: t('common.assets'), to: '/assets' },
     { icon: Calendar, label: t('common.calendar'), to: '/calendar' },
-    { icon: Files, label: t('common.files'), to: '/files' },
     { icon: Settings, label: t('common.settings'), to: '/settings' },
   ]
 

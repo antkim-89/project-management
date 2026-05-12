@@ -16,6 +16,7 @@ import {
 import styles from '@/assets/scss/routes/Teams.module.scss'
 import { ManpowerStatCard } from '@/components/teams/ManpowerStatCard'
 import { ResourceCard } from '@/components/teams/ResourceCard'
+import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 export const Route = createFileRoute('/teams')({
   component: Teams,
@@ -71,12 +72,7 @@ function Teams() {
       {/* Breadcrumbs & Title */}
       <div className={styles.headerSection}>
         <div>
-          <nav className={styles.breadcrumb}>
-            <Home className="w-3 h-3" />
-            <span>Dashboard</span>
-            <ChevronRightIcon className="w-3 h-3" />
-            <span className="text-primary">Manpower Directory</span>
-          </nav>
+          <Breadcrumbs items={[{ label: 'Teams' }]} />
           <h2 className={styles.title}>Manpower Directory</h2>
           <p className={styles.subtitle}>Advanced resource allocation and skill mapping engine.</p>
         </div>

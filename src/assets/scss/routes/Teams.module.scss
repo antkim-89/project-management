@@ -6,16 +6,8 @@
   .headerSection {
     @apply flex flex-col md:flex-row md:items-end justify-between gap-4;
 
-    .breadcrumb {
-      @apply flex items-center gap-2 text-on-surface-variant mb-1;
-
-      span {
-        @apply text-[11px] font-medium;
-      }
-    }
-
     .title {
-      @apply text-4xl font-bold text-on-surface tracking-tight;
+      @apply text-display-lg font-bold text-on-surface tracking-tight;
     }
 
     .subtitle {
@@ -26,11 +18,11 @@
       @apply flex items-center gap-3;
 
       .btnSecondary {
-        @apply flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-xl text-on-surface font-bold text-xs hover:border-primary transition-all;
+        @apply h-10 flex items-center gap-2 px-4 border border-outline-variant rounded text-on-surface font-bold text-label-caps hover:bg-interaction-hover transition-all;
       }
 
       .btnPrimary {
-        @apply flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-bold text-xs hover:opacity-90 transition-all;
+        @apply h-10 flex items-center gap-2 px-4 bg-primary text-on-primary rounded font-bold text-label-caps hover:opacity-90 transition-all;
       }
     }
   }
@@ -40,7 +32,7 @@
   }
 
   .filterStrip {
-    @apply p-2 rounded-xl flex flex-wrap items-center gap-4 bg-surface-container border border-outline-variant;
+    @apply p-2 rounded flex flex-wrap items-center gap-4 bg-surface-container border border-outline-variant;
 
     .searchWrapper {
       @apply flex-1 min-w-[300px] relative;
@@ -50,7 +42,7 @@
       }
 
       .searchInput {
-        @apply w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-10 pr-4 py-2 text-sm focus:border-primary transition-all outline-none;
+        @apply w-full bg-surface-container-lowest border border-outline-variant/30 rounded pl-10 pr-4 py-2 text-label-md focus:border-primary transition-all outline-none;
       }
     }
 
@@ -58,7 +50,7 @@
       @apply flex items-center gap-2 overflow-x-auto pb-1 md:pb-0;
 
       .select {
-        @apply bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-3 py-2 text-xs font-medium focus:border-primary transition-all outline-none text-on-surface;
+        @apply bg-surface-container-lowest border border-outline-variant/30 rounded px-3 py-2 text-label-sm font-medium focus:border-primary transition-all outline-none text-on-surface;
       }
     }
   }
@@ -67,15 +59,11 @@
     @apply grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6;
 
     .addPlaceholder {
-      @apply border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-8 hover:border-primary transition-colors cursor-pointer min-h-[180px];
+      @apply border-2 border-dashed border-outline-variant rounded flex flex-col items-center justify-center p-8 hover:border-primary transition-colors cursor-pointer min-h-[180px];
 
       &:hover {
-        .addIconWrapper {
-          @apply text-primary border-primary;
-        }
-        .addLabel {
-          @apply text-primary;
-        }
+        .addIconWrapper { @apply text-primary border-primary; }
+        .addLabel { @apply text-primary; }
       }
 
       .addIconWrapper {
@@ -83,7 +71,7 @@
       }
 
       .addLabel {
-        @apply mt-4 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant transition-colors;
+        @apply mt-4 text-label-caps font-bold uppercase tracking-wider text-on-surface-variant transition-colors;
       }
     }
   }
@@ -92,14 +80,14 @@
     @apply flex flex-col md:flex-row items-center justify-between pt-8 gap-4 text-on-surface-variant border-t border-outline-variant/30;
 
     .pageInfo {
-      @apply text-xs;
+      @apply text-label-sm;
     }
 
     .pageActions {
       @apply flex items-center gap-2;
 
       .pageBtn {
-        @apply w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant text-on-surface hover:text-primary hover:border-primary transition-all text-xs font-bold;
+        @apply w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface hover:text-primary hover:border-primary transition-all text-label-sm font-bold;
 
         &.active {
           @apply bg-primary text-on-primary border-primary;
@@ -114,21 +102,14 @@
 }
 
 .glassCard {
-  background: rgba(30, 33, 36, 0.4);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--outline-variant);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  @apply bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded;
 
   &:hover {
-    border-color: var(--primary);
-    background: rgba(30, 33, 36, 0.6);
-
-    .cardAvatar {
-      border-color: var(--primary);
-    }
+    @apply border-primary/20 bg-surface-container/60 shadow-lg;
+    .cardAvatar { @apply border-primary/40; }
   }
 }
 
 .cardAvatar {
-  @apply w-20 h-20 rounded-xl object-cover border border-outline-variant transition-colors;
+  @apply w-20 h-20 rounded object-cover border border-outline-variant transition-colors;
 }

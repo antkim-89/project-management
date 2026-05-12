@@ -5,14 +5,14 @@
 }
 
 .modalContainer {
-  @apply w-full max-w-4xl bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-2xl overflow-hidden animate-zoom-in flex flex-col;
+  @apply w-full max-w-4xl bg-surface-container-lowest rounded-lg border border-outline-variant shadow-2xl overflow-hidden animate-zoom-in flex flex-col;
 }
 
 .modalHeader {
-  @apply relative h-48 bg-gradient-to-br from-primary-container/20 to-surface-container-lowest border-b border-outline-variant p-8 flex flex-col justify-end shrink-0;
+  @apply relative h-48 bg-linear-to-br from-primary-container/10 to-surface-container-lowest border-b border-outline-variant p-8 flex flex-col justify-end shrink-0;
 
   .closeBtn {
-    @apply absolute top-6 right-6 p-2 rounded-full bg-surface-container-highest/50 text-on-surface hover:bg-surface-container-highest transition-colors;
+    @apply absolute top-6 right-6 p-2 rounded-full text-on-surface transition-all hover:bg-interaction-hover hover:scale-110 active:bg-interaction-pressed;
   }
 }
 
@@ -25,7 +25,7 @@
 }
 
 .badge {
-  @apply px-2 py-1 bg-secondary/10 rounded text-secondary text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5;
+  @apply px-2 py-1 bg-secondary/10 rounded-sm text-secondary text-label-caps font-black tracking-widest uppercase flex items-center gap-1.5;
   .dot { @apply w-1.5 h-1.5 rounded-full bg-secondary; }
   
   &.active { @apply text-secondary bg-secondary/10; .dot { @apply bg-secondary; } }
@@ -35,21 +35,21 @@
 }
 
 .projectId {
-  @apply text-on-surface-variant font-mono text-sm;
+  @apply text-on-surface-variant font-mono text-label-sm;
 }
 
 .projectTitle {
-  @apply text-3xl font-bold text-on-surface mt-1 tracking-tight;
+  @apply text-display-lg font-bold text-on-surface mt-1 tracking-tight;
 }
 
 .projectSubtitle {
-  @apply text-on-surface-variant text-base;
+  @apply text-on-surface-variant text-body-md;
 }
 
 .actionButtons {
   @apply flex gap-2;
   button {
-    @apply p-2 border border-outline-variant rounded-lg hover:bg-surface-container-high text-on-surface-variant transition-colors;
+    @apply p-2 border border-outline-variant rounded text-on-surface-variant transition-all cursor-pointer hover:bg-interaction-hover hover:text-on-surface active:scale-90;
   }
 }
 
@@ -64,12 +64,12 @@
 
 .sectionHeader {
   @apply flex justify-between items-center mb-4;
-  h4 { @apply text-[10px] font-bold text-outline uppercase tracking-widest; }
-  .manageBtn { @apply text-primary text-xs font-semibold hover:underline; }
+  h4 { @apply text-label-caps font-bold text-outline uppercase tracking-widest; }
+  .manageBtn { @apply text-primary text-label-sm font-semibold hover:underline; }
 }
 
 .scopeText {
-  @apply text-sm text-on-surface-variant leading-relaxed;
+  @apply text-body-md text-on-surface-variant leading-relaxed;
 }
 
 .teamGrid {
@@ -77,14 +77,14 @@
 }
 
 .teamMember {
-  @apply flex items-center gap-3 p-2 bg-surface-container border border-outline-variant/30 rounded-lg;
+  @apply flex items-center gap-3 p-2 bg-surface-container border border-outline-variant/30 rounded transition-all cursor-pointer hover:bg-interaction-hover hover:border-outline-variant;
   img { @apply w-10 h-10 rounded-full object-cover; }
-  .memberName { @apply text-sm font-bold text-on-surface; }
-  .memberRole { @apply text-[11px] text-outline; }
+  .memberName { @apply text-label-md font-bold text-on-surface; }
+  .memberRole { @apply text-label-caps text-outline; }
 }
 
 .activityList {
-  @apply space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant;
+  @apply space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-outline-variant;
 }
 
 .activityItem {
@@ -95,8 +95,8 @@
     &.info { @apply bg-primary text-white; }
     &.neutral { @apply bg-surface-container-highest text-outline; }
   }
-  .activityTitle { @apply text-sm font-semibold text-on-surface; }
-  .activityMeta { @apply text-[11px] text-outline; }
+  .activityTitle { @apply text-body-md font-semibold text-on-surface; }
+  .activityMeta { @apply text-label-caps text-outline; }
 }
 
 .sidePanel {
@@ -105,16 +105,16 @@
 }
 
 .financialCard {
-  @apply p-4 bg-surface-container rounded-xl border border-outline-variant/30 shadow-inner;
-  .label { @apply text-[10px] font-bold text-outline uppercase tracking-widest mb-1; }
-  .value { @apply font-mono text-2xl text-primary; }
-  .trend { @apply flex items-center gap-1 mt-2 text-secondary text-[11px] font-semibold; }
+  @apply p-4 bg-surface-container rounded border border-outline-variant/30;
+  .label { @apply text-label-caps font-bold text-outline uppercase tracking-widest mb-1; }
+  .value { @apply font-mono text-headline-md text-primary; }
+  .trend { @apply flex items-center gap-1 mt-2 text-secondary text-label-caps font-semibold; }
 }
 
 .burnRateCard {
-  @apply p-4 bg-surface-container rounded-xl border border-outline-variant/30 shadow-inner;
-  .label { @apply text-[10px] font-bold text-outline uppercase tracking-widest mb-1; }
-  .value { @apply font-mono text-2xl text-on-surface; }
+  @apply p-4 bg-surface-container rounded border border-outline-variant/30;
+  .label { @apply text-label-caps font-bold text-outline uppercase tracking-widest mb-1; }
+  .value { @apply font-mono text-headline-md text-on-surface; }
   .progressTrack { @apply w-full bg-surface-container-highest h-1.5 rounded-full mt-3 overflow-hidden; }
   .progressFill { @apply bg-secondary h-full rounded-full; }
 }
@@ -123,8 +123,8 @@
   @apply space-y-3 pt-4 border-t border-outline-variant;
   .detailItem {
     @apply flex justify-between items-center;
-    .label { @apply text-xs text-on-surface-variant; }
-    .value { @apply font-mono text-xs text-on-surface; }
+    .label { @apply text-label-sm text-on-surface-variant; }
+    .value { @apply font-mono text-label-sm text-on-surface; }
   }
 }
 
@@ -136,9 +136,9 @@
   @apply flex items-center gap-3;
   .checkIcon { @apply text-secondary w-5 h-5; }
   .pendingIcon { @apply w-5 h-5 border-2 border-outline rounded-full; }
-  .title { @apply text-sm text-on-surface-variant; }
+  .title { @apply text-body-md text-on-surface-variant; }
 }
 
 .reportBtn {
-  @apply w-full py-3 bg-surface-container-highest text-on-surface rounded-lg font-bold text-[10px] uppercase tracking-widest hover:bg-outline-variant transition-colors;
+  @apply w-full py-3 bg-surface-container-highest text-on-surface rounded font-bold text-label-caps uppercase tracking-widest transition-all cursor-pointer hover:bg-interaction-primary-hover hover:text-primary active:scale-[0.98];
 }

@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { User, Bell, Lock, Globe, Palette } from 'lucide-react'
 import styles from '@/assets/scss/routes/Settings.module.scss'
+import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 export const Route = createFileRoute('/settings')({
   component: Settings,
@@ -9,6 +10,7 @@ export const Route = createFileRoute('/settings')({
 function Settings() {
   return (
     <div className={styles.container}>
+      <Breadcrumbs items={[{ label: 'Settings' }]} />
       <h1 className={styles.title}>Settings</h1>
       <p className={styles.subtitle}>Configure your personal and workspace preferences.</p>
       

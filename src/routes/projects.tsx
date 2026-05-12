@@ -17,6 +17,7 @@ import styles from '@/assets/scss/routes/Projects.module.scss'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { NewProjectCard } from '@/components/projects/NewProjectCard'
 import { ProjectDetailModal } from '@/components/modal/layout/ProjectDetailModal'
+import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 export const Route = createFileRoute('/projects')({
   component: Projects,
@@ -237,6 +238,7 @@ function Projects() {
 
   return (
     <div className={styles.container}>
+      <Breadcrumbs items={[{ label: 'Projects' }]} />
       {/* Page Header & Filters */}
       <div className={styles.header}>
         <div>

@@ -15,20 +15,20 @@
   --color-outline: var(--outline);
   --color-outline-variant: var(--outline-variant);
 
-  --color-primary: #3b82f6;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #dbeafe;
-  --color-on-primary-container: #1e3a8a;
+  --color-primary: var(--primary-color);
+  --color-on-primary: var(--on-primary-color);
+  --color-primary-container: var(--primary-container-color);
+  --color-on-primary-container: var(--on-primary-container-color);
   
-  --color-secondary: #4edea3;
-  --color-on-secondary: #00391c;
-  --color-secondary-container: #e2e8f0;
-  --color-on-secondary-container: #1e293b;
+  --color-secondary: var(--secondary-color);
+  --color-on-secondary: var(--on-secondary-color);
+  --color-secondary-container: var(--secondary-container-color);
+  --color-on-secondary-container: var(--on-secondary-container-color);
 
-  --color-error: #ffb4ab;
-  --color-on-error: #690005;
-  --color-error-container: #93000a;
-  --color-on-error-container: #ffdad6;
+  --color-error: var(--error-color);
+  --color-on-error: var(--on-error-color);
+  --color-error-container: var(--error-container-color);
+  --color-on-error-container: var(--on-error-container-color);
 
   --color-tertiary: #ffdada;
 
@@ -36,20 +36,30 @@
   --color-on-background: var(--on-background);
   --color-surface-variant: var(--surface-variant);
 
+  --color-interaction-hover: var(--interaction-hover);
+  --color-interaction-pressed: var(--interaction-pressed);
+  --color-interaction-primary-hover: var(--interaction-primary-hover);
+
   /* Fonts */
   --font-pretendard: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 
-  /* Typography */
-  --text-display-lg: 3.5rem;
-  --text-display-md: 2.75rem;
-  --text-display-sm: 2.25rem;
-  --text-title-lg: 1.5rem;
-  --text-title-md: 1.25rem;
-  --text-title-sm: 1.125rem;
-  --text-body-lg: 1.125rem;
-  --text-body-md: 1rem;
-  --text-body-sm: 0.875rem;
-  --text-label-caps: 0.75rem;
+  /* Typography Scale - Standardized to 4px baseline */
+  --text-display-lg: 2.25rem;    /* 36px */
+  --text-headline-lg: 1.75rem;   /* 28px */
+  --text-headline-md: 1.25rem;   /* 20px */
+  --text-body-lg: 1rem;          /* 16px */
+  --text-body-md: 0.875rem;      /* 14px */
+  --text-body-sm: 0.8125rem;     /* 13px */
+  --text-label-md: 0.875rem;     /* 14px, Medium 500 */
+  --text-label-sm: 0.75rem;       /* 12px, Semibold 600 */
+  --text-label-caps: 0.6875rem;  /* 11px */
+
+  /* Legacy Typography Aliases for Compatibility */
+  --text-display-md: 1.75rem;
+  --text-display-sm: 1.5rem;
+  --text-title-lg: 1.25rem;
+  --text-title-md: 1.125rem;
+  --text-title-sm: 1rem;
 
   /* Custom Animations */
   @keyframes fade-in {
@@ -70,7 +80,7 @@
   --animate-zoom-in: zoom-in 200ms ease-out;
 }
 
-/* Default Theme (Dark) */
+/* Default Theme (Dark) - Keeping current dark theme as base */
 :root {
   --background: #000000;
   --on-background: #ffffff;
@@ -87,25 +97,79 @@
   --outline: #444746;
   --outline-variant: #303030;
   --surface-variant: #303030;
+  
+  --primary-color: #3b82f6;
+  --on-primary-color: #ffffff;
+  --primary-container-color: #004299;
+  --on-primary-container-color: #d9e2ff;
+  
+  --secondary-color: #4edea3;
+  --on-secondary-color: #00391c;
+  --secondary-container-color: #005232;
+  --on-secondary-container-color: #6ffbbe;
+
+  --error-color: #ffb4ab;
+  --on-error-color: #690005;
+  --error-container-color: #93000a;
+  --on-error-container-color: #ffdad6;
+
+  /* Glassmorphism */
+  --glass-bg: rgba(30, 33, 36, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(255, 255, 255, 0.05);
+
+  /* Interaction States */
+  --hover-opacity: 0.08;
+  --pressed-opacity: 0.12;
+  --interaction-hover: rgba(255, 255, 255, var(--hover-opacity));
+  --interaction-pressed: rgba(255, 255, 255, var(--pressed-opacity));
+  --interaction-primary-hover: rgba(59, 130, 246, 0.1);
 }
 
-/* Light Theme Overrides */
+/* Light Theme Overrides - SI Ops Light */
 [data-theme='light'] {
-  --background: #f8f9fa;
-  --on-background: #121416;
-  --surface: #ffffff;
-  --surface-dim: #f1f3f4;
-  --surface-bright: #ffffff;
+  --background: #f9f9ff;
+  --on-background: #141b2c;
+  --surface: #f9f9ff;
+  --surface-dim: #d2daf0;
+  --surface-bright: #f9f9ff;
   --surface-container-lowest: #ffffff;
-  --surface-container-low: #f8f9fa;
-  --surface-container: #ffffff;
-  --surface-container-high: #f1f3f4;
-  --surface-container-highest: #e8eaed;
-  --on-surface: #1f1f1f;
-  --on-surface-variant: #444746;
-  --outline: #747775;
-  --outline-variant: #dee2e6;
-  --surface-variant: #e1e3e1;
+  --surface-container-low: #f1f3ff;
+  --surface-container: #e9edff;
+  --surface-container-high: #e0e8ff;
+  --surface-container-highest: #dbe2f9;
+  --on-surface: #141b2c;
+  --on-surface-variant: #424754;
+  --outline: #727786;
+  --outline-variant: #c2c6d7;
+  --surface-variant: #dbe2f9;
+
+  --primary-color: #0057c3;
+  --on-primary-color: #ffffff;
+  --primary-container-color: #0f6ef0;
+  --on-primary-container-color: #fefcff;
+  
+  --secondary-color: #525f73;
+  --on-secondary-color: #ffffff;
+  --secondary-container-color: #d6e3fb;
+  --on-secondary-container-color: #586579;
+
+  --error-color: #ba1a1a;
+  --on-error-color: #ffffff;
+  --error-container-color: #ffdad6;
+  --on-error-container-color: #93000a;
+
+  /* Glassmorphism - Subtle Light Mode */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: rgba(0, 0, 0, 0.03);
+
+  /* Interaction States - Aligned with System Surface */
+  --hover-opacity: 0.05;
+  --pressed-opacity: 0.1;
+  --interaction-hover: rgba(20, 27, 44, var(--hover-opacity));
+  --interaction-pressed: rgba(20, 27, 44, var(--pressed-opacity));
+  --interaction-primary-hover: rgba(0, 87, 195, 0.08);
 }
 
 @layer base {

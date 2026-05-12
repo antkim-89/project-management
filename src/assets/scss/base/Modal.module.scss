@@ -5,7 +5,7 @@
 }
 
 .modalContainer {
-  @apply bg-surface-container border border-outline-variant rounded-3xl w-full overflow-hidden shadow-2xl animate-zoom-in relative flex flex-col;
+  @apply bg-surface-container border border-outline-variant rounded-lg w-full overflow-hidden shadow-2xl animate-zoom-in relative flex flex-col;
 }
 
 /* Size variants - Defined as top-level classes for CSS Modules */
@@ -19,11 +19,11 @@
   @apply flex items-center justify-between p-6 border-b border-outline-variant shrink-0;
 
   .modalTitle {
-    @apply text-title-md font-bold text-on-surface;
+    @apply text-headline-md font-bold text-on-surface;
   }
 
   .closeBtn {
-    @apply p-2 rounded-full hover:bg-surface-bright text-on-surface-variant transition-colors;
+    @apply p-2 rounded-full hover:bg-interaction-hover text-on-surface-variant transition-colors;
   }
 }
 

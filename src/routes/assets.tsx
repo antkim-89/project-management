@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import styles from '@/assets/scss/routes/Assets.module.scss'
 import { ManpowerStatCard } from '@/components/teams/ManpowerStatCard'
+import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 export const Route = createFileRoute('/assets')({
   component: Assets,
@@ -81,11 +82,7 @@ function Assets() {
       {/* Header Section */}
       <div className={styles.headerSection}>
         <div>
-          <nav className={styles.breadcrumb}>
-            <Home size={12} />
-            <span>/</span>
-            <span>Assets & Welfare</span>
-          </nav>
+          <Breadcrumbs items={[{ label: 'Assets' }]} />
           <h2 className={styles.title}>Resource Lifecycle</h2>
           <p className={styles.subtitle}>Manage global inventory and employee development programs.</p>
         </div>

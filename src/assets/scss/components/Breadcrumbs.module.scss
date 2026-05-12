@@ -1,0 +1,25 @@
+@reference "../../../index.css";
+
+.breadcrumbs {
+  @apply mb-4 flex;
+}
+
+.list {
+  @apply flex items-center flex-wrap gap-1;
+}
+
+.item {
+  @apply flex items-center;
+}
+
+.link {
+  @apply text-label-sm font-medium text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1.5 px-2 py-1 rounded hover:bg-interaction-primary-hover;
+}
+
+.separator {
+  @apply w-3.5 h-3.5 text-outline-variant mx-1;
+}
+
+.current {
+  @apply text-label-sm font-bold text-on-surface px-2 py-1;
+}

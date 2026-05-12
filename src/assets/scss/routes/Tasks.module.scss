@@ -16,27 +16,23 @@
   }
 
   .actionButton {
-    @apply flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl font-semibold hover:bg-primary/90 transition-colors;
+    @apply h-10 flex items-center gap-2 px-4 bg-primary text-on-primary rounded font-bold text-label-sm hover:opacity-90 transition-colors;
   }
 
   .list {
     @apply space-y-3;
 
     .taskItem {
-      @apply flex items-center justify-between p-4 bg-surface-container rounded-xl border border-outline-variant hover:bg-surface-bright transition-colors cursor-pointer;
+      @apply flex items-center justify-between p-4 bg-surface-container rounded border border-outline-variant hover:bg-interaction-hover transition-colors cursor-pointer;
 
       .taskContent {
         @apply flex items-center gap-4;
 
         .checkbox {
-          @apply w-6 h-6 rounded border-2 border-outline flex items-center justify-center transition-colors;
+          @apply w-5 h-5 rounded border-2 border-outline flex items-center justify-center transition-colors;
 
           .checkboxInner {
-            @apply w-3 h-3 bg-primary rounded-sm opacity-0 transition-opacity;
-            
-            :global(.group):hover & {
-              @apply opacity-100;
-            }
+            @apply w-2.5 h-2.5 bg-primary rounded-sm opacity-0 transition-opacity;
           }
         }
 
@@ -46,7 +42,7 @@
       }
 
       .badge {
-        @apply px-3 py-1 rounded-full bg-surface-bright text-label-caps text-on-surface-variant;
+        @apply px-3 py-1 rounded bg-surface-container-high text-label-caps text-on-surface-variant font-bold;
       }
     }
   }

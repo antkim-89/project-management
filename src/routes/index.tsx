@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import styles from '@/assets/scss/routes/Index.module.scss'
+import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 export const Route = createFileRoute('/')({
   component: Index,
@@ -23,6 +24,7 @@ function Index() {
 
   return (
     <div className={styles.container}>
+      <Breadcrumbs items={[]} />
       {/* Title & Quick Stats Hero */}
       <div className={styles.header}>
         <div className={styles.titleSection}>

@@ -1,0 +1,127 @@
+@reference "../../../index.css";
+
+.timelineContainer {
+  @apply flex flex-col flex-1 overflow-hidden rounded border border-outline-variant bg-surface-container/40;
+}
+
+.timelineHeader {
+  @apply flex border-b border-outline-variant h-14 bg-surface-container-low shrink-0;
+}
+
+.columnHeader {
+  @apply w-64 border-r border-outline-variant flex items-center px-6 shrink-0;
+  span {
+    @apply text-label-caps font-bold text-on-surface-variant uppercase tracking-widest;
+  }
+}
+
+.gridHeaderArea {
+  @apply flex-1 flex overflow-hidden;
+  background-image: linear-gradient(to right, var(--outline-variant) 1px, transparent 1px);
+  background-size: 80px 100%;
+}
+
+.dateHeaderCell {
+  @apply w-20 border-r border-outline-variant/30 flex flex-col items-center justify-center shrink-0;
+  
+  .day {
+    @apply text-label-caps font-bold text-on-surface-variant;
+  }
+  .date {
+    @apply text-label-md font-mono text-on-surface;
+  }
+
+  &.today {
+    @apply bg-primary-container/10;
+    .day { @apply text-primary; }
+  }
+
+  &.weekend {
+    @apply bg-surface-container-high/30;
+    .day, .date { @apply opacity-50; }
+  }
+}
+
+.timelineBody {
+  @apply flex-1 overflow-y-auto overflow-x-auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    @apply bg-outline-variant rounded-full;
+  }
+}
+
+.projectRow {
+  @apply flex border-b border-outline-variant h-24 transition-all shrink-0 cursor-pointer hover:bg-interaction-hover active:bg-interaction-pressed;
+}
+
+.projectInfoCell {
+  @apply w-64 border-r border-outline-variant p-4 shrink-0 flex flex-col justify-center bg-surface-container-lowest/30;
+  
+  .titleWrapper {
+    @apply flex items-center justify-between mb-1;
+    .projectTitle {
+      @apply text-label-md font-bold text-on-surface group-hover:text-primary transition-colors truncate pr-2;
+    }
+    .statusDot {
+      @apply w-2 h-2 rounded-full shrink-0;
+      &.active { @apply bg-secondary shadow-sm shadow-secondary/40; }
+      &.atRisk { @apply bg-error shadow-sm shadow-error/40; }
+      &.completed { @apply bg-primary shadow-sm shadow-primary/40; }
+      &.onHold { @apply bg-outline-variant; }
+    }
+  }
+
+  .projectCode {
+    @apply text-label-caps text-on-surface-variant font-mono;
+  }
+
+  .teamAvatars {
+    @apply flex -space-x-2 mt-2;
+    img {
+      @apply w-6 h-6 rounded-full border border-surface-container-lowest object-cover;
+    }
+    .more {
+      @apply w-6 h-6 rounded-full bg-surface-container-highest border border-surface-container-lowest flex items-center justify-center text-[8px] font-bold text-on-surface;
+    }
+  }
+}
+
+.gridBodyArea {
+  @apply flex-1 relative min-w-[800px];
+  background-image: linear-gradient(to right, var(--outline-variant) 1px, transparent 1px);
+  background-size: 80px 100%;
+}
+
+.projectBar {
+  @apply absolute top-6 h-12 rounded flex items-center px-4 border transition-all;
+  
+  &.active { @apply bg-primary/10 border-primary/20; .barLabel { @apply text-primary; } }
+  &.atRisk { @apply bg-error/10 border-error/20; .barLabel { @apply text-error; } }
+  &.completed { @apply bg-secondary/10 border-secondary/20; .barLabel { @apply text-secondary; } }
+  &.onHold { @apply bg-outline-variant/10 border-outline-variant/20; .barLabel { @apply text-on-surface-variant; } }
+
+  .barLabel {
+    @apply text-label-caps font-bold tracking-wider uppercase truncate;
+  }
+}
+
+.staffingGap {
+  @apply absolute top-0 bottom-0 w-16 bg-error/10 border-x border-error/20 flex items-center justify-center overflow-hidden;
+  
+  .pattern {
+    @apply h-full w-full opacity-20;
+    background: repeating-linear-gradient(45deg, transparent, transparent 5px, currentColor 5px, currentColor 10px);
+    color: var(--color-error);
+  }
+  
+  .gapIcon {
+    @apply absolute text-error;
+  }
+}

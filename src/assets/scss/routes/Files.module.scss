@@ -19,26 +19,26 @@
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
 
     .card {
-      @apply p-6 bg-surface-container rounded-2xl border border-outline-variant hover:border-primary/50 transition-all cursor-pointer;
+      @apply p-6 bg-surface-container rounded border border-outline-variant hover:border-primary/20 hover:bg-interaction-hover transition-all cursor-pointer;
 
       .cardTop {
         @apply flex justify-between items-start mb-4;
 
         .iconBox {
-          @apply w-12 h-12 rounded-xl bg-surface-bright flex items-center justify-center text-2xl;
+          @apply w-12 h-12 rounded bg-surface-container-high flex items-center justify-center text-headline-lg;
         }
 
         .moreButton {
-          @apply p-1 hover:bg-surface-bright rounded-lg text-on-surface-variant;
+          @apply p-1 hover:bg-interaction-hover rounded text-on-surface-variant;
         }
       }
 
       .cardTitle {
-        @apply text-title-sm text-on-surface font-bold mb-1;
+        @apply text-label-md text-on-surface font-bold mb-1;
       }
 
       .cardInfo {
-        @apply flex justify-between text-body-sm text-on-surface-variant;
+        @apply flex justify-between text-label-sm text-on-surface-variant;
       }
     }
   }

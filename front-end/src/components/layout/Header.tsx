@@ -6,16 +6,15 @@ import { useAuthStore } from '@/store/useAuthStore'
 import { useUIStore } from '@/store/useUIStore'
 import { UserDetailModal } from '@/components/modal/layout/UserDetailModal'
 import { BasePopover } from '@/components/base/BasePopover'
-import { cn } from '@/lib/utils'
 
 export function Header() {
   const { t, i18n } = useTranslation()
   const { user, isAuthenticated, login, logout } = useAuthStore()
   const { theme, toggleTheme } = useUIStore()
-  
+
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  
+
   const userBtnRef = useRef<HTMLButtonElement>(null)
 
   const toggleLanguage = () => {
@@ -48,8 +47,8 @@ export function Header() {
         {/* Right: User, Language, Theme, Auth */}
         <div className="flex items-center gap-2">
           {/* Theme Toggle */}
-          <button 
-            className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95" 
+          <button
+            className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95"
             onClick={toggleTheme}
             title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
           >
@@ -73,9 +72,9 @@ export function Header() {
           <div className="flex items-center">
             {isAuthenticated && user ? (
               <>
-                <button 
+                <button
                   ref={userBtnRef}
-                  className="flex items-center gap-3 p-1.5 rounded-full hover:bg-interaction-hover transition-all" 
+                  className="flex items-center gap-3 p-1.5 rounded-full hover:bg-interaction-hover transition-all"
                   onClick={handleUserClick}
                 >
                   <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-md shadow-secondary/20">
@@ -100,8 +99,8 @@ export function Header() {
                     <div className="text-body-sm text-on-surface-variant">{user.email}</div>
                   </div>
                   <div className="p-2 bg-surface-container">
-                    <button 
-                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all group" 
+                    <button
+                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all group"
                       onClick={handleOpenModal}
                     >
                       <UserIcon className="w-4 h-4" />
@@ -113,8 +112,8 @@ export function Header() {
                       <span className="text-label-md font-bold">Account Settings</span>
                     </button>
                     <div className="h-px bg-outline-variant/30 my-2" />
-                    <button 
-                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-error hover:bg-error/10 transition-all" 
+                    <button
+                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-error hover:bg-error/10 transition-all"
                       onClick={logout}
                     >
                       <LogOut className="w-4 h-4" />
@@ -136,9 +135,9 @@ export function Header() {
       </header>
 
       {/* Detail Modal */}
-      <UserDetailModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+      <UserDetailModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </>
   )

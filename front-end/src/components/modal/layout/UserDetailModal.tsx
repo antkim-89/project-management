@@ -2,7 +2,6 @@ import { Mail, Shield, Calendar, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/useAuthStore'
 import { BaseModal } from '@/components/base/BaseModal'
-import { cn } from '@/lib/utils'
 
 interface UserDetailModalProps {
   isOpen: boolean
@@ -22,9 +21,9 @@ export function UserDetailModal({ isOpen, onClose }: UserDetailModalProps) {
   )
 
   return (
-    <BaseModal 
-      isOpen={isOpen} 
-      onClose={onClose} 
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
       title={`${t('common.overview')} - ${user.name}`}
       footer={footer}
       size="md"

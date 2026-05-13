@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Download, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ProjectTimeline } from '@/components/projects/ProjectTimeline'
+import { UserLeaveView } from '@/components/calendar/UserLeaveView'
 import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 export const Route = createFileRoute('/calendar')({
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/calendar')({
 
 function CalendarPage() {
   const [activeTab, setActiveTab] = useState('Week')
+  const [viewMode, setViewMode] = useState<'PROJECTS' | 'LEAVE'>('PROJECTS')
 
   const projectList = [
     {
@@ -51,10 +53,17 @@ function CalendarPage() {
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
       <Breadcrumbs items={[{ label: 'Calendar' }]} />
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
         <div>
-          <h2 className="font-bold text-display-lg text-on-surface mb-1">Timeline Availability</h2>
-          <p className="text-on-surface-variant text-body-md">Real-time resource allocation and project roadmap synchronization.</p>
+          <h2 className="font-bold text-display-lg text-on-surface mb-1">
+            {viewMode === 'PROJECTS' ? 'Timeline Availability' : 'Leave Management'}
+          </h2>
+          <p className="text-on-surface-variant text-body-md">
+            {viewMode === 'PROJECTS' 
+              ? 'Real-time resource allocation and project roadmap synchronization.' 
+              : 'Monitor personnel availability and manage leave requests.'}
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center bg-surface-container-low border border-outline-variant rounded p-1">
@@ -78,7 +87,36 @@ function CalendarPage() {
         </div>
       </div>
 
-      <ProjectTimeline projects={projectList} />
+      {/* View Mode Toggle */}
+      <div className="flex gap-4 border-b border-outline-variant/30 mb-8">
+        <button 
+          onClick={() => setViewMode('PROJECTS')}
+          className={cn(
+            "pb-4 text-label-md font-bold uppercase tracking-widest transition-all relative",
+            viewMode === 'PROJECTS' ? "text-primary" : "text-on-surface-variant hover:text-on-surface"
+          )}
+        >
+          Project Timeline
+          {viewMode === 'PROJECTS' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />}
+        </button>
+        <button 
+          onClick={() => setViewMode('LEAVE')}
+          className={cn(
+            "pb-4 text-label-md font-bold uppercase tracking-widest transition-all relative",
+            viewMode === 'LEAVE' ? "text-primary" : "text-on-surface-variant hover:text-on-surface"
+          )}
+        >
+          User Leaves
+          {viewMode === 'LEAVE' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />}
+        </button>
+      </div>
+
+      {viewMode === 'PROJECTS' ? (
+        <ProjectTimeline projects={projectList} />
+      ) : (
+        <UserLeaveView />
+      )}
     </div>
   )
 }
+

@@ -32,8 +32,8 @@ export function BasePopover({
   }
 
   return (
-    <div 
-      ref={popoverRef} 
+    <div
+      ref={popoverRef}
       className={cn(
         "absolute z-[60] bg-surface-container border border-outline-variant rounded-xl shadow-2xl animate-slide-in-top min-w-[200px]",
         positionClasses[position],

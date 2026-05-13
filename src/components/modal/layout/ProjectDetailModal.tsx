@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { X, Edit2, Share2, Check, History, FileText, TrendingDown, CheckCircle2 } from 'lucide-react'
-import styles from '@/assets/scss/modal/layout/ProjectDetailModal.module.scss'
+import { cn } from '@/lib/utils'
+import { BaseModal } from '@/components/base/BaseModal'
 
 interface ProjectDetailModalProps {
   isOpen: boolean
@@ -26,165 +27,177 @@ interface ProjectDetailModalProps {
 }
 
 export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ isOpen, onClose, project }) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen])
-
   if (!isOpen || !project) return null
 
-  const getStatusClass = (status: string) => {
+  const getStatusStyles = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return styles.active
-      case 'AT RISK': return styles.atRisk
-      case 'COMPLETED': return styles.completed
-      case 'ON HOLD': return styles.onHold
+      case 'ACTIVE': return 'text-secondary bg-secondary/10 border-secondary/20 shadow-[0_0_12px_rgba(78,222,163,0.1)]'
+      case 'AT RISK': return 'text-error bg-error/10 border-error/20 shadow-[0_0_12px_rgba(255,180,171,0.1)]'
+      case 'COMPLETED': return 'text-primary bg-primary/10 border-primary/20 shadow-[0_0_12px_rgba(59,130,246,0.1)]'
+      case 'ON HOLD': return 'text-on-surface-variant bg-surface-container-highest border-outline-variant/30'
       default: return ''
     }
   }
 
+  const header = (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center gap-3">
+        <div className={cn("flex items-center gap-1.5 px-3 py-1 rounded-full text-label-caps font-bold border backdrop-blur-md transition-all", getStatusStyles(project.status))}>
+          <span className="w-1.5 h-1.5 rounded-full bg-current"></span>
+          {project.status}
+        </div>
+        <span className="text-label-caps font-bold text-on-surface-variant tracking-widest font-mono">#{project.id}</span>
+      </div>
+      <h2 className="text-3xl font-bold text-on-surface mt-1">{project.title}</h2>
+      <p className="text-body-md text-on-surface-variant">{project.subtitle}</p>
+    </div>
+  )
+
+  const footer = (
+    <div className="flex items-center justify-between w-full">
+      <div className="flex gap-2">
+        <button className="btn-glass px-3 h-10"><Edit2 className="w-4 h-4" /></button>
+        <button className="btn-glass px-3 h-10"><Share2 className="w-4 h-4" /></button>
+      </div>
+      <button className="btn-primary px-8 h-10">View Full Report</button>
+    </div>
+  )
+
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
-        {/* Modal Header */}
-        <div className={styles.modalHeader}>
-          <button className={styles.closeBtn} onClick={onClose}>
-            <X className="w-5 h-5" />
+    <BaseModal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      title="" // Custom header used instead
+      footer={footer}
+      size="xl"
+      className="max-h-[90vh]"
+    >
+      {/* Custom Header Area */}
+      <div className="p-6 border-b border-outline-variant/30 bg-surface-container-low/50 -mt-6 -mx-6 mb-6">
+        <div className="flex justify-between items-start">
+          {header}
+          <button 
+            className="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all" 
+            onClick={onClose}
+          >
+            <X className="w-6 h-6" />
           </button>
-          <div className={styles.headerContent}>
-            <div>
-              <div className={styles.badgeWrapper}>
-                <div className={`${styles.badge} ${getStatusClass(project.status)}`}>
-                  <span className={styles.dot}></span>
-                  {project.status}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Info (Left 2/3) */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Description */}
+          <section>
+            <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">Project Scope</h4>
+            <p className="text-body-lg text-on-surface/80 leading-relaxed bg-surface-container-low/30 p-4 rounded-xl border border-outline-variant/10 italic">
+              {project.scope}
+            </p>
+          </section>
+
+          {/* Team */}
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest">Assigned Personnel ({project.team.length})</h4>
+              <button className="text-primary text-label-sm font-bold hover:underline">Manage Team</button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {project.team.map((member, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:border-primary/30 transition-colors group">
+                  <img src={member.avatar} alt={member.name} className="w-10 h-10 rounded-lg object-cover border border-outline-variant group-hover:scale-105 transition-transform" />
+                  <div>
+                    <p className="text-label-md font-bold text-on-surface">{member.name}</p>
+                    <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{member.role}</p>
+                  </div>
                 </div>
-                <span className={styles.projectId}>#{project.id}</span>
-              </div>
-              <h2 className={styles.projectTitle}>{project.title}</h2>
-              <p className={styles.projectSubtitle}>{project.subtitle}</p>
+              ))}
             </div>
-            <div className={styles.actionButtons}>
-              <button><Edit2 className="w-4 h-4" /></button>
-              <button><Share2 className="w-4 h-4" /></button>
+          </section>
+
+          {/* Activity Log */}
+          <section>
+            <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">Recent Activity</h4>
+            <div className="space-y-4">
+              {project.activities.map((activity, idx) => (
+                <div key={idx} className="flex items-start gap-4">
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-sm",
+                    activity.type === 'success' ? 'bg-secondary/20 text-secondary' : 
+                    activity.type === 'info' ? 'bg-primary/20 text-primary' : 
+                    'bg-on-surface-variant/20 text-on-surface-variant'
+                  )}>
+                    {activity.type === 'success' ? <Check className="w-4 h-4" /> : 
+                     activity.type === 'info' ? <History className="w-4 h-4" /> : 
+                     <FileText className="w-4 h-4" />}
+                  </div>
+                  <div>
+                    <p className="text-label-md font-bold text-on-surface">{activity.title}</p>
+                    <p className="text-body-sm text-on-surface-variant">{activity.time} · {activity.user}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          </section>
         </div>
 
-        {/* Modal Content */}
-        <div className={styles.modalBody}>
-          {/* Main Info (Left 2/3) */}
-          <div className={styles.mainInfo}>
-            {/* Description */}
-            <div className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <h4>Project Scope</h4>
-              </div>
-              <p className={styles.scopeText}>{project.scope}</p>
-            </div>
-
-            {/* Team */}
-            <div className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <h4>Assigned Personnel ({project.team.length})</h4>
-                <button className={styles.manageBtn}>Manage Team</button>
-              </div>
-              <div className={styles.teamGrid}>
-                {project.team.map((member, idx) => (
-                  <div key={idx} className={styles.teamMember}>
-                    <img src={member.avatar} alt={member.name} />
-                    <div>
-                      <p className={styles.memberName}>{member.name}</p>
-                      <p className={styles.memberRole}>{member.role}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Activity Log */}
-            <div className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <h4>Recent Activity</h4>
-              </div>
-              <div className={styles.activityList}>
-                {project.activities.map((activity, idx) => (
-                  <div key={idx} className={styles.activityItem}>
-                    <div className={`${styles.iconBox} ${styles[activity.type]}`}>
-                      {activity.type === 'success' ? <Check className="w-2.5 h-2.5" /> : 
-                       activity.type === 'info' ? <History className="w-2.5 h-2.5" /> : 
-                       <FileText className="w-2.5 h-2.5" />}
-                    </div>
-                    <div>
-                      <p className={styles.activityTitle}>{activity.title}</p>
-                      <p className={styles.activityMeta}>{activity.time} · {activity.user}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Metrics & Budget (Right 1/3) */}
-          <div className={styles.sidePanel}>
-            <div className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <h4>Financial Health</h4>
-              </div>
-              <div className={styles.financialCard}>
-                <p className={styles.label}>Total M/M Cost</p>
-                <p className={styles.value}>{project.financials.totalCost}</p>
-                <div className={styles.trend}>
+        {/* Metrics & Budget (Right 1/3) */}
+        <div className="space-y-8 bg-surface-container-low/40 p-6 rounded-2xl border border-outline-variant/30 h-fit sticky top-0">
+          <section>
+            <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-6">Financial Health</h4>
+            
+            <div className="space-y-6">
+              <div>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Total M/M Cost</p>
+                <p className="text-3xl font-mono font-bold text-on-surface">{project.financials.totalCost}</p>
+                <div className="flex items-center gap-1.5 text-secondary text-[11px] font-bold mt-1">
                   <TrendingDown className="w-3 h-3" />
                   12% below forecast
                 </div>
               </div>
-              <div className={styles.burnRateCard}>
-                <p className={styles.label}>Current Burn Rate</p>
-                <p className={styles.value}>{project.financials.burnRate} <span className="text-[10px] text-outline font-sans">/ day</span></p>
-                <div className={styles.progressTrack}>
-                  <div className={styles.progressFill} style={{ width: `${project.financials.burnRatePercent}%` }}></div>
-                </div>
-              </div>
-              <div className={styles.financialDetails}>
-                <div className={styles.detailItem}>
-                  <span className={styles.label}>Allocated Hours</span>
-                  <span className={styles.value}>{project.financials.allocatedHours}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.label}>Consumed Hours</span>
-                  <span className={styles.value}>{project.financials.consumedHours}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.label}>Infrastructure Fee</span>
-                  <span className={styles.value}>{project.financials.infrastructureFee}</span>
-                </div>
-              </div>
-            </div>
 
-            <div className={styles.section}>
-              <div className={styles.sectionHeader}>
-                <h4>Key Milestones</h4>
+              <div>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Current Burn Rate</p>
+                <p className="text-xl font-mono font-bold text-on-surface">{project.financials.burnRate} <span className="text-xs text-on-surface-variant font-sans">/ day</span></p>
+                <div className="h-1.5 w-full bg-surface-variant rounded-full mt-2 overflow-hidden">
+                  <div className="h-full bg-primary" style={{ width: `${project.financials.burnRatePercent}%` }}></div>
+                </div>
               </div>
-              <div className={styles.milestoneList}>
-                {project.milestones.map((milestone, idx) => (
-                  <div key={idx} className={styles.milestoneItem}>
-                    {milestone.completed ? <CheckCircle2 className={styles.checkIcon} /> : <div className={styles.pendingIcon} />}
-                    <span className={styles.title}>{milestone.title}</span>
+
+              <div className="pt-6 border-t border-outline-variant/30 space-y-3">
+                {[
+                  { label: 'Allocated Hours', value: project.financials.allocatedHours },
+                  { label: 'Consumed Hours', value: project.financials.consumedHours },
+                  { label: 'Infrastructure Fee', value: project.financials.infrastructureFee }
+                ].map((item, i) => (
+                  <div key={i} className="flex justify-between items-center text-label-md">
+                    <span className="text-on-surface-variant">{item.label}</span>
+                    <span className="font-mono font-bold text-on-surface">{item.value}</span>
                   </div>
                 ))}
               </div>
             </div>
+          </section>
 
-            <button className={styles.reportBtn}>View Full Report</button>
-          </div>
+          <section>
+            <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">Key Milestones</h4>
+            <div className="space-y-3">
+              {project.milestones.map((milestone, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  {milestone.completed ? (
+                    <CheckCircle2 className="w-5 h-5 text-secondary" />
+                  ) : (
+                    <div className="w-5 h-5 rounded-full border-2 border-outline-variant shrink-0" />
+                  )}
+                  <span className={cn("text-label-md font-medium", milestone.completed ? "text-on-surface/60 line-through" : "text-on-surface")}>
+                    {milestone.title}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
-    </div>
+    </BaseModal>
   )
 }

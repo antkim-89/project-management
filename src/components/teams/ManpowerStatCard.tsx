@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LucideIcon } from 'lucide-react';
-import styles from '@/assets/scss/routes/Teams.module.scss';
+import { cn } from '@/lib/utils';
+import { GlassCard } from '@/components/base/GlassCard';
 
 interface ManpowerStatCardProps {
   title: string;
@@ -32,17 +33,17 @@ export const ManpowerStatCard: React.FC<ManpowerStatCardProps> = ({
   };
 
   return (
-    <div className={`${styles.glassCard} p-4 rounded-xl`}>
+    <GlassCard className="p-4 flex flex-col">
       <div className="flex justify-between items-start mb-2">
-        <Icon className={`${getIconColor()} w-6 h-6`} />
+        <Icon className={cn(getIconColor(), "w-6 h-6")} />
         {change && (
-          <span className={`${getTrendColor()} text-[12px] font-bold`}>
+          <span className={cn(getTrendColor(), "text-[12px] font-bold")}>
             {change}
           </span>
         )}
       </div>
       <p className="text-on-surface-variant text-[11px] font-bold uppercase tracking-wider">{title}</p>
       <h3 className="text-2xl font-mono mt-1 text-on-surface">{value}</h3>
-    </div>
+    </GlassCard>
   );
 };

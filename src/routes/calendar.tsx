@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { CalendarRange, Download } from 'lucide-react'
-import styles from '@/assets/scss/routes/Projects.module.scss'
+import { Download, ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { ProjectTimeline } from '@/components/projects/ProjectTimeline'
 import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
@@ -9,6 +10,8 @@ export const Route = createFileRoute('/calendar')({
 })
 
 function CalendarPage() {
+  const [activeTab, setActiveTab] = useState('Week')
+
   const projectList = [
     {
       id: '8821',
@@ -46,20 +49,29 @@ function CalendarPage() {
   ]
 
   return (
-    <div className={styles.container}>
+    <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
       <Breadcrumbs items={[{ label: 'Calendar' }]} />
-      <div className={styles.header}>
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
-          <h2 className={styles.title}>Timeline Availability</h2>
-          <p className={styles.subtitle}>Real-time resource allocation and project roadmap synchronization.</p>
+          <h2 className="font-bold text-display-lg text-on-surface mb-1">Timeline Availability</h2>
+          <p className="text-on-surface-variant text-body-md">Real-time resource allocation and project roadmap synchronization.</p>
         </div>
-        <div className={styles.filterGroup}>
-          <div className={styles.filterToggle}>
-            <button className={styles.active}>Week</button>
-            <button>Month</button>
-            <button>Quarter</button>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center bg-surface-container-low border border-outline-variant rounded p-1">
+            {['Week', 'Month', 'Quarter'].map(tab => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  "px-4 py-1.5 text-label-caps font-bold rounded transition-colors tracking-widest",
+                  activeTab === tab ? "bg-primary-container/20 text-primary" : "text-on-surface-variant hover:text-on-surface"
+                )}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
-          <button className={styles.loadMoreButton}>
+          <button className="btn-glass px-4">
             <Download className="w-4 h-4" />
             Export Data
           </button>

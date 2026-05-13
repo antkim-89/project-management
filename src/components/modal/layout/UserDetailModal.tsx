@@ -2,7 +2,7 @@ import { Mail, Shield, Calendar, MapPin } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/useAuthStore'
 import { BaseModal } from '@/components/base/BaseModal'
-import styles from '@/assets/scss/modal/layout/UserDetailModal.module.scss'
+import { cn } from '@/lib/utils'
 
 interface UserDetailModalProps {
   isOpen: boolean
@@ -16,7 +16,7 @@ export function UserDetailModal({ isOpen, onClose }: UserDetailModalProps) {
   if (!user) return null
 
   const footer = (
-    <button className={styles.primaryBtn} onClick={onClose}>
+    <button className="btn-primary px-6 h-10" onClick={onClose}>
       Confirm
     </button>
   )
@@ -29,43 +29,45 @@ export function UserDetailModal({ isOpen, onClose }: UserDetailModalProps) {
       footer={footer}
       size="md"
     >
-      <div className={styles.profileSection}>
-        <div className={styles.avatarLarge}>
+      <div className="flex items-center gap-6 mb-8">
+        <div className="w-20 h-20 rounded-2xl bg-secondary flex items-center justify-center text-on-secondary text-3xl font-bold shadow-lg shadow-secondary/20">
           {user.name.charAt(0)}
         </div>
-        <div className={styles.profileInfo}>
-          <h3 className={styles.userName}>{user.name}</h3>
-          <p className={styles.userPlanBadge}>{user.plan} {t('common.proPlan')}</p>
+        <div>
+          <h3 className="text-2xl font-bold text-on-surface">{user.name}</h3>
+          <p className="bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-primary/20 inline-block mt-1">
+            {user.plan} {t('common.proPlan')}
+          </p>
         </div>
       </div>
 
-      <div className={styles.infoGrid}>
-        <div className={styles.infoItem}>
-          <Mail className={styles.infoIcon} />
-          <div className={styles.infoText}>
-            <label>Email</label>
-            <span>{user.email}</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <Mail className="w-5 h-5 text-primary" />
+          <div>
+            <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">Email</label>
+            <span className="text-on-surface font-medium">{user.email}</span>
           </div>
         </div>
-        <div className={styles.infoItem}>
-          <Shield className={styles.infoIcon} />
-          <div className={styles.infoText}>
-            <label>Role</label>
-            <span>Administrator</span>
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <Shield className="w-5 h-5 text-secondary" />
+          <div>
+            <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">Role</label>
+            <span className="text-on-surface font-medium">Administrator</span>
           </div>
         </div>
-        <div className={styles.infoItem}>
-          <Calendar className={styles.infoIcon} />
-          <div className={styles.infoText}>
-            <label>Joined</label>
-            <span>2026.01.27</span>
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <Calendar className="w-5 h-5 text-on-surface-variant" />
+          <div>
+            <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">Joined</label>
+            <span className="text-on-surface font-medium">2026.01.27</span>
           </div>
         </div>
-        <div className={styles.infoItem}>
-          <MapPin className={styles.infoIcon} />
-          <div className={styles.infoText}>
-            <label>Location</label>
-            <span>Seoul, Korea</span>
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <MapPin className="w-5 h-5 text-error" />
+          <div>
+            <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">Location</label>
+            <span className="text-on-surface font-medium">Seoul, Korea</span>
           </div>
         </div>
       </div>

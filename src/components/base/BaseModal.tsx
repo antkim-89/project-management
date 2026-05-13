@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
 import { X } from 'lucide-react'
-import styles from '@/assets/scss/base/Modal.module.scss'
+import { cn } from '@/lib/utils'
 
 interface BaseModalProps {
   isOpen: boolean
-  onClose?: () => void // Optional로 변경하여 경고 해결 및 유연성 확보
+  onClose?: () => void
   title?: string
   children: React.ReactNode
   footer?: React.ReactNode
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+  className?: string
 }
 
 export function BaseModal({
@@ -17,7 +18,8 @@ export function BaseModal({
   title,
   children,
   footer,
-  size = 'md'
+  size = 'md',
+  className
 }: BaseModalProps) {
   // Prevent scroll when modal is open
   useEffect(() => {
@@ -33,18 +35,36 @@ export function BaseModal({
 
   if (!isOpen) return null
 
+  const sizeClasses = {
+    sm: 'max-w-md',
+    md: 'max-w-2xl',
+    lg: 'max-w-4xl',
+    xl: 'max-w-6xl',
+    full: 'max-w-[calc(100vw-4rem)]'
+  }
+
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div 
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
       <div 
-        className={`${styles.modalContainer} ${styles[size]}`} 
+        className={cn(
+          "w-full bg-surface-container border border-outline-variant rounded-2xl shadow-2xl flex flex-col max-h-[calc(100vh-4rem)] animate-zoom-in",
+          sizeClasses[size],
+          className
+        )}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header - 제목이 있거나 닫기 기능이 있을 때만 렌더링 */}
+        {/* Header */}
         {(title || onClose) && (
-          <header className={styles.modalHeader}>
-            {title ? <h2 className={styles.modalTitle}>{title}</h2> : <div />}
+          <header className="flex items-center justify-between p-6 border-b border-outline-variant/30">
+            {title ? <h2 className="text-xl font-bold text-on-surface">{title}</h2> : <div />}
             {onClose && (
-              <button className={styles.closeBtn} onClick={onClose}>
+              <button 
+                className="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-90" 
+                onClick={onClose}
+              >
                 <X className="w-5 h-5" />
               </button>
             )}
@@ -52,13 +72,13 @@ export function BaseModal({
         )}
 
         {/* Content */}
-        <div className={styles.modalContent}>
+        <div className="flex-1 overflow-y-auto p-6">
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <footer className={styles.modalFooter}>
+          <footer className="p-6 border-t border-outline-variant/30 flex items-center justify-end gap-3">
             {footer}
           </footer>
         )}

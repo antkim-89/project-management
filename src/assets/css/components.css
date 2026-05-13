@@ -1,0 +1,53 @@
+@layer components {
+  /* Common Glassmorphism Card */
+  .glass-card {
+    @apply bg-surface-container/40 border border-outline-variant/30 transition-all duration-300;
+    
+    &:hover {
+      @apply border-primary/20 bg-surface-container/60;
+    }
+  }
+
+  /* Standardized Table Styles */
+  .data-table-container {
+    @apply bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded overflow-hidden;
+    
+    &:hover {
+      @apply border-primary/20 bg-surface-container/60;
+    }
+
+    .table-wrapper {
+      @apply overflow-x-auto;
+    }
+
+    table {
+      @apply w-full text-left;
+
+      thead {
+        @apply bg-surface-container-low border-b border-outline-variant;
+        th {
+          @apply px-6 py-4 text-label-caps font-bold uppercase tracking-wider text-on-surface-variant;
+        }
+      }
+
+      tbody tr {
+        @apply border-b border-outline-variant/30 transition-colors hover:bg-interaction-hover;
+        td { @apply px-6 py-4; }
+      }
+    }
+  }
+
+  /* Typography Utilities */
+  .text-gradient {
+    @apply bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+
+  /* Common Button Variants (if not using a component) */
+  .btn-glass {
+    @apply h-10 flex items-center gap-2 px-4 bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded text-on-surface font-bold text-label-caps hover:border-primary;
+    
+    &:hover {
+      @apply border-primary/20 bg-surface-container/60;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { useClickOutside } from '@/hooks/useClickOutside'
-import styles from '@/assets/scss/base/Popover.module.scss'
+import { cn } from '@/lib/utils'
 
 interface BasePopoverProps {
   isOpen: boolean
@@ -26,10 +26,19 @@ export function BasePopover({
 
   if (!isOpen) return null
 
+  const positionClasses = {
+    bottomRight: 'right-0 top-full mt-2',
+    bottomLeft: 'left-0 top-full mt-2'
+  }
+
   return (
     <div 
       ref={popoverRef} 
-      className={`${styles.popoverContainer} ${styles[position]} ${className}`}
+      className={cn(
+        "absolute z-[60] bg-surface-container border border-outline-variant rounded-xl shadow-2xl animate-slide-in-top min-w-[200px]",
+        positionClasses[position],
+        className
+      )}
     >
       {children}
     </div>

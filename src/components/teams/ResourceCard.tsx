@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, Star, Zap, History } from 'lucide-react';
-import styles from '@/assets/scss/routes/Teams.module.scss';
+import { cn } from '@/lib/utils';
+import { GlassCard } from '@/components/base/GlassCard';
 
 interface ResourceCardProps {
   name: string;
@@ -47,7 +48,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   };
 
   return (
-    <div className={`${styles.glassCard} rounded-xl overflow-hidden flex flex-col relative`}>
+    <GlassCard className="rounded-xl overflow-hidden flex flex-col relative p-0 border-0">
       {matchScore && (
         <div className="absolute top-4 right-4 z-10">
           <div className="bg-secondary-container/20 border border-secondary text-secondary px-3 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-md">
@@ -62,10 +63,10 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           <img 
             src={avatar} 
             alt={name} 
-            className={styles.cardAvatar} 
+            className="w-16 h-16 rounded-xl object-cover border border-outline-variant shadow-sm" 
           />
           <div 
-            className={`absolute -bottom-1 -right-1 w-5 h-5 ${getStatusColor()} border-4 border-background rounded-full`}
+            className={cn("absolute -bottom-1 -right-1 w-5 h-5 border-4 border-background rounded-full", getStatusColor())}
             title={status.replace('-', ' ')}
           ></div>
         </div>
@@ -106,6 +107,6 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
           </button>
         )}
       </div>
-    </div>
+    </GlassCard>
   );
 };

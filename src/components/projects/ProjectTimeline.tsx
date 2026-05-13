@@ -1,6 +1,7 @@
 import React from 'react'
-import styles from '@/assets/scss/components/ProjectTimeline.module.scss'
 import { AlertCircle } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { GlassCard } from '@/components/base/GlassCard'
 
 interface Project {
   id: string
@@ -39,67 +40,85 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projects }) =>
     return {
       left: offsets[index % offsets.length],
       width: widths[index % widths.length],
-      statusClass: status === 'ACTIVE' ? styles.active : 
-                   status === 'AT RISK' ? styles.atRisk : 
-                   status === 'COMPLETED' ? styles.completed : styles.onHold
+      statusStyles: status === 'ACTIVE' ? 'bg-secondary/20 text-secondary border-secondary/30' : 
+                    status === 'AT RISK' ? 'bg-error/20 text-error border-error/30' : 
+                    status === 'COMPLETED' ? 'bg-primary/20 text-primary border-primary/30' : 
+                    'bg-on-surface-variant/20 text-on-surface-variant border-on-surface-variant/30'
     }
   }
 
   return (
-    <div className={styles.timelineContainer}>
-      <div className={styles.timelineHeader}>
-        <div className={styles.columnHeader}>
-          <span>Active Projects</span>
+    <GlassCard className="p-0 overflow-hidden flex flex-col min-h-[400px]">
+      <div className="flex border-b border-outline-variant/30 sticky top-0 bg-surface-container/60 backdrop-blur-md z-20">
+        <div className="w-[280px] p-6 border-r border-outline-variant/30 flex items-center">
+          <span className="text-label-caps font-bold text-on-surface-variant tracking-widest">Active Projects</span>
         </div>
-        <div className={styles.gridHeaderArea}>
+        <div className="flex-1 flex overflow-x-auto">
           {dates.map((d, i) => (
-            <div key={i} className={`${styles.dateHeaderCell} ${d.isToday ? styles.today : ''} ${d.isWeekend ? styles.weekend : ''}`}>
-              <span className={styles.day}>{d.day}</span>
-              <span className={styles.date}>{d.date}</span>
+            <div 
+              key={i} 
+              className={cn(
+                "min-w-[80px] h-[72px] flex flex-col items-center justify-center border-r border-outline-variant/10",
+                d.isToday && "bg-primary-container/10 relative",
+                d.isWeekend && "bg-surface-container-low"
+              )}
+            >
+              {d.isToday && <div className="absolute top-0 left-0 right-0 h-1 bg-primary"></div>}
+              <span className="text-[10px] font-bold text-on-surface-variant tracking-wider">{d.day}</span>
+              <span className={cn("text-lg font-mono font-bold mt-0.5", d.isToday ? "text-primary" : "text-on-surface")}>{d.date}</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className={styles.timelineBody}>
+      <div className="flex-1 overflow-y-auto">
         {projects.map((project, idx) => {
-          const { left, width, statusClass } = getBarProps(idx, project.status)
+          const { left, width, statusStyles } = getBarProps(idx, project.status)
           return (
-            <div key={project.id} className={`${styles.projectRow} group`}>
-              <div className={styles.projectInfoCell}>
-                <div className={styles.titleWrapper}>
-                  <span className={styles.projectTitle}>{project.title}</span>
-                  <div className={`${styles.statusDot} ${
-                    project.status === 'ACTIVE' ? styles.active : 
-                    project.status === 'AT RISK' ? styles.atRisk : 
-                    project.status === 'COMPLETED' ? styles.completed : styles.onHold
-                  }`}></div>
+            <div key={project.id} className="flex border-b border-outline-variant/10 hover:bg-interaction-hover transition-colors group">
+              <div className="w-[280px] p-6 border-r border-outline-variant/30 shrink-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-bold text-on-surface truncate max-w-[180px]">{project.title}</span>
+                  <div className={cn(
+                    "w-2 h-2 rounded-full shrink-0",
+                    project.status === 'ACTIVE' ? "bg-secondary shadow-[0_0_8px_var(--color-secondary)]" : 
+                    project.status === 'AT RISK' ? "bg-error shadow-[0_0_8px_var(--color-error)]" : 
+                    project.status === 'COMPLETED' ? "bg-primary" : "bg-on-surface-variant"
+                  )}></div>
                 </div>
-                <p className={styles.projectCode}>CODE: PRJ-{project.id}</p>
-                <div className={styles.teamAvatars}>
-                  {project.avatars.slice(0, 2).map((avatar, i) => (
-                    <img key={i} src={avatar} alt="Team" />
-                  ))}
-                  {project.avatarMore && <div className={styles.more}>+{project.avatarMore}</div>}
+                <p className="text-[10px] font-bold text-on-surface-variant tracking-widest font-mono">CODE: PRJ-{project.id}</p>
+                <div className="flex items-center gap-2 mt-4">
+                  <div className="flex -space-x-1.5">
+                    {project.avatars.slice(0, 2).map((avatar, i) => (
+                      <img key={i} src={avatar} alt="Team" className="w-5 h-5 rounded-full border border-surface-container object-cover" />
+                    ))}
+                    {project.avatarMore && (
+                      <div className="w-5 h-5 rounded-full bg-surface-container-highest border border-surface-container flex items-center justify-center text-[8px] font-bold text-on-surface">
+                        +{project.avatarMore}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               
-              <div className={styles.gridBodyArea}>
+              <div className="flex-1 flex overflow-x-auto relative min-h-[100px] items-center p-4">
                 <div 
-                  className={`${styles.projectBar} ${statusClass}`}
-                  style={{ left: `${left}px`, width: `${width}px` }}
+                  className={cn(
+                    "absolute h-10 rounded-lg border flex items-center px-4 transition-all duration-500",
+                    statusStyles
+                  )}
+                  style={{ left: `${left + 16}px`, width: `${width}px` }}
                 >
-                  <span className={styles.barLabel}>
+                  <span className="text-[10px] font-bold tracking-widest uppercase truncate whitespace-nowrap">
                     {project.status === 'ACTIVE' ? `PHASE 1 • ${project.progress}%` : 
                      project.status === 'AT RISK' ? `CRITICAL • ${project.progress}%` : 
                      project.status === 'COMPLETED' ? 'DELIVERED' : 'ON HOLD'}
                   </span>
                   
-                  {/* Mock staffing gap for "At Risk" projects */}
                   {project.status === 'AT RISK' && (
-                    <div className={styles.staffingGap} style={{ left: '160px' }}>
-                      <div className={styles.pattern}></div>
-                      <AlertCircle className={styles.gapIcon + " w-3 h-3"} />
+                    <div className="absolute left-[160px] top-0 bottom-0 w-20 flex items-center justify-center">
+                      <div className="absolute inset-0 opacity-20" style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, currentColor 10px, currentColor 20px)' }}></div>
+                      <AlertCircle className="w-4 h-4 relative z-10" />
                     </div>
                   )}
                 </div>
@@ -108,6 +127,6 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projects }) =>
           )
         })}
       </div>
-    </div>
+    </GlassCard>
   )
 }

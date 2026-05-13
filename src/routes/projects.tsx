@@ -13,7 +13,7 @@ import {
   ChevronDown,
   ListFilter
 } from 'lucide-react'
-import styles from '@/assets/scss/routes/Projects.module.scss'
+import { cn } from '@/lib/utils'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { NewProjectCard } from '@/components/projects/NewProjectCard'
 import { ProjectDetailModal } from '@/components/modal/layout/ProjectDetailModal'
@@ -58,6 +58,7 @@ interface Project {
 function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeFilter, setActiveFilter] = useState('ALL')
 
   const projectList: Project[] = [
     {
@@ -237,34 +238,44 @@ function Projects() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
       <Breadcrumbs items={[{ label: 'Projects' }]} />
+      
       {/* Page Header & Filters */}
-      <div className={styles.header}>
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
-          <h2 className={styles.title}>Project Portfolio</h2>
-          <p className={styles.subtitle}>Managing 12 active infrastructure deployments across 4 regions.</p>
+          <h2 className="font-bold text-display-lg text-on-surface mb-1">Project Portfolio</h2>
+          <p className="text-on-surface-variant text-body-md">Managing 12 active infrastructure deployments across 4 regions.</p>
         </div>
-        <div className={styles.filterGroup}>
-          <div className={styles.filterToggle}>
-            <button className={styles.active}>ALL</button>
-            <button>ACTIVE</button>
-            <button>ON HOLD</button>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center bg-surface-container-low border border-outline-variant rounded p-1">
+            {['ALL', 'ACTIVE', 'ON HOLD'].map(filter => (
+              <button 
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                className={cn(
+                  "px-4 py-1.5 text-label-caps font-bold rounded transition-colors tracking-widest",
+                  activeFilter === filter ? "bg-primary-container/20 text-primary" : "text-on-surface-variant hover:text-on-surface"
+                )}
+              >
+                {filter}
+              </button>
+            ))}
           </div>
-          <select className={styles.departmentSelect}>
+          <select className="bg-surface-container-low border border-outline-variant text-on-surface text-label-md rounded px-3 py-2 outline-none focus:border-primary">
             <option>All Departments</option>
             <option>Network Ops</option>
             <option>Cloud Infrastructure</option>
             <option>Cyber Security</option>
           </select>
-          <button className={styles.iconButton}>
+          <button className="flex items-center gap-2 text-on-surface-variant transition-all px-2 py-2 rounded cursor-pointer hover:bg-interaction-hover hover:text-on-surface active:bg-interaction-pressed active:scale-90">
             <ListFilter className="w-5 h-5" />
           </button>
         </div>
       </div>
 
       {/* Projects Bento Grid */}
-      <div className={styles.grid}>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {projectList.map((project, index) => (
           <ProjectCard 
             key={index} 
@@ -278,8 +289,8 @@ function Projects() {
       </div>
 
       {/* Pagination/Load More */}
-      <div className={styles.loadMoreContainer}>
-        <button className={styles.loadMoreButton}>
+      <div className="mt-8 flex justify-center">
+        <button className="btn-glass px-6">
           View More Projects
           <ChevronDown className="w-4 h-4" />
         </button>

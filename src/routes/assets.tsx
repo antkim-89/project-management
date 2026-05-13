@@ -20,8 +20,8 @@ import {
   TrendingDown,
   Info
 } from 'lucide-react'
-import styles from '@/assets/scss/routes/Assets.module.scss'
-import { ManpowerStatCard } from '@/components/teams/ManpowerStatCard'
+import { cn } from '@/lib/utils'
+import { GlassCard } from '@/components/base/GlassCard'
 import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 export const Route = createFileRoute('/assets')({
@@ -78,30 +78,36 @@ const COURSES = [
 
 function Assets() {
   return (
-    <div className={styles.container}>
+    <div className="p-6 space-y-8 max-w-[1600px] mx-auto w-full animate-fade-in">
       {/* Header Section */}
-      <div className={styles.headerSection}>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <Breadcrumbs items={[{ label: 'Assets' }]} />
-          <h2 className={styles.title}>Resource Lifecycle</h2>
-          <p className={styles.subtitle}>Manage global inventory and employee development programs.</p>
+          <h2 className="text-display-lg font-bold text-on-surface tracking-tight">Resource Lifecycle</h2>
+          <p className="text-on-surface-variant text-body-md mt-1">Manage global inventory and employee development programs.</p>
         </div>
-        <div className={styles.headerActions}>
-          <button className={styles.btnSecondary}><Filter size={14} /> Filter View</button>
-          <button className={styles.btnSecondary}><Download size={14} /> Export Inventory</button>
+        <div className="flex items-center gap-3">
+          <button className="btn-glass">
+            <Filter size={14} /> Filter View
+          </button>
+          <button className="btn-glass">
+            <Download size={14} /> Export Inventory
+          </button>
         </div>
       </div>
 
-      <div className={styles.mainGrid}>
+      <div className="grid grid-cols-12 gap-6">
         {/* Left Section: Inventory */}
-        <div className={styles.leftSection}>
-          <div className={styles.sectionHeader}>
-            <h3><Package size={18} className="text-primary" /> Asset Inventory</h3>
-            <span className={styles.count}>42 Active Units</span>
+        <div className="col-span-12 xl:col-span-8 space-y-6">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-headline-md font-bold flex items-center gap-2 text-on-surface">
+              <Package size={18} className="text-primary" /> Asset Inventory
+            </h3>
+            <span className="font-mono text-label-sm text-on-surface-variant">42 Active Units</span>
           </div>
 
-          <div className={styles.tableCard}>
-            <div className={styles.tableWrapper}>
+          <div className="data-table-container">
+            <div className="table-wrapper">
               <table>
                 <thead>
                   <tr>
@@ -114,37 +120,43 @@ function Assets() {
                 </thead>
                 <tbody>
                   {ASSETS.map(asset => (
-                    <tr key={asset.sn} className={asset.urgent ? styles.urgent : ''}>
+                    <tr key={asset.sn} className={cn(asset.urgent && "bg-error/5")}>
                       <td>
-                        <div className={styles.assetInfo}>
-                          <asset.icon className={`${styles.icon} ${asset.urgent ? styles.urgent : ''}`} />
+                        <div className="flex items-center gap-3">
+                          <asset.icon className={cn("w-5 h-5", asset.urgent ? "text-error" : "text-on-surface-variant")} />
                           <div>
-                            <div className={styles.name}>{asset.name}</div>
-                            <div className={styles.sn}>SN: {asset.sn}</div>
+                            <div className="font-bold text-on-surface text-label-md">{asset.name}</div>
+                            <div className="text-label-caps font-mono text-outline uppercase">SN: {asset.sn}</div>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div className={styles.userBadge}>
-                          <div className={styles.avatar}>{asset.userInitial}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-label-caps border border-primary/30 text-primary font-bold">
+                            {asset.userInitial}
+                          </div>
                           <span className="text-sm">{asset.user}</span>
                         </div>
                       </td>
                       <td>
-                        <div className={styles.healthBar}>
+                        <div className="w-24 h-1.5 bg-surface-container-highest rounded-full overflow-hidden mt-1">
                           <div 
-                            className={`${styles.progress} ${asset.health < 20 ? 'bg-error' : asset.health < 50 ? 'bg-primary' : 'bg-secondary'}`} 
+                            className={cn(
+                              "h-full transition-all duration-500",
+                              asset.health < 20 ? 'bg-error' : asset.health < 50 ? 'bg-primary' : 'bg-secondary'
+                            )} 
                             style={{ width: `${asset.health}%` }} 
                           />
                         </div>
-                        <div className={`text-[10px] mt-1 font-mono ${asset.urgent ? 'text-error' : 'text-outline'}`}>
+                        <div className={cn("text-[10px] mt-1 font-mono", asset.urgent ? 'text-error' : 'text-outline')}>
                           {asset.health}% Health
                         </div>
                       </td>
                       <td>
-                        <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                        <span className={cn(
+                          "px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider",
                           asset.urgent ? 'bg-error/20 text-error border border-error/20' : 'bg-secondary/10 text-secondary'
-                        }`}>
+                        )}>
                           {asset.status}
                         </span>
                       </td>
@@ -161,94 +173,102 @@ function Assets() {
           </div>
 
           {/* Stats Grid */}
-          <div className={styles.statsGrid}>
-            <div className={`${styles.glassCard} p-4 rounded-xl`}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <GlassCard className="p-4 rounded-xl">
               <div className="text-on-surface-variant text-xs mb-1 font-bold uppercase tracking-wider">Replacement Budget</div>
               <div className="text-2xl font-mono text-on-surface">$12,450</div>
               <div className="flex items-center gap-1 text-secondary text-[10px] mt-2">
                 <TrendingDown size={14} />
                 -5% from last month
               </div>
-            </div>
-            <div className={`${styles.glassCard} p-4 rounded-xl`}>
+            </GlassCard>
+            <GlassCard className="p-4 rounded-xl">
               <div className="text-on-surface-variant text-xs mb-1 font-bold uppercase tracking-wider">Out of Warranty</div>
               <div className="text-2xl font-mono text-on-surface">08</div>
               <div className="flex items-center gap-1 text-error text-[10px] mt-2">
                 <AlertTriangle size={14} />
                 Requires auditing
               </div>
-            </div>
-            <div className={`${styles.glassCard} p-4 rounded-xl`}>
+            </GlassCard>
+            <GlassCard className="p-4 rounded-xl">
               <div className="text-on-surface-variant text-xs mb-1 font-bold uppercase tracking-wider">Average Age</div>
               <div className="text-2xl font-mono text-on-surface">2.4 <span className="text-sm font-normal">yrs</span></div>
               <div className="flex items-center gap-1 text-primary text-[10px] mt-2">
                 <Info size={14} />
                 Healthy fleet status
               </div>
-            </div>
+            </GlassCard>
           </div>
         </div>
 
         {/* Right Section: Welfare */}
-        <div className={styles.rightSection}>
-          <div className={styles.sectionHeader}>
-            <h3><Activity size={18} className="text-secondary" /> Employee Welfare</h3>
+        <div className="col-span-12 xl:col-span-4 space-y-6">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-headline-md font-bold flex items-center gap-2 text-on-surface">
+              <Activity size={18} className="text-secondary" /> Employee Welfare
+            </h3>
             <button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">View All</button>
           </div>
 
-          <div className={styles.welfareGrid}>
+          <div className="grid grid-cols-2 gap-4">
             {COURSES.map(course => (
-              <div key={course.title} className={styles.courseCard}>
-                <div className={styles.imageWrapper}>
-                  <img src={course.image} alt={course.title} />
-                  <div className={styles.overlay} />
-                  <span className={styles.badge}>{course.type}</span>
+              <GlassCard key={course.title} className="p-0 overflow-hidden cursor-pointer group">
+                <div className="h-24 w-full bg-surface-container-highest relative overflow-hidden">
+                  <img 
+                    src={course.image} 
+                    alt={course.title} 
+                    className="w-full h-full object-cover opacity-50 transition-transform duration-500 group-hover:scale-105" 
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-background to-transparent opacity-60" />
+                  <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-background/80 rounded-sm text-label-caps font-bold uppercase">{course.type}</span>
                 </div>
-                <div className={styles.content}>
-                  <h4>{course.title}</h4>
-                  <p>{course.chapters}</p>
-                  <button className={styles.btn}>{course.type === 'Digital' ? 'Request Access' : 'Borrow'}</button>
+                <div className="p-3">
+                  <h4 className="font-bold text-label-md truncate text-on-surface">{course.title}</h4>
+                  <p className="text-label-sm text-on-surface-variant mb-3">{course.chapters}</p>
+                  <button className="w-full py-1.5 border border-primary/30 text-primary text-label-sm font-bold rounded hover:bg-interaction-primary-hover transition-colors">
+                    {course.type === 'Digital' ? 'Request Access' : 'Borrow'}
+                  </button>
                 </div>
-              </div>
+              </GlassCard>
             ))}
           </div>
 
-          <button className={styles.purchaseBtn}>
+          <button className="h-12 w-full bg-secondary text-on-secondary font-bold text-label-md uppercase tracking-widest rounded flex items-center justify-center gap-2 hover:opacity-90 transition-all">
             <ShoppingCart size={18} /> Request Purchase
           </button>
 
-          <div className={styles.approvalList}>
+          <GlassCard className="p-4 space-y-4">
             <div className="flex items-center justify-between mb-2">
               <div className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Pending Approvals</div>
               <span className="w-5 h-5 rounded-full bg-error text-white text-[10px] font-bold flex items-center justify-center">2</span>
             </div>
             
-            <div className={styles.item}>
-              <div className={styles.iconBox}><Laptop size={14} /></div>
-              <div className={styles.info}>
-                <div className={styles.name}>MacBook Pro Upgrade</div>
-                <div className={styles.requester}>Requested by Michael Chen</div>
+            <div className="flex items-start gap-3 p-2 rounded transition-colors cursor-pointer hover:bg-interaction-hover">
+              <div className="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary"><Laptop size={14} /></div>
+              <div className="flex-1 min-w-0">
+                <div className="text-label-md font-bold truncate text-on-surface">MacBook Pro Upgrade</div>
+                <div className="text-label-sm text-on-surface-variant">Requested by Michael Chen</div>
               </div>
-              <div className={styles.actions}>
-                <button className={styles.approve}><Check size={14} /></button>
-                <button className={styles.reject}><X size={14} /></button>
+              <div className="flex gap-1">
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary"><Check size={14} /></button>
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error"><X size={14} /></button>
               </div>
             </div>
 
-            <div className={styles.item}>
-              <div className={styles.iconBox}><Award size={14} className="text-secondary" /></div>
-              <div className={styles.info}>
-                <div className={styles.name}>Advanced PM Training</div>
-                <div className={styles.requester}>Requested by Sarah Jenkins</div>
+            <div className="flex items-start gap-3 p-2 rounded transition-colors cursor-pointer hover:bg-interaction-hover">
+              <div className="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary"><Award size={14} className="text-secondary" /></div>
+              <div className="flex-1 min-w-0">
+                <div className="text-label-md font-bold truncate text-on-surface">Advanced PM Training</div>
+                <div className="text-label-sm text-on-surface-variant">Requested by Sarah Jenkins</div>
               </div>
-              <div className={styles.actions}>
-                <button className={styles.approve}><Check size={14} /></button>
-                <button className={styles.reject}><X size={14} /></button>
+              <div className="flex gap-1">
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary"><Check size={14} /></button>
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error"><X size={14} /></button>
               </div>
             </div>
-          </div>
+          </GlassCard>
 
-          <div className={`${styles.glassCard} p-4 rounded-xl`}>
+          <GlassCard className="p-4 rounded-xl">
             <div className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-4">Well-being Calendar</div>
             <div className="flex items-center gap-4">
               <div className="flex flex-col items-center justify-center w-12 h-14 bg-primary/10 rounded-lg border border-primary/20">
@@ -263,7 +283,7 @@ function Assets() {
                 </div>
               </div>
             </div>
-          </div>
+          </GlassCard>
         </div>
       </div>
     </div>

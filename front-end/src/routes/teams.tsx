@@ -20,51 +20,25 @@ export const Route = createFileRoute('/teams')({
   component: Teams,
 })
 
-const RESOURCES = [
-  {
-    name: "Marcus Aurelius",
-    role: "Senior Principal Engineer",
-    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuD_PFfiI-e4FRBUJWRPVcndiaIw7xONCsVs2F5JkQjTBL7uppiMo2YQ0m5a8mPx8RSFW_IXPAisPj5XYRqnNPpeBYSg4WnTsTxgkjwgmHx0nLl7fRVYXfY9eyi7YFlznmYU6c1fjZctHrF0fgjfwMAOHCHgmJJtpeU5snf-3AdHfUnPvmlM9JgpUqu6C4KUu8QGjZNrPJrVTFZy9MG4_ZqP6eOvXbPQnRqMeJ9I1AeTRwuC7D4BhL360hqiFW_Vpgw57GI3yRmqXAc",
-    cost: "$12,400",
-    location: "Berlin, DE",
-    skills: ["Kotlin", "Spring Boot", "Microservices", "AWS"],
-    status: "available" as const,
-    matchScore: 98
-  },
-  {
-    name: "Elena Rodriguez",
-    role: "Lead Frontend Architect",
-    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuC3qa9sUFtCA_RSSigw9rkk1tdqGNmvNrkuxrp3Rm3TVMpbDg3YvhjlqzKLT2VLcCSo4_BOBg-4ZbzgSHM56cia_KJNEs5DcUxPuvf-AEKaim4NIIOusJM4ZVdZqBG9nYV9_0_OMjrBcetfQC83MA4hHXBsvJL6X43kZsuLmBBHDcv3Cmhs39dUkiJaCIR9AXfspNLryVtjk2YMPX0DjLtwi43s-Z7mVqGosh7THM7G9aRIxL0QOdlHAGctiKN3bSQhrACLfTOPcJs",
-    cost: "$10,800",
-    location: "Madrid, ES",
-    skills: ["Flutter", "React", "TypeScript"],
-    status: "on-project" as const,
-    matchScore: 87
-  },
-  {
-    name: "Kenji Tanaka",
-    role: "Machine Learning Engineer",
-    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuDnR-z9ORACpNW-FCUSomRy4jJstxDwz153csMvfPZ_cqqck8QI5yot-y05E5gUQoDppNZYJfQHbzZweT9X42yuPwj_c03d72WpQx5vprbx0FliRh9o19hck4fURwEv2SjNwDKOQ7uJ-nnPEzEdgBFbMCWdCG5htLl8idxDOYuRxwCdisF0jlH8d1S_fHVJoF0NnPI10XOgY1_jtD3WgmFqjuxM8QJdCM0bML9eCnn_V9edy15sOgA84oXrYMMEaBYij2rUlpRlb3E",
-    cost: "$11,200",
-    location: "Tokyo, JP",
-    skills: ["Python", "PyTorch", "SQL"],
-    status: "on-leave" as const,
-    matchScore: 72,
-    availableDate: "Dec 04"
-  },
-  {
-    name: "Sarah Jenkins",
-    role: "SecOps Specialist",
-    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCKRC7QLUhU9iP7DRrAfehErC2d-7VGedi4v0krEiNwLs9GETRgZ9Ah8BDcp-ebeG9l3gKgDZ2_ks9zUT2cLkc7gEw3goUFpGopSergy7WI1sXTvB96JjVOsgNPtrXcDup5i9ET2wosaOax-fY44qOKIhySUEno3Q9phzyQY7Yy0dwLqZqSLXCIooarjA13pN1yGByeBqJApuylqq-117nMEjSLPZTl7C8oKgh7cNuoZOyBhWNScIbAghhrNekyvLigkPHwYtLdOOw",
-    cost: "$13,500",
-    location: "London, UK",
-    skills: ["Ethical Hacking", "SIEM", "Docker"],
-    status: "available" as const,
-    matchScore: 92
-  }
-]
+import { useUsers } from '@/hooks/api/useUsers'
 
 function Teams() {
+  const { data: users, isLoading, error } = useUsers()
+
+  const mappedResources = users?.map(u => ({
+    name: u.name,
+    role: u.rank?.name || 'Employee',
+    avatar: u.avatarUrl || '',
+    cost: `$${(u.rank?.baseSalary || 0).toLocaleString()}`,
+    location: 'Remote', // 임시
+    skills: (u as any).skills?.map((s: any) => s.skillSet?.name) || [],
+    status: 'available' as const, // 임시
+    matchScore: 100 // 임시
+  })) || []
+
+  if (isLoading) return <div className="p-6">Loading resources...</div>
+  if (error) return <div className="p-6 text-error">Error loading resources</div>
+
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
       {/* Breadcrumbs & Title */}
@@ -88,10 +62,10 @@ function Teams() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <ManpowerStatCard 
           title="Total Personnel" 
-          value="1,482" 
-          change="+12% vs LY" 
+          value={users?.length.toString() || "0"} 
+          change="+0% vs LY" 
           icon={Users} 
-          trend="up" 
+          trend="neutral" 
         />
         <ManpowerStatCard 
           title="Utilization" 
@@ -152,7 +126,7 @@ function Teams() {
 
       {/* Resource Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-        {RESOURCES.map(resource => (
+        {mappedResources.map((resource: any) => (
           <ResourceCard key={resource.name} {...resource} />
         ))}
         

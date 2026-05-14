@@ -28,55 +28,40 @@ export const Route = createFileRoute('/assets')({
   component: Assets,
 })
 
-const ASSETS = [
-  {
-    name: "MacBook Pro M3",
-    sn: "4921-MBP",
-    user: "John Doe",
-    userInitial: "JD",
-    health: 85,
-    status: "Optimal",
-    icon: Laptop,
-    urgent: false
-  },
-  {
-    name: 'Dell UltraSharp 32"',
-    sn: "1022-MON",
-    user: "Alice Smith",
-    userInitial: "AS",
-    health: 15,
-    status: "Urgent Replacement",
-    icon: Monitor,
-    urgent: true
-  },
-  {
-    name: "Surface Laptop 5",
-    sn: "7712-SLT",
-    user: "Robert King",
-    userInitial: "RK",
-    health: 45,
-    status: "In Use",
-    icon: Laptop,
-    urgent: false
-  }
-]
-
-const COURSES = [
-  {
-    title: "AWS Cloud Mastery",
-    chapters: "12 Chapters",
-    type: "Digital",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC0_S07uN2i-htDInxiKCwRpfeJSnvVpyAGsCXZMLiwCQQd_BoDOVNcOlghtLi-Ot5udKkplsaLgaEr7RD9L56CSsPVAHsiOMpku8oDuoc73YQyHeJTqwjQt6CyYSdZ_MUHjvakBRgsmg3yMlEiMP6bBWWZZMvn8S900Xbuw_wQ4HzVY3dDbIzU9DWBDZZTM8laP6Y72LRptA9Xnxe3DdBybBG220LRexD4ejGo1z7wbSSSpQl55sopd2gVKnPWROc6F4HlBbdwoDI"
-  },
-  {
-    title: "Systemic Design",
-    chapters: "5 Units Available",
-    type: "Hardcopy",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA3wzCk0zmkGKQVlGEQJN1mTsliNEz-KUTIXsJSaC_XnRMppdXP5n3fq8qSX74ondayqkh8I-p3oOylhgv3LBE_2H1x5p9bFk8TBDz7kaD2OuRUtq0QfXoKBNMXM8GabNzm_BOVeBhR7ipGj9N10PggRxLZty3AI_atmhu_FjgrxyRb2h2c8CFRLUu46Lm7uRNRqyqnZsWKq0VEZGLlYyYJ5fCMHQSXvnTdP8zjNM1qb-wdADzFzAKhBoLRFx842uk7UCVMXkIafUE"
-  }
-]
+import { useEquipment } from '@/hooks/api/useEquipment'
 
 function Assets() {
+  const { data: equipment, isLoading, error } = useEquipment()
+
+  const mappedAssets = equipment?.map(e => ({
+    name: e.modelName,
+    sn: e.serialNumber,
+    user: e.user?.name || 'Unassigned',
+    userInitial: e.user?.name?.substring(0, 2).toUpperCase() || 'NA',
+    health: 100, // 임시 로직
+    status: e.status,
+    icon: e.type === 'Laptop' ? Laptop : e.type === 'Monitor' ? Monitor : Package,
+    urgent: e.status === 'Needs Repair'
+  })) || []
+
+  const COURSES = [
+    {
+      title: "AWS Cloud Mastery",
+      chapters: "12 Chapters",
+      type: "Digital",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuC0_S07uN2i-htDInxiKCwRpfeJSnvVpyAGsCXZMLiwCQQd_BoDOVNcOlghtLi-Ot5udKkplsaLgaEr7RD9L56CSsPVAHsiOMpku8oDuoc73YQyHeJTqwjQt6CyYSdZ_MUHjvakBRgsmg3yMlEiMP6bBWWZZMvn8S900Xbuw_wQ4HzVY3dDbIzU9DWBDZZTM8laP6Y72LRptA9Xnxe3DdBybBG220LRexD4ejGo1z7wbSSSpQl55sopd2gVKnPWROc6F4HlBbdwoDI"
+    },
+    {
+      title: "Systemic Design",
+      chapters: "5 Units Available",
+      type: "Hardcopy",
+      image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA3wzCk0zmkGKQVlGEQJN1mTsliNEz-KUTIXsJSaC_XnRMppdXP5n3fq8qSX74ondayqkh8I-p3oOylhgv3LBE_2H1x5p9bFk8TBDz7kaD2OuRUtq0QfXoKBNMXM8GabNzm_BOVeBhR7ipGj9N10PggRxLZty3AI_atmhu_FjgrxyRb2h2c8CFRLUu46Lm7uRNRqyqnZsWKq0VEZGLlYyYJ5fCMHQSXvnTdP8zjNM1qb-wdADzFzAKhBoLRFx842uk7UCVMXkIafUE"
+    }
+  ]
+
+  if (isLoading) return <div className="p-6">Loading assets...</div>
+  if (error) return <div className="p-6 text-error">Error loading assets</div>
+
   return (
     <div className="p-6 space-y-8 max-w-[1600px] mx-auto w-full animate-fade-in">
       {/* Header Section */}
@@ -103,7 +88,7 @@ function Assets() {
             <h3 className="text-headline-md font-bold flex items-center gap-2 text-on-surface">
               <Package size={18} className="text-primary" /> Asset Inventory
             </h3>
-            <span className="font-mono text-label-sm text-on-surface-variant">42 Active Units</span>
+            <span className="font-mono text-label-sm text-on-surface-variant">{equipment?.length || 0} Active Units</span>
           </div>
 
           <div className="data-table-container">
@@ -119,7 +104,7 @@ function Assets() {
                   </tr>
                 </thead>
                 <tbody>
-                  {ASSETS.map(asset => (
+                  {mappedAssets.map((asset: any) => (
                     <tr key={asset.sn} className={cn(asset.urgent && "bg-error/5")}>
                       <td>
                         <div className="flex items-center gap-3">

@@ -20,8 +20,18 @@ export const Route = createFileRoute('/')({
   component: Index,
 })
 
+import { useProjects } from '@/hooks/api/useProjects'
+import { useUsers } from '@/hooks/api/useUsers'
+
 function Index() {
   const { t } = useTranslation()
+  const { data: projects } = useProjects()
+  const { data: users } = useUsers()
+
+  const activeProjectsCount = projects?.length || 0
+  const totalPersonnel = users?.length || 0
+  const totalBudget = projects?.reduce((acc, p) => acc + p.budget, 0) || 0
+  const monthlyCost = totalBudget / 12
 
   return (
     <div className="p-6 space-y-6 bg-background min-h-full overflow-y-auto animate-fade-in">
@@ -47,22 +57,22 @@ function Index() {
         <GlassCard className="col-span-12 lg:col-span-8 p-6 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-primary/5 to-transparent pointer-events-none" />
           <div>
-            <h3 className="text-headline-lg font-bold text-on-surface mb-2">Hope you're well, Alex</h3>
+            <h3 className="text-headline-lg font-bold text-on-surface mb-2">Welcome back</h3>
             <p className="text-on-surface-variant text-body-lg">
-              Operational status is <span className="text-secondary font-bold">Stable</span>. You have 4 pending approvals.
+              Operational status is <span className="text-secondary font-bold">Stable</span>. You have {activeProjectsCount} active projects.
             </p>
           </div>
           <div className="flex items-end justify-between mt-8">
             <div className="space-y-1">
               <p className="text-4xl font-mono font-bold leading-none text-on-surface">
-                09:42 <span className="text-lg opacity-50 ml-1 font-normal">AM</span>
+                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} <span className="text-lg opacity-50 ml-1 font-normal">PM</span>
               </p>
-              <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mt-2">MONDAY, OCTOBER 27, 2025</p>
+              <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mt-2">{new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
             </div>
             <div className="flex items-center gap-4 bg-surface-container-low/40 p-3 rounded border border-outline-variant/30">
               <div className="text-right">
                 <p className="text-lg font-mono text-on-surface">24°C</p>
-                <p className="text-[10px] text-on-surface-variant uppercase font-bold">Sunny • Singapore</p>
+                <p className="text-[10px] text-on-surface-variant uppercase font-bold">Sunny • Seoul</p>
               </div>
               <Sun className="text-primary w-8 h-8" />
             </div>
@@ -98,9 +108,9 @@ function Index() {
         {/* 4 Stats Grid */}
         <StatCard 
           icon={<Users className="w-5 h-5 text-emerald-400" />} 
-          label="Manpower Utilization" 
-          value="85%" 
-          badge="+3.2%" 
+          label="Total Personnel" 
+          value={totalPersonnel.toString()} 
+          badge="Active" 
           badgeColor="bg-emerald-400/10 text-emerald-400"
           borderColor="border-emerald-500"
         />
@@ -108,7 +118,7 @@ function Index() {
         <StatCard 
           icon={<FolderKanban className="w-5 h-5 text-primary" />} 
           label="Total Active Projects" 
-          value="24" 
+          value={activeProjectsCount.toString()} 
           badge="Stable" 
           badgeColor="bg-surface-container-highest text-on-surface-variant"
           borderColor="border-primary"
@@ -126,7 +136,7 @@ function Index() {
         <StatCard 
           icon={<DollarSign className="w-5 h-5 text-purple-400" />} 
           label="Monthly M/M Cost" 
-          value="$184k" 
+          value={`$${(monthlyCost / 1000).toFixed(0)}k`} 
           badge="On Budget" 
           badgeColor="bg-purple-400/10 text-purple-400"
           borderColor="border-purple-500"

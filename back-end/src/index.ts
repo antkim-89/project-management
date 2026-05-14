@@ -1,124 +1,86 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { PrismaClient } from '@prisma/client';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
+
+// Routes
+import projectRoutes from './routes/projectRoutes';
+import userRoutes from './routes/userRoutes';
+import rankRoutes from './routes/rankRoutes';
+import assignmentRoutes from './routes/assignmentRoutes';
+import equipmentRoutes from './routes/equipmentRoutes';
+import leaveRoutes from './routes/leaveRoutes';
+import skillRoutes from './routes/skillRoutes';
 
 dotenv.config();
 
 const app = express();
-const prisma = new PrismaClient();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.json());
 
-// --- Project API ---
+// --- Swagger Setup ---
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Project Management API',
+      version: '1.0.0',
+      description: '프로젝트 및 리소스 관리를 위한 모듈화된 API 시스템입니다.',
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+        description: '로컬 개발 서버',
+      },
+    ],
+  },
+  apis: ['./src/routes/*.ts', './src/index.ts'], // 라우트 파일들의 JSDoc을 읽어오도록 수정
+};
 
-// 1. 전체 프로젝트 조회 (GET /projects)
-app.get('/projects', async (req: Request, res: Response) => {
-  try {
-    const projects = await prisma.project.findMany({
-      include: {
-        assignments: {
-          include: {
-            user: true
-          }
-        }
-      }
-    });
-    res.json(projects);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch projects' });
-  }
-});
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', ...(swaggerUi.serve as any), swaggerUi.setup(swaggerSpec) as any);
 
-// 2. 특정 프로젝트 조회 (GET /projects/:id)
-app.get('/projects/:id', async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    const project = await prisma.project.findUnique({
-      where: { id },
-      include: {
-        assignments: {
-          include: {
-            user: true
-          }
-        }
-      }
-    });
-    if (!project) return res.status(404).json({ error: 'Project not found' });
-    res.json(project);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch project' });
-  }
-});
+// --- Route Mapping ---
+app.use('/projects', projectRoutes);
+app.use('/users', userRoutes);
+app.use('/ranks', rankRoutes);
+app.use('/assignments', assignmentRoutes);
+app.use('/equipments', equipmentRoutes);
+app.use('/leave-requests', leaveRoutes);
+app.use('/skill-sets', skillRoutes);
 
-// 3. 새 프로젝트 생성 (POST /projects)
-app.post('/projects', async (req: Request, res: Response) => {
-  const { title, description, startDate, endDate, budget } = req.body;
-  try {
-    const newProject = await prisma.project.create({
-      data: {
-        title,
-        description,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        budget: parseFloat(budget)
-      }
-    });
-    res.status(201).json(newProject);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create project' });
-  }
-});
+// --- Basic API ---
 
-// 4. 프로젝트 수정 (PUT /projects/:id)
-app.put('/projects/:id', async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { title, description, status, startDate, endDate, budget } = req.body;
-  try {
-    const updatedProject = await prisma.project.update({
-      where: { id },
-      data: {
-        title,
-        description,
-        status,
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
-        budget: budget ? parseFloat(budget) : undefined
-      }
-    });
-    res.json(updatedProject);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update project' });
-  }
-});
-
-// 5. 프로젝트 삭제 (DELETE /projects/:id)
-app.delete('/projects/:id', async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    await prisma.project.delete({
-      where: { id }
-    });
-    res.status(204).send();
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete project' });
-  }
-});
-
-// --- Other API ---
-
-// Basic Route
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     summary: API 서버 상태 확인
+ *     responses:
+ *       200:
+ *         description: 서버가 정상 작동 중임을 알립니다.
+ */
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Project Management API is running' });
+  res.json({ message: 'Project Management API is running (Modularized)' });
 });
 
-// Health Check
+/**
+ * @openapi
+ * /health:
+ *   get:
+ *     summary: 헬스체크 엔드포인트
+ *     responses:
+ *       200:
+ *         description: 서버 상태 OK
+ */
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'OK' });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT} 🛠️  Mode: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  console.log(`📝 Swagger Docs available at http://localhost:${PORT}/api-docs`);
 });

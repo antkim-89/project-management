@@ -121,7 +121,17 @@ yarn dev
 ---
 
 ## 🛠️ VS Code 설정 (PnP 지원)
-VS Code를 사용하신다면, 프로젝트를 열었을 때 우측 하단에 나타나는 **"Allow Workspace SDK"** 팝업을 반드시 허용해 주세요. 그래야만 PnP 환경에서도 타입 체크와 자동 완성이 정상적으로 작동합니다.
+
+본 프로젝트는 Yarn PnP를 사용하므로, VS Code에서 의존성을 정상적으로 인식하기 위해 아래 설정이 필요합니다.
+
+1.  **SDK 허용**: 프로젝트를 열었을 때 우측 하단에 나타나는 **"Allow Workspace SDK"** 팝업을 반드시 허용해 주세요.
+2.  **TypeScript 버전 선택**:
+    - 프로젝트 내의 `.ts` 또는 `.tsx` 파일을 하나 엽니다.
+    - `Ctrl + Shift + P` (Mac: `Cmd + Shift + P`)를 눌러 커맨드 팔레트를 엽니다.
+    - **`TypeScript: Select TypeScript Version...`**을 검색하여 선택합니다.
+    - **`Use Workspace Version`** (경로에 `.yarn/sdks` 포함됨)을 선택합니다.
+
+이 설정을 완료해야만 타입 체크와 자동 완성이 정상적으로 작동합니다.
 
 ---
 

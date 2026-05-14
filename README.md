@@ -2,6 +2,19 @@
 
 현대적이고 직관적인 인터페이스를 갖춘 엔터프라이즈급 프로젝트 및 리소스 관리 시스템입니다.
 
+---
+
+## 📚 문서 (Documentation)
+
+프로젝트 개발을 위한 규칙과 설계 문서입니다.
+
+- **[코드 컨벤션 (Frontend)](./docs/frontend-conventions.md)**
+- **[코드 컨벤션 (Backend)](./docs/backend-conventions.md)**
+- **[명명 규칙 (Naming Conventions)](./docs/naming-conventions.md)**
+- **[데이터베이스 ERD](./docs/database-erd.md)**
+
+---
+
 ## 🏗️ 프로젝트 구조
 
 프로젝트는 프론트엔드와 백엔드가 분리된 모노레포 구조로 설계되었습니다.
@@ -55,6 +68,30 @@
 ## 💻 시작하기
 
 본 프로젝트는 **Yarn Berry (PnP)**를 패키지 매니저로 사용합니다. `node_modules` 대신 `.pnp.cjs`를 통한 효율적인 의존성 관리를 제공합니다.
+
+### 0. Yarn Berry 설정 (환경별)
+
+이 프로젝트는 `corepack`을 통해 Yarn 버전을 관리합니다. 설치 전 아래 설정을 먼저 진행해 주세요.
+
+#### Windows
+1. **관리자 권한**으로 PowerShell을 실행합니다.
+2. Corepack을 활성화합니다:
+   ```powershell
+   corepack enable
+   ```
+3. 만약 스크립트 실행 권한 오류가 발생한다면 다음 명령어를 입력합니다:
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+   ```
+
+#### macOS / Linux
+1. 터미널을 실행합니다.
+2. Corepack을 활성화합니다 (필요시 `sudo` 사용):
+   ```bash
+   corepack enable
+   ```
+
+설정 후 `yarn -v` 명령어를 입력했을 때 `4.x.x` 버전이 출력되면 정상입니다.
 
 ### 1. 패키지 설치
 최상위 루트에서 다음 명령어를 실행합니다:

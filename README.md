@@ -67,79 +67,84 @@
 
 ## 💻 시작하기
 
-본 프로젝트는 **Yarn Berry (PnP)**를 패키지 매니저로 사용합니다. `node_modules` 대신 `.pnp.cjs`를 통한 효율적인 의존성 관리를 제공합니다.
+본 프로젝트는 **Yarn Berry**를 패키지 매니저로 사용합니다. 효율적인 의존성 관리를 위해 `node-modules` 링커를 사용하도록 설정되어 있습니다.
 
-### 0. Yarn Berry 설정 (환경별)
+### 1. 환경 설정 (Corepack)
 
 이 프로젝트는 `corepack`을 통해 Yarn 버전을 관리합니다. 설치 전 아래 설정을 먼저 진행해 주세요.
 
-#### Windows
-1. **관리자 권한**으로 PowerShell을 실행합니다.
-2. Corepack을 활성화합니다:
-   ```powershell
-   corepack enable
-   ```
-3. 만약 스크립트 실행 권한 오류가 발생한다면 다음 명령어를 입력합니다:
-   ```powershell
-   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-   ```
+#### Windows (관리자 권한 PowerShell)
+```powershell
+corepack enable
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-#### macOS / Linux
-1. 터미널을 실행합니다.
-2. Corepack을 활성화합니다 (필요시 `sudo` 사용):
-   ```bash
-   corepack enable
-   ```
+#### macOS / Linux (터미널)
+```bash
+corepack enable
+```
 
-설정 후 `yarn -v` 명령어를 입력했을 때 `4.x.x` 버전이 출력되면 정상입니다.
+### 2. 패키지 설치 및 DB 설정
 
-### 1. 패키지 설치
 최상위 루트에서 다음 명령어를 실행합니다:
+
 ```bash
+# 1. 패키지 설치
 yarn install
+
+# 2. Prisma 클라이언트 생성 및 DB 테이블 생성
+yarn prisma generate
+yarn prisma db push
+
+# 3. 초기 데이터(Seed) 삽입
+yarn prisma db seed
 ```
 
-### 2. 프론트엔드 실행
+> **주의**: 실행 전 `back-end/.env` 파일의 `DATABASE_URL`이 본인의 MySQL 설정과 맞는지 확인해 주세요.
+
+### 3. 프로젝트 실행
+
 ```bash
+# 프론트엔드만 실행
 yarn front dev
-# 또는
-yarn workspace front-end dev
-```
 
-### 3. 백엔드 실행
-```bash
+# 백엔드만 실행
 yarn back dev
-# 또는
-yarn workspace back-end dev
-```
 
-### 4. 전체 동시 실행 (개발용)
-```bash
+# 전체 동시 실행 (추천)
 yarn dev
 ```
 
 ---
 
-## 🛠️ VS Code 설정 (PnP 지원)
+## 🛠️ VS Code 설정
 
-본 프로젝트는 Yarn PnP를 사용하므로, VS Code에서 의존성을 정상적으로 인식하기 위해 아래 설정이 필요합니다.
-
-1.  **SDK 허용**: 프로젝트를 열었을 때 우측 하단에 나타나는 **"Allow Workspace SDK"** 팝업을 반드시 허용해 주세요.
-2.  **TypeScript 버전 선택**:
-    - 프로젝트 내의 `.ts` 또는 `.tsx` 파일을 하나 엽니다.
-    - `Ctrl + Shift + P` (Mac: `Cmd + Shift + P`)를 눌러 커맨드 팔레트를 엽니다.
-    - **`TypeScript: Select TypeScript Version...`**을 검색하여 선택합니다.
-    - **`Use Workspace Version`** (경로에 `.yarn/sdks` 포함됨)을 선택합니다.
-
-이 설정을 완료해야만 타입 체크와 자동 완성이 정상적으로 작동합니다.
+프로젝트를 열었을 때 우측 하단에 나타나는 **"Allow Workspace SDK"** 팝업을 허용하고, TypeScript 버전을 **Workspace Version**으로 선택해 주세요 (`Ctrl+Shift+P` -> `Select TypeScript Version`).
 
 ---
 
-## 📁 데이터베이스 스키마
+## 🔗 주요 API 엔드포인트 (Backend)
+
+기본 베이스 URL: `http://localhost:4000`
+
+- **프로젝트 (Projects)**
+  - `GET /projects`: 전체 프로젝트 목록 조회 (참여 인원 포함)
+  - `GET /projects/:id`: 특정 프로젝트 상세 조회
+  - `POST /projects`: 새 프로젝트 생성
+  - `PUT /projects/:id`: 프로젝트 정보 수정
+  - `DELETE /projects/:id`: 프로젝트 삭제
+- **헬스체크**
+  - `GET /health`: 서버 상태 확인
+
+---
+
+## 📁 데이터베이스 구조
 
 시스템은 다음의 핵심 엔티티를 포함하고 있습니다:
 - **USER / RANK**: 사용자 및 직급 체계
 - **PROJECT / ASSIGNMENT**: 프로젝트 및 인력 투입
 - **EQUIPMENT**: 자산 관리
 - **LEAVE_REQUEST**: 근태 및 휴가
-- **SKILL_SET**: 기술 스택 데이터
+- **SKILL_SET / USER_SKILL**: 기술 스택 및 숙련도 데이터
+
+상세한 관계도는 **[데이터베이스 ERD](./docs/database-erd.md)** 문서를 참고하세요.

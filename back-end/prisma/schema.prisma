@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Rank {
+  id         String @id @default(cuid())
+  name       String
+  baseSalary Int
+  users      User[]
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String
+  avatarUrl     String?
+  rankId        String
+  rank          Rank           @relation(fields: [rankId], references: [id])
+  assignments   Assignment[]
+  equipments    Equipment[]
+  leaveRequests LeaveRequest[]
+  skills        UserSkill[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Project {
+  id          String       @id @default(cuid())
+  title       String
+  description String?      @db.Text
+  status      String       @default("Active") // Active, At Risk, Completed
+  startDate   DateTime
+  endDate     DateTime
+  budget      Float
+  assignments Assignment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Assignment {
+  id                     String   @id @default(cuid())
+  userId                 String
+  user                   User     @relation(fields: [userId], references: [id])
+  projectId              String
+  project                Project  @relation(fields: [projectId], references: [id])
+  role                   String
+  contributionPercentage Int
+  startDate              DateTime
+  endDate                DateTime
+}
+
+model Equipment {
+  id           String  @id @default(cuid())
+  type         String // Laptop, Monitor, Mobile
+  modelName    String
+  serialNumber String  @unique
+  status       String  @default("Assigned") // Assigned, Maintenance
+  userId       String?
+  user         User?   @relation(fields: [userId], references: [id])
+}
+
+model LeaveRequest {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  startDate DateTime
+  endDate   DateTime
+  type      String // Annual, Sick, Personal
+  status    String   @default("Pending") // Pending, Approved, Rejected
+  reason    String?  @db.Text
+}
+
+model SkillSet {
+  id       String      @id @default(cuid())
+  name     String      @unique
+  category String // Frontend, Backend, Design
+  users    UserSkill[]
+}
+
+model UserSkill {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  skillSetId  String
+  skillSet    SkillSet @relation(fields: [skillSetId], references: [id])
+  proficiency Int // 1-5
+}

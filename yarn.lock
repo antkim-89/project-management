@@ -2545,6 +2545,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"grammex@npm:^3.1.11":
+  version: 3.1.12
+  resolution: "grammex@npm:3.1.12"
+  checksum: 10c0/6c096ef84e1a6a0e4a50a6ba11b582b5d61d60b76830d38a5cee0383529ccdb2ac1b419695edb9877bf93717bb0ff71fba54e1e2a76bbfb61a2cca456164ef44
+  languageName: node
+  linkType: hard
+
+"graphmatch@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "graphmatch@npm:1.1.1"
+  checksum: 10c0/98570352e8e62f5e18e397fb9a1ca90a31f18c46240529d5f9ee0020efa3642857337643ae731bd2667957821956dc315badc98243db284d7e5c76aedcf49b4d
+  languageName: node
+  linkType: hard
+
 "has-symbols@npm:^1.1.0":
   version: 1.1.0
   resolution: "has-symbols@npm:1.1.0"
@@ -3376,8 +3390,10 @@ __metadata:
     dotenv: "npm:^16.3.1"
     express: "npm:^4.18.2"
     prisma: "npm:^5.7.0"
+    ts-node: "npm:^10.9.2"
     ts-node-dev: "npm:^2.0.0"
     typescript: "npm:^5.3.3"
+    zeptomatch: "npm:^2.1.0"
   languageName: unknown
   linkType: soft
 
@@ -3960,7 +3976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.4.0":
+"ts-node@npm:^10.4.0, ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
@@ -4329,6 +4345,16 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
+  languageName: node
+  linkType: hard
+
+"zeptomatch@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "zeptomatch@npm:2.1.0"
+  dependencies:
+    grammex: "npm:^3.1.11"
+    graphmatch: "npm:^1.1.0"
+  checksum: 10c0/6baa15863f1bbf0131a50f80df82bdc1d174f45e81587ff6a2ac2ad13a0c4a1f80e883794d5711ad31acdd85195ebe052375e43db5c4bcbaff98f040c082234e
   languageName: node
   linkType: hard
 

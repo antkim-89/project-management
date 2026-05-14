@@ -9,6 +9,7 @@
   "scripts": {
     "front": "yarn workspace project-management",
     "back": "yarn workspace project-management-backend",
+    "prisma": "yarn workspace project-management-backend prisma",
     "dev": "yarn workspaces foreach -pi run dev"
   },
   "devDependencies": {

@@ -136,7 +136,7 @@ function Index() {
         <StatCard 
           icon={<DollarSign className="w-5 h-5 text-purple-400" />} 
           label="Monthly M/M Cost" 
-          value={`$${(monthlyCost / 1000).toFixed(0)}k`} 
+          value={`₩${(monthlyCost / 1000000).toFixed(1)}M`} 
           badge="On Budget" 
           badgeColor="bg-purple-400/10 text-purple-400"
           borderColor="border-purple-500"

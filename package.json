@@ -7,10 +7,10 @@
     "back-end"
   ],
   "scripts": {
+    "dev": "pnpm -r --parallel dev",
     "front": "pnpm --filter project-management",
     "back": "pnpm --filter project-management-backend",
-    "prisma": "pnpm --filter project-management-backend exec prisma",
-    "dev": "pnpm -r --parallel dev"
+    "prisma": "pnpm --filter project-management-backend exec prisma"
   },
   "devDependencies": {
     "eslint": "^10.3.0",

@@ -29,7 +29,7 @@ function Teams() {
     name: u.name,
     role: u.rank?.name || 'Employee',
     avatar: u.avatarUrl || '',
-    cost: `$${(u.rank?.baseSalary || 0).toLocaleString()}`,
+    cost: `₩${(u.rank?.baseSalary || 0).toLocaleString()}`,
     location: 'Remote', // 임시
     skills: (u as any).skills?.map((s: any) => s.skillSet?.name) || [],
     status: 'available' as const, // 임시

@@ -6,7 +6,7 @@ export const useEquipment = () => {
   return useQuery<Equipment[]>({
     queryKey: ['equipment'],
     queryFn: async () => {
-      const { data } = await api.get('/equipment');
+      const { data } = await api.get('/equipments');
       return data;
     },
   });

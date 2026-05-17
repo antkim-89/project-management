@@ -6,7 +6,10 @@ import {
   Monitor,
   Calendar,
   Settings,
-  ChevronLeft
+  ChevronLeft,
+  ListTodo,
+  Folder,
+  Info
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useUIStore } from '@/store/useUIStore'
@@ -20,9 +23,12 @@ export function Sidebar() {
     { icon: LayoutDashboard, label: t('common.dashboard'), to: '/' },
     { icon: Briefcase, label: t('common.projects'), to: '/projects' },
     { icon: Users, label: t('common.teams'), to: '/teams' },
-    { icon: Monitor, label: t('common.assets'), to: '/assets' },
+    { icon: ListTodo, label: t('common.tasks'), to: '/tasks' },
     { icon: Calendar, label: t('common.calendar'), to: '/calendar' },
+    { icon: Monitor, label: t('common.assets'), to: '/assets' },
+    { icon: Folder, label: t('common.files'), to: '/files' },
     { icon: Settings, label: t('common.settings'), to: '/settings' },
+    { icon: Info, label: t('common.about'), to: '/about' },
   ]
 
   return (

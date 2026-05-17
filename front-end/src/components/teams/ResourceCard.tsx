@@ -60,11 +60,17 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
       
       <div className="p-4 flex gap-4">
         <div className="relative shrink-0">
-          <img 
-            src={avatar} 
-            alt={name} 
-            className="w-16 h-16 rounded-xl object-cover border border-outline-variant shadow-sm" 
-          />
+          {avatar ? (
+            <img 
+              src={avatar} 
+              alt={name} 
+              className="w-16 h-16 rounded-xl object-cover border border-outline-variant shadow-sm" 
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-xl border border-outline-variant shadow-sm bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold text-xl">
+              {name.charAt(0)}
+            </div>
+          )}
           <div 
             className={cn("absolute -bottom-1 -right-1 w-5 h-5 border-4 border-background rounded-full", getStatusColor())}
             title={status.replace('-', ' ')}

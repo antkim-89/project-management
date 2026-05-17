@@ -6,21 +6,29 @@
 
 ## 📚 문서 (Documentation)
 
-프로젝트 개발을 위한 규칙과 설계 문서입니다.
+프로젝트 개발을 위한 규칙 및 가이드, 설계 문서입니다.
 
-- **[코드 컨벤션 (Frontend)](./docs/frontend-conventions.md)**
-- **[코드 컨벤션 (Backend)](./docs/backend-conventions.md)**
-- **[명명 규칙 (Naming Conventions)](./docs/naming-conventions.md)**
-- **[데이터베이스 ERD](./docs/database-erd.md)**
+### 🚀 설치 및 시작
+- **[시작하기 (Getting Started)](./docs/getting-started.md)**: 패키지 설치, DB 세팅, 실행 방법 및 VS Code 설정
+- **[기술 스택 (Tech Stack)](./docs/tech-stack.md)**: 프론트엔드 및 백엔드 주요 기술 사양
+
+### ⚙️ 개발 규칙 및 가이드
+- **[코드 컨벤션 (Frontend)](./docs/frontend-conventions.md)**: React, Zustand, Tailwind 설정 및 가이드
+- **[코드 컨벤션 (Backend)](./docs/backend-conventions.md)**: 아키텍처 구조, 에러 핸들링, API 설계 가이드
+- **[명명 규칙 (Naming Conventions)](./docs/naming-conventions.md)**: 파일, 디렉토리 및 소스 코드 표기법 규칙
+
+### 📊 데이터베이스 및 API
+- **[데이터베이스 ERD](./docs/database-erd.md)**: 테이블 간 관계도 및 엔티티 상세 정보
+- **[주요 API 엔드포인트](./docs/api-endpoints.md)**: 백엔드 주요 API 목록
 
 ---
 
 ## 🏗️ 프로젝트 구조
 
-프로젝트는 프론트엔드와 백엔드가 분리된 모노레포 구조로 설계되었습니다.
+프로젝트는 프론트엔드와 백엔드가 분리된 모노레포 구조로 설계되었습니다. 소스 코드 및 파일의 통일성을 위해 **[명명 규칙 (Naming Conventions)](./docs/naming-conventions.md)**을 준수합니다.
 
-- **`front-end/`**: React 기반의 프리미엄 대시보드 UI
-- **`back-end/`**: Express 및 Prisma 기반의 API 서버
+- **`front-end/`**: React 기반의 프리미엄 대시보드 UI (개발 규칙은 **[프론트엔드 코드 컨벤션](./docs/frontend-conventions.md)** 참고)
+- **`back-end/`**: Express 및 Prisma 기반의 API 서버 (개발 규칙은 **[백엔드 코드 컨벤션](./docs/backend-conventions.md)** 참고)
 
 ---
 
@@ -49,102 +57,29 @@
 
 ## 🛠️ 기술 스택 (Tech Stack)
 
-### Frontend
-- **Framework**: React 18 (Vite)
-- **Routing**: TanStack Router
-- **State Management**: Zustand
-- **Styling**: Tailwind CSS v4 (Glassmorphism 디자인)
-- **Icons**: Lucide React
-- **Internationalization**: i18next
+프로젝트는 현대적이고 확장성 높은 기술 스택을 기반으로 합니다. 자세한 전체 패키지 사양은 **[기술 스택 상세 문서](./docs/tech-stack.md)**를 참고하세요.
 
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js (TypeScript)
-- **ORM**: Prisma
-- **Database**: MySQL / MariaDB
+- **Frontend**: React 18, TanStack Router, Zustand, Tailwind CSS v4
+- **Backend**: Node.js (TypeScript), Express, Prisma ORM, MySQL / MariaDB
 
 ---
 
 ## 💻 시작하기
 
-본 프로젝트는 **pnpm**을 패키지 매니저로 사용합니다.
+본 프로젝트는 **pnpm**을 패키지 매니저로 사용하며, `corepack`을 통해 관리됩니다.
 
-### 1. 환경 설정 (Corepack)
-
-이 프로젝트는 `corepack`을 통해 pnpm 버전을 관리합니다. 설치 전 아래 설정을 먼저 진행해 주세요.
-
-#### Windows (관리자 권한 PowerShell)
-```powershell
-corepack enable
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-#### macOS / Linux (터미널)
-```bash
-corepack enable
-```
-
-### 2. 패키지 설치 및 DB 설정
-
-최상위 루트에서 다음 명령어를 실행합니다:
-
-```bash
-# 1. 패키지 설치
-pnpm install
-
-# 2. Prisma 클라이언트 생성 및 DB 테이블 생성
-pnpm run prisma generate
-pnpm run prisma db push
-
-# 3. 초기 데이터(Seed) 삽입
-pnpm run prisma db seed
-```
-
-> **주의**: 실행 전 `back-end/.env` 파일의 `DATABASE_URL`이 본인의 MySQL 설정과 맞는지 확인해 주세요.
-
-### 3. 프로젝트 실행
-
-```bash
-# 프론트엔드만 실행
-pnpm run front dev
-
-# 백엔드만 실행
-pnpm run back dev
-
-# 전체 동시 실행 (추천)
-pnpm dev
-```
-
----
-
-## 🛠️ VS Code 설정
-
-프로젝트를 열었을 때 우측 하단에 나타나는 **"Allow Workspace SDK"** 팝업을 허용하고, TypeScript 버전을 **Workspace Version**으로 선택해 주세요 (`Ctrl+Shift+P` -> `Select TypeScript Version`).
+초기 환경 설정, 의존성 설치, DB 동기화 및 실행에 대한 전체 프로세스는 **[시작하기 가이드 문서](./docs/getting-started.md)**에 상세히 설명되어 있습니다.
 
 ---
 
 ## 🔗 주요 API 엔드포인트 (Backend)
 
-기본 베이스 URL: `http://localhost:4000`
-
-- **프로젝트 (Projects)**
-  - `GET /projects`: 전체 프로젝트 목록 조회 (참여 인원 포함)
-  - `GET /projects/:id`: 특정 프로젝트 상세 조회
-  - `POST /projects`: 새 프로젝트 생성
-  - `PUT /projects/:id`: 프로젝트 정보 수정
-  - `DELETE /projects/:id`: 프로젝트 삭제
-- **헬스체크**
-  - `GET /health`: 서버 상태 확인
+기본 베이스 URL은 `http://localhost:4000`입니다. 전체 API 스펙과 헬스체크 사양은 **[주요 API 엔드포인트 문서](./docs/api-endpoints.md)**에서 확인하실 수 있습니다.
 
 ---
 
 ## 📁 데이터베이스 구조
 
-시스템은 다음의 핵심 엔티티를 포함하고 있습니다:
-- **USER / RANK**: 사용자 및 직급 체계
-- **PROJECT / ASSIGNMENT**: 프로젝트 및 인력 투입
-- **EQUIPMENT**: 자산 관리
-- **LEAVE_REQUEST**: 근태 및 휴가
-- **SKILL_SET / USER_SKILL**: 기술 스택 및 숙련도 데이터
+시스템은 사용자(USER), 직급(RANK), 투입 인력(ASSIGNMENT), 장비 관리(EQUIPMENT), 근태 및 휴가(LEAVE_REQUEST), 기술 정보(SKILL_SET, USER_SKILL) 등 8개의 주요 엔티티로 이루어져 있습니다.
 
-상세한 관계도는 **[데이터베이스 ERD](./docs/database-erd.md)** 문서를 참고하세요.
+상세 모델 속성 및 필드 간의 릴레이션 관계는 **[데이터베이스 ERD](./docs/database-erd.md)** 문서를 참고하세요.

@@ -1,16 +1,16 @@
 {
   "name": "project-management-root",
   "private": true,
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "pnpm@9.12.0",
   "workspaces": [
     "front-end",
     "back-end"
   ],
   "scripts": {
-    "front": "yarn workspace project-management",
-    "back": "yarn workspace project-management-backend",
-    "prisma": "yarn workspace project-management-backend prisma",
-    "dev": "yarn workspaces foreach -pi run dev"
+    "front": "pnpm --filter project-management",
+    "back": "pnpm --filter project-management-backend",
+    "prisma": "pnpm --filter project-management-backend exec prisma",
+    "dev": "pnpm -r --parallel dev"
   },
   "devDependencies": {
     "eslint": "^10.3.0",

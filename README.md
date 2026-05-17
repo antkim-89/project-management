@@ -67,11 +67,11 @@
 
 ## 💻 시작하기
 
-본 프로젝트는 **Yarn Berry**를 패키지 매니저로 사용합니다. 효율적인 의존성 관리를 위해 `node-modules` 링커를 사용하도록 설정되어 있습니다.
+본 프로젝트는 **pnpm**을 패키지 매니저로 사용합니다.
 
 ### 1. 환경 설정 (Corepack)
 
-이 프로젝트는 `corepack`을 통해 Yarn 버전을 관리합니다. 설치 전 아래 설정을 먼저 진행해 주세요.
+이 프로젝트는 `corepack`을 통해 pnpm 버전을 관리합니다. 설치 전 아래 설정을 먼저 진행해 주세요.
 
 #### Windows (관리자 권한 PowerShell)
 ```powershell
@@ -90,14 +90,14 @@ corepack enable
 
 ```bash
 # 1. 패키지 설치
-yarn install
+pnpm install
 
 # 2. Prisma 클라이언트 생성 및 DB 테이블 생성
-yarn prisma generate
-yarn prisma db push
+pnpm run prisma generate
+pnpm run prisma db push
 
 # 3. 초기 데이터(Seed) 삽입
-yarn prisma db seed
+pnpm run prisma db seed
 ```
 
 > **주의**: 실행 전 `back-end/.env` 파일의 `DATABASE_URL`이 본인의 MySQL 설정과 맞는지 확인해 주세요.
@@ -106,13 +106,13 @@ yarn prisma db seed
 
 ```bash
 # 프론트엔드만 실행
-yarn front dev
+pnpm run front dev
 
 # 백엔드만 실행
-yarn back dev
+pnpm run back dev
 
 # 전체 동시 실행 (추천)
-yarn dev
+pnpm dev
 ```
 
 ---

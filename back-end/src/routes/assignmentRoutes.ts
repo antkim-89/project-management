@@ -67,4 +67,66 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @openapi
+ * /assignments/{id}:
+ *   delete:
+ *     summary: 할당 정보 삭제
+ *     tags: [Assignments]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: 삭제 성공
+ */
+router.delete('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    await prisma.assignment.delete({
+      where: { id }
+    });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete assignment' });
+  }
+});
+
+/**
+ * @openapi
+ * /assignments/project/{projectId}/user/{userId}:
+ *   delete:
+ *     summary: 특정 프로젝트의 특정 유저 할당 삭제
+ *     tags: [Assignments]
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: 삭제 성공
+ */
+router.delete('/project/:projectId/user/:userId', async (req: Request, res: Response) => {
+  const { projectId, userId } = req.params;
+  try {
+    await prisma.assignment.deleteMany({
+      where: { projectId, userId }
+    });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete assignment' });
+  }
+});
+
 export default router;
+

@@ -12,6 +12,7 @@ import assignmentRoutes from './routes/assignmentRoutes';
 import equipmentRoutes from './routes/equipmentRoutes';
 import leaveRoutes from './routes/leaveRoutes';
 import skillRoutes from './routes/skillRoutes';
+import taskRoutes from './routes/taskRoutes';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use('/assignments', assignmentRoutes);
 app.use('/equipments', equipmentRoutes);
 app.use('/leave-requests', leaveRoutes);
 app.use('/skill-sets', skillRoutes);
+app.use('/tasks', taskRoutes);
 
 // --- Basic API ---
 

@@ -83,6 +83,7 @@
 
 /* Default Theme (Dark) - Keeping current dark theme as base */
 :root {
+  color-scheme: dark;
   --background: #000000;
   --on-background: #ffffff;
   --surface: #111112;
@@ -129,6 +130,7 @@
 
 /* Light Theme Overrides - SI Ops Light */
 [data-theme='light'] {
+  color-scheme: light;
   --background: #f9f9ff;
   --on-background: #141b2c;
   --surface: #f9f9ff;

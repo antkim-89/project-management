@@ -3,7 +3,7 @@ import { MapPin, Star, Zap, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { GlassCard } from '@/components/base/GlassCard';
 
-interface ResourceCardProps {
+export interface ResourceCardProps {
   name: string;
   role: string;
   avatar: string;

@@ -1,15 +1,9 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   Calendar,
   TrendingUp,
-  History,
-  AlertTriangle,
-  CheckCircle2,
-  Archive,
-  PauseCircle,
-  Info,
-  Zap,
   ChevronDown,
   ListFilter
 } from 'lucide-react'
@@ -17,54 +11,93 @@ import { cn } from '@/lib/utils'
 import { ProjectCard } from '@/components/projects/ProjectCard'
 import { NewProjectCard } from '@/components/projects/NewProjectCard'
 import { ProjectDetailModal } from '@/components/modal/layout/ProjectDetailModal'
+import { NewProjectModal } from '@/components/modal/layout/NewProjectModal'
 import { Breadcrumbs } from '@/components/base/Breadcrumbs'
 
 import { useProjects } from '@/hooks/api/useProjects'
 import type { Project as APIProject } from '@/types/api'
+
+interface UIProject {
+  id: string
+  status: 'ACTIVE' | 'AT RISK' | 'COMPLETED' | 'ON HOLD'
+  title: string
+  subtitle: string
+  department: string
+  scope: string
+  team: { name: string; role: string; avatar: string }[]
+  financials: {
+    totalCost: string
+    burnRate: string
+    burnRatePercent: number
+    allocatedHours: string
+    consumedHours: string
+    infrastructureFee: string
+  }
+  milestones: { title: string; completed: boolean }[]
+  activities: { title: string; time: string; user: string; type: 'success' | 'info' | 'neutral' }[]
+  avatars: string[]
+  mmCost: string
+  progress: number
+  period: string
+  statusText: string
+  statusIcon: ReactNode
+  periodIcon: ReactNode
+  variant: 'secondary' | 'error' | 'primary' | 'neutral'
+  isAtRisk: boolean
+}
 
 export const Route = createFileRoute('/projects')({
   component: Projects,
 })
 
 function Projects() {
-  const [selectedProject, setSelectedProject] = useState<any | null>(null)
+  const [selectedProject, setSelectedProject] = useState<UIProject | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState('ALL')
 
   const { data: projects, isLoading, error } = useProjects()
 
   // API 데이터를 UI 모델로 변환
-  const mappedProjects = projects?.map((p: APIProject) => ({
-    id: p.id,
-    status: p.status.toUpperCase(),
-    title: p.title,
-    subtitle: p.description || 'No description',
-    department: 'Software Engineering', // 임시
-    scope: p.description || 'Project details from API',
-    team: p.assignments?.map(a => ({
-      name: a.user?.name || 'Unknown',
-      role: a.role,
-      avatar: a.user?.avatarUrl || ''
-    })) || [],
-    financials: {
-      totalCost: `$${p.budget.toLocaleString()}`,
-      burnRate: '$0',
-      burnRatePercent: 0,
-      allocatedHours: '0 hrs',
-      consumedHours: '0 hrs',
-      infrastructureFee: '$0'
-    },
-    milestones: [],
-    avatars: p.assignments?.map(a => a.user?.avatarUrl || '').filter(Boolean) || [],
-    mmCost: `$${(p.budget / 12).toFixed(0)}`,
-    progress: Math.floor(Math.random() * 100), // 임시
-    period: `${new Date(p.startDate).toLocaleDateString()} - ${new Date(p.endDate).toLocaleDateString()}`,
-    statusText: p.status === 'Active' ? 'On Track' : p.status,
-    statusIcon: <TrendingUp className="w-4 h-4" />,
-    periodIcon: <Calendar className="w-4 h-4" />,
-    variant: p.status === 'At Risk' ? 'error' : p.status === 'Completed' ? 'primary' : 'secondary',
-    isAtRisk: p.status === 'At Risk'
-  })) || []
+  const mappedProjects: UIProject[] = projects?.map((p: APIProject) => {
+    const statusVal = p.status.toUpperCase()
+    const finalStatus = (['ACTIVE', 'AT RISK', 'COMPLETED', 'ON HOLD'].includes(statusVal)
+      ? statusVal
+      : 'ACTIVE') as 'ACTIVE' | 'AT RISK' | 'COMPLETED' | 'ON HOLD'
+
+    return {
+      id: p.id,
+      status: finalStatus,
+      title: p.title,
+      subtitle: p.description || 'No description',
+      department: 'Software Engineering', // 임시
+      scope: p.description || 'Project details from API',
+      team: p.assignments?.map(a => ({
+        name: a.user?.name || 'Unknown',
+        role: a.role,
+        avatar: a.user?.avatarUrl || ''
+      })) || [],
+      financials: {
+        totalCost: `$${p.budget.toLocaleString()}`,
+        burnRate: '$0',
+        burnRatePercent: 0,
+        allocatedHours: '0 hrs',
+        consumedHours: '0 hrs',
+        infrastructureFee: '$0'
+      },
+      milestones: [],
+      activities: [],
+      avatars: p.assignments?.map(a => a.user?.avatarUrl || '').filter(Boolean) || [],
+      mmCost: `$${(p.budget / 12).toFixed(0)}`,
+      progress: Math.min(100, Math.max(10, (p.budget % 80) + 15)), // 임시
+      period: `${new Date(p.startDate).toLocaleDateString()} - ${new Date(p.endDate).toLocaleDateString()}`,
+      statusText: p.status === 'Active' ? 'On Track' : p.status,
+      statusIcon: <TrendingUp className="w-4 h-4" />,
+      periodIcon: <Calendar className="w-4 h-4" />,
+      variant: (p.status === 'At Risk' ? 'error' : p.status === 'Completed' ? 'primary' : 'secondary') as 'secondary' | 'error' | 'primary' | 'neutral',
+      isAtRisk: p.status === 'At Risk'
+    }
+  }) || []
 
   const filteredProjects = mappedProjects.filter(p => 
     activeFilter === 'ALL' || p.status === activeFilter
@@ -73,7 +106,7 @@ function Projects() {
   if (isLoading) return <div className="p-6">Loading projects...</div>
   if (error) return <div className="p-6 text-error">Error loading projects</div>
 
-  const handleCardClick = (project: any) => {
+  const handleCardClick = (project: UIProject) => {
     setSelectedProject(project)
     setIsModalOpen(true)
   }
@@ -117,7 +150,7 @@ function Projects() {
 
       {/* Projects Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredProjects.map((project: any, index: number) => (
+        {filteredProjects.map((project, index: number) => (
           <ProjectCard 
             key={index} 
             {...project} 
@@ -126,7 +159,7 @@ function Projects() {
         ))}
 
         {/* Placeholder: New Project Card */}
-        <NewProjectCard />
+        <NewProjectCard onClick={() => setIsNewProjectModalOpen(true)} />
       </div>
 
       {/* Pagination/Load More */}
@@ -142,6 +175,12 @@ function Projects() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         project={selectedProject}
+      />
+
+      {/* Initiate New Project Modal */}
+      <NewProjectModal 
+        isOpen={isNewProjectModalOpen}
+        onClose={() => setIsNewProjectModalOpen(false)}
       />
     </div>
   )

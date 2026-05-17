@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { X, Edit2, Share2, Check, History, FileText, TrendingDown, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { BaseModal } from '@/components/base/BaseModal'
+import { ManageTeamModal } from '@/components/modal/layout/ManageTeamModal'
+import { EditProjectModal } from '@/components/modal/layout/EditProjectModal'
 
 interface ProjectDetailModalProps {
   isOpen: boolean
@@ -27,6 +29,9 @@ interface ProjectDetailModalProps {
 }
 
 export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ isOpen, onClose, project }) => {
+  const [isManageTeamOpen, setIsManageTeamOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+
   if (!isOpen || !project) return null
 
   const getStatusStyles = (status: string) => {
@@ -56,7 +61,12 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ isOpen, 
   const footer = (
     <div className="flex items-center justify-between w-full">
       <div className="flex gap-2">
-        <button className="btn-glass px-3 h-10"><Edit2 className="w-4 h-4" /></button>
+        <button 
+          onClick={() => setIsEditModalOpen(true)}
+          className="btn-glass px-3 h-10 cursor-pointer hover:text-primary transition-colors"
+        >
+          <Edit2 className="w-4 h-4" />
+        </button>
         <button className="btn-glass px-3 h-10"><Share2 className="w-4 h-4" /></button>
       </div>
       <button className="btn-primary px-8 h-10">View Full Report</button>
@@ -68,6 +78,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ isOpen, 
       isOpen={isOpen} 
       onClose={onClose} 
       title="" // Custom header used instead
+      hideHeader={true}
       footer={footer}
       size="xl"
       className="max-h-[90vh]"
@@ -100,7 +111,12 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ isOpen, 
           <section>
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest">Assigned Personnel ({project.team.length})</h4>
-              <button className="text-primary text-label-sm font-bold hover:underline">Manage Team</button>
+              <button 
+                onClick={() => setIsManageTeamOpen(true)}
+                className="text-primary text-label-sm font-bold hover:underline cursor-pointer"
+              >
+                Manage Team
+              </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {project.team.map((member, idx) => (
@@ -198,6 +214,22 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ isOpen, 
           </section>
         </div>
       </div>
+
+      {isManageTeamOpen && (
+        <ManageTeamModal 
+          isOpen={isManageTeamOpen}
+          onClose={() => setIsManageTeamOpen(false)}
+          projectId={project.id}
+        />
+      )}
+
+      {isEditModalOpen && (
+        <EditProjectModal 
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          project={project as any}
+        />
+      )}
     </BaseModal>
   )
 }

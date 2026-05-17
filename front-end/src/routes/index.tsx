@@ -100,47 +100,47 @@ function Index() {
             </div>
           </div>
           <div className="mt-6 space-y-3">
-            <MetricItem label="Task Completion" value="+12.4%" color="bg-primary" />
-            <MetricItem label="Average Wait" value="32 min" color="bg-outline-variant" />
+            {MetricItem({ label: "Task Completion", value: "+12.4%", color: "bg-primary" })}
+            {MetricItem({ label: "Average Wait", value: "32 min", color: "bg-outline-variant" })}
           </div>
         </GlassCard>
 
         {/* 4 Stats Grid */}
-        <StatCard 
-          icon={<Users className="w-5 h-5 text-emerald-400" />} 
-          label="Total Personnel" 
-          value={totalPersonnel.toString()} 
-          badge="Active" 
-          badgeColor="bg-emerald-400/10 text-emerald-400"
-          borderColor="border-emerald-500"
-        />
+        {StatCard({
+          icon: <Users className="w-5 h-5 text-emerald-400" />,
+          label: "Total Personnel",
+          value: totalPersonnel.toString(),
+          badge: "Active",
+          badgeColor: "bg-emerald-400/10 text-emerald-400",
+          borderColor: "border-emerald-500"
+        })}
 
-        <StatCard 
-          icon={<FolderKanban className="w-5 h-5 text-primary" />} 
-          label="Total Active Projects" 
-          value={activeProjectsCount.toString()} 
-          badge="Stable" 
-          badgeColor="bg-surface-container-highest text-on-surface-variant"
-          borderColor="border-primary"
-        />
+        {StatCard({
+          icon: <FolderKanban className="w-5 h-5 text-primary" />,
+          label: "Total Active Projects",
+          value: activeProjectsCount.toString(),
+          badge: "Stable",
+          badgeColor: "bg-surface-container-highest text-on-surface-variant",
+          borderColor: "border-primary"
+        })}
 
-        <StatCard 
-          icon={<Package className="w-5 h-5 text-rose-400" />} 
-          label="Equipment Replacements" 
-          value="12" 
-          badge="Action Required" 
-          badgeColor="bg-rose-400/10 text-rose-400"
-          borderColor="border-rose-500"
-        />
+        {StatCard({
+          icon: <Package className="w-5 h-5 text-rose-400" />,
+          label: "Equipment Replacements",
+          value: "12",
+          badge: "Action Required",
+          badgeColor: "bg-rose-400/10 text-rose-400",
+          borderColor: "border-rose-500"
+        })}
 
-        <StatCard 
-          icon={<DollarSign className="w-5 h-5 text-purple-400" />} 
-          label="Monthly M/M Cost" 
-          value={`₩${(monthlyCost / 1000000).toFixed(1)}M`} 
-          badge="On Budget" 
-          badgeColor="bg-purple-400/10 text-purple-400"
-          borderColor="border-purple-500"
-        />
+        {StatCard({
+          icon: <DollarSign className="w-5 h-5 text-purple-400" />,
+          label: "Monthly M/M Cost",
+          value: `₩${(monthlyCost / 1000000).toFixed(1)}M`,
+          badge: "On Budget",
+          badgeColor: "bg-purple-400/10 text-purple-400",
+          borderColor: "border-purple-500"
+        })}
 
         {/* Main Area Chart - Manpower Availability */}
         <GlassCard className="col-span-12 lg:col-span-8 p-6 flex flex-col min-h-[340px]">
@@ -205,8 +205,8 @@ function Index() {
           </div>
           <div className="space-y-3">
             <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Upcoming Today</p>
-            <MilestoneItem name="Project Alpha Deployment" time="14:00" color="bg-emerald-400" />
-            <MilestoneItem name="Q4 Resource Planning" time="16:30" color="bg-primary" />
+            {MilestoneItem({ name: "Project Alpha Deployment", time: "14:00", color: "bg-emerald-400" })}
+            {MilestoneItem({ name: "Q4 Resource Planning", time: "16:30", color: "bg-primary" })}
           </div>
         </GlassCard>
 
@@ -217,16 +217,16 @@ function Index() {
             <button className="text-primary text-label-caps font-bold uppercase tracking-widest hover:underline">View All</button>
           </div>
           <div className="space-y-4">
-            <TaskItem
-              icon={<Users className="w-5 h-5" />}
-              name="Leave Request: Sarah Miller"
-              desc="Annual Leave • 3 Days • Pending Approval"
-            />
-            <TaskItem
-              icon={<DollarSign className="w-5 h-5" />}
-              name="Purchase Order: Server Rack B4"
-              desc="$2,450.00 • IT Infrastructure"
-            />
+            {TaskItem({
+              icon: <Users className="w-5 h-5" />,
+              name: "Leave Request: Sarah Miller",
+              desc: "Annual Leave • 3 Days • Pending Approval"
+            })}
+            {TaskItem({
+              icon: <DollarSign className="w-5 h-5" />,
+              name: "Purchase Order: Server Rack B4",
+              desc: "$2,450.00 • IT Infrastructure"
+            })}
           </div>
         </GlassCard>
 
@@ -234,9 +234,9 @@ function Index() {
         <GlassCard className="col-span-12 lg:col-span-4 p-6 flex flex-col">
           <h4 className="text-lg font-bold mb-6">Project Cost Efficiency</h4>
           <div className="space-y-6">
-            <ProgressItem name="Data Center Migration" percent={92} color="bg-emerald-400" />
-            <ProgressItem name="Network Security Audit" percent={78} color="bg-primary" />
-            <ProgressItem name="Cloud Infrastructure Build" percent={45} color="bg-rose-400" />
+            {ProgressItem({ name: "Data Center Migration", percent: 92, color: "bg-emerald-400" })}
+            {ProgressItem({ name: "Network Security Audit", percent: 78, color: "bg-primary" })}
+            {ProgressItem({ name: "Cloud Infrastructure Build", percent: 45, color: "bg-rose-400" })}
           </div>
           <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-outline-variant/30">
             <div className="text-center">

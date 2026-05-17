@@ -10,6 +10,7 @@ interface BaseModalProps {
   footer?: React.ReactNode
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
   className?: string
+  hideHeader?: boolean
 }
 
 export function BaseModal({
@@ -19,7 +20,8 @@ export function BaseModal({
   children,
   footer,
   size = 'md',
-  className
+  className,
+  hideHeader = false
 }: BaseModalProps) {
   // Prevent scroll when modal is open
   useEffect(() => {
@@ -57,7 +59,7 @@ export function BaseModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        {(title || onClose) && (
+        {!hideHeader && (title || onClose) && (
           <header className="flex items-center justify-between p-6 border-b border-outline-variant/30">
             {title ? <h2 className="text-xl font-bold text-on-surface">{title}</h2> : <div />}
             {onClose && (
@@ -70,6 +72,7 @@ export function BaseModal({
             )}
           </header>
         )}
+
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">

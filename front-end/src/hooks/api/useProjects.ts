@@ -35,3 +35,18 @@ export const useCreateProject = () => {
     },
   });
 };
+
+export const useUpdateProject = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, updatedData }: { id: string; updatedData: Partial<APIProject> }) => {
+      const { data } = await api.put(`/projects/${id}`, updatedData);
+      return data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['projects', variables.id] });
+    },
+  });
+};
+

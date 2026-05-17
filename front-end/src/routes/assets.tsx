@@ -1,17 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { 
-  Home, 
-  ChevronRight, 
   Filter, 
   Download, 
   Laptop, 
   Monitor, 
-  Smartphone, 
   MoreVertical, 
   AlertTriangle,
   Activity,
   Award,
-  BookOpen,
   ShoppingCart,
   Check,
   X,
@@ -104,7 +100,7 @@ function Assets() {
                   </tr>
                 </thead>
                 <tbody>
-                  {mappedAssets.map((asset: any) => (
+                  {mappedAssets.map((asset) => (
                     <tr key={asset.sn} className={cn(asset.urgent && "bg-error/5")}>
                       <td>
                         <div className="flex items-center gap-3">

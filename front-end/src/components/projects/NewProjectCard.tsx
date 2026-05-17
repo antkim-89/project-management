@@ -1,9 +1,16 @@
 import React from 'react'
 import { PlusCircle } from 'lucide-react'
 
-export const NewProjectCard: React.FC = () => {
+interface NewProjectCardProps {
+  onClick?: () => void
+}
+
+export const NewProjectCard: React.FC<NewProjectCardProps> = ({ onClick }) => {
   return (
-    <div className="border-2 border-dashed border-outline-variant rounded p-6 flex flex-col items-center justify-center gap-4 hover:border-primary transition-colors cursor-pointer group">
+    <div 
+      onClick={onClick}
+      className="border-2 border-dashed border-outline-variant rounded p-6 flex flex-col items-center justify-center gap-4 hover:border-primary transition-colors cursor-pointer group"
+    >
       <div className="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant group-hover:text-primary group-hover:bg-primary/10 transition-all">
         <PlusCircle className="w-8 h-8" />
       </div>
@@ -14,3 +21,4 @@ export const NewProjectCard: React.FC = () => {
     </div>
   )
 }
+

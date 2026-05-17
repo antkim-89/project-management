@@ -66,3 +66,18 @@ export interface SkillSet {
   name: string;
   category: string;
 }
+
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  status: string; // 'TODO' | 'IN_PROGRESS' | 'DONE'
+  dueDate: string;
+  projectId: string;
+  project?: Project;
+  userId?: string;
+  user?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+

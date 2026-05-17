@@ -1,30 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { User, Bell, Lock, Globe, Palette } from 'lucide-react'
 import { Breadcrumbs } from '@/components/base/Breadcrumbs'
-import { cn } from '@/lib/utils'
 import { GlassCard } from '@/components/base/GlassCard'
 
 export const Route = createFileRoute('/settings')({
   component: Settings,
 })
-
-function Settings() {
-  return (
-    <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
-      <Breadcrumbs items={[{ label: 'Settings' }]} />
-      <h1 className="font-bold text-display-lg text-on-surface mb-1">Settings</h1>
-      <p className="text-on-surface-variant text-body-md mb-8">Configure your personal and workspace preferences.</p>
-      
-      <div className="flex flex-col gap-4 max-w-3xl">
-        <SettingItem icon={<User />} title="Profile" description="Update your personal information and avatar." />
-        <SettingItem icon={<Palette />} title="Appearance" description="Customize the look and feel of your workspace." />
-        <SettingItem icon={<Bell />} title="Notifications" description="Choose how and when you want to be notified." />
-        <SettingItem icon={<Lock />} title="Security" description="Manage your password and account security." />
-        <SettingItem icon={<Globe />} title="Language" description="Change the display language for the interface." />
-      </div>
-    </div>
-  )
-}
 
 function SettingItem({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
@@ -38,5 +19,23 @@ function SettingItem({ icon, title, description }: { icon: React.ReactNode, titl
       </div>
       <button className="btn-glass px-4">Edit</button>
     </GlassCard>
+  )
+}
+
+function Settings() {
+  return (
+    <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
+      <Breadcrumbs items={[{ label: 'Settings' }]} />
+      <h1 className="font-bold text-display-lg text-on-surface mb-1">Settings</h1>
+      <p className="text-on-surface-variant text-body-md mb-8">Configure your personal and workspace preferences.</p>
+      
+      <div className="flex flex-col gap-4 max-w-3xl">
+        {SettingItem({ icon: <User />, title: "Profile", description: "Update your personal information and avatar." })}
+        {SettingItem({ icon: <Palette />, title: "Appearance", description: "Customize the look and feel of your workspace." })}
+        {SettingItem({ icon: <Bell />, title: "Notifications", description: "Choose how and when you want to be notified." })}
+        {SettingItem({ icon: <Lock />, title: "Security", description: "Manage your password and account security." })}
+        {SettingItem({ icon: <Globe />, title: "Language", description: "Change the display language for the interface." })}
+      </div>
+    </div>
   )
 }

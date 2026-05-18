@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import api from '@/lib/axios';
-import type { Equipment } from '@/types/api';
+import { useQuery } from "@tanstack/react-query";
+import api from "@/lib/axios";
+import type { Equipment } from "@/types/api";
 
 export const useEquipment = () => {
   return useQuery<Equipment[]>({
-    queryKey: ['equipment'],
+    queryKey: ["equipment"],
     queryFn: async () => {
-      const { data } = await api.get('/equipments');
+      const { data } = await api.get("/equipments");
       return data;
     },
   });

@@ -1,12 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/axios';
-import type { Task } from '@/types/api';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/axios";
+import type { Task } from "@/types/api";
 
 export const useTasks = () => {
   return useQuery<Task[]>({
-    queryKey: ['tasks'],
+    queryKey: ["tasks"],
     queryFn: async () => {
-      const { data } = await api.get('/tasks');
+      const { data } = await api.get("/tasks");
       return data;
     },
   });
@@ -23,11 +23,11 @@ export const useCreateTask = () => {
       userId?: string | null;
       dueDate: string;
     }) => {
-      const { data } = await api.post('/tasks', newTask);
+      const { data } = await api.post("/tasks", newTask);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
 };
@@ -53,7 +53,7 @@ export const useUpdateTask = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
 };
@@ -65,7 +65,7 @@ export const useDeleteTask = () => {
       await api.delete(`/tasks/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
 };

@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react'
-import { X } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Button } from "@/components/base/Button";
+import React, { useEffect } from "react";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface BaseModalProps {
-  isOpen: boolean
-  onClose?: () => void
-  title?: string
-  children: React.ReactNode
-  footer?: React.ReactNode
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
-  className?: string
-  hideHeader?: boolean
+  isOpen: boolean;
+  onClose?: () => void;
+  title?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  size?: "sm" | "md" | "lg" | "xl" | "full";
+  className?: string;
+  hideHeader?: boolean;
 }
 
 export function BaseModal({
@@ -19,65 +20,66 @@ export function BaseModal({
   title,
   children,
   footer,
-  size = 'md',
+  size = "md",
   className,
-  hideHeader = false
+  hideHeader = false,
 }: BaseModalProps) {
   // Prevent scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset'
-    }
-  }, [isOpen])
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-2xl',
-    lg: 'max-w-4xl',
-    xl: 'max-w-6xl',
-    full: 'max-w-[calc(100vw-4rem)]'
-  }
+    sm: "max-w-md",
+    md: "max-w-2xl",
+    lg: "max-w-4xl",
+    xl: "max-w-6xl",
+    full: "max-w-[calc(100vw-4rem)]",
+  };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
-      <div 
+      <div
         className={cn(
           "w-full bg-surface-container border border-outline-variant rounded-2xl shadow-2xl flex flex-col max-h-[calc(100vh-4rem)] animate-zoom-in",
           sizeClasses[size],
-          className
+          className,
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         {!hideHeader && (title || onClose) && (
           <header className="flex items-center justify-between p-6 border-b border-outline-variant/30">
-            {title ? <h2 className="text-xl font-bold text-on-surface">{title}</h2> : <div />}
+            {title ? (
+              <h2 className="text-xl font-bold text-on-surface">{title}</h2>
+            ) : (
+              <div />
+            )}
             {onClose && (
-              <button 
-                className="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-90" 
+              <Button
                 onClick={onClose}
+                variant="glass"
               >
                 <X className="w-5 h-5" />
-              </button>
+              </Button>
             )}
           </header>
         )}
 
-
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto p-6">{children}</div>
 
         {/* Footer */}
         {footer && (
@@ -87,5 +89,5 @@ export function BaseModal({
         )}
       </div>
     </div>
-  )
+  );
 }

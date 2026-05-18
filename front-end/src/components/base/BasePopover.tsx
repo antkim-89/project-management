@@ -1,14 +1,14 @@
-import React, { useRef } from 'react'
-import { useClickOutside } from '@/hooks/useClickOutside'
-import { cn } from '@/lib/utils'
+import React, { useRef } from "react";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import { cn } from "@/lib/utils";
 
 interface BasePopoverProps {
-  isOpen: boolean
-  onClose: () => void
-  triggerRef: React.RefObject<HTMLElement | null>
-  children: React.ReactNode
-  position?: 'bottomRight' | 'bottomLeft'
-  className?: string
+  isOpen: boolean;
+  onClose: () => void;
+  triggerRef: React.RefObject<HTMLElement | null>;
+  children: React.ReactNode;
+  position?: "bottomRight" | "bottomLeft";
+  className?: string;
 }
 
 export function BasePopover({
@@ -16,20 +16,20 @@ export function BasePopover({
   onClose,
   triggerRef,
   children,
-  position = 'bottomRight',
-  className = ''
+  position = "bottomRight",
+  className = "",
 }: BasePopoverProps) {
-  const popoverRef = useRef<HTMLDivElement>(null)
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   // Use the custom hook for outside clicks
-  useClickOutside(popoverRef, onClose, triggerRef)
+  useClickOutside(popoverRef, onClose, triggerRef);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const positionClasses = {
-    bottomRight: 'right-0 top-full mt-2',
-    bottomLeft: 'left-0 top-full mt-2'
-  }
+    bottomRight: "right-0 top-full mt-2",
+    bottomLeft: "left-0 top-full mt-2",
+  };
 
   return (
     <div
@@ -37,10 +37,10 @@ export function BasePopover({
       className={cn(
         "absolute z-[60] bg-surface-container border border-outline-variant rounded-xl shadow-2xl animate-slide-in-top min-w-[200px]",
         positionClasses[position],
-        className
+        className,
       )}
     >
       {children}
     </div>
-  )
+  );
 }

@@ -1,18 +1,18 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
 interface User {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  plan: 'Free' | 'Pro' | 'Enterprise'
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  plan: "Free" | "Pro" | "Enterprise";
 }
 
 interface AuthState {
-  user: User | null
-  isAuthenticated: boolean
-  login: () => void
-  logout: () => void
+  user: User | null;
+  isAuthenticated: boolean;
+  login: () => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -21,12 +21,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: () => {
     // 가짜 로그인 데이터
     const mockUser: User = {
-      id: '1',
-      name: 'Jun Kim',
-      email: 'jun@example.com',
-      plan: 'Pro',
-    }
-    set({ user: mockUser, isAuthenticated: true })
+      id: "1",
+      name: "Jun Kim",
+      email: "jun@example.com",
+      plan: "Pro",
+    };
+    set({ user: mockUser, isAuthenticated: true });
   },
   logout: () => set({ user: null, isAuthenticated: false }),
-}))
+}));

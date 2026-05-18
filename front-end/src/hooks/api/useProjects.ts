@@ -1,12 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/axios';
-import type { Project as APIProject } from '@/types/api';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/axios";
+import type { Project as APIProject } from "@/types/api";
 
 export const useProjects = () => {
   return useQuery<APIProject[]>({
-    queryKey: ['projects'],
+    queryKey: ["projects"],
     queryFn: async () => {
-      const { data } = await api.get('/projects');
+      const { data } = await api.get("/projects");
       return data;
     },
   });
@@ -14,7 +14,7 @@ export const useProjects = () => {
 
 export const useProjectDetail = (id: string) => {
   return useQuery<APIProject>({
-    queryKey: ['projects', id],
+    queryKey: ["projects", id],
     queryFn: async () => {
       const { data } = await api.get(`/projects/${id}`);
       return data;
@@ -27,11 +27,11 @@ export const useCreateProject = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (newProject: Partial<APIProject>) => {
-      const { data } = await api.post('/projects', newProject);
+      const { data } = await api.post("/projects", newProject);
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 };
@@ -39,14 +39,19 @@ export const useCreateProject = () => {
 export const useUpdateProject = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, updatedData }: { id: string; updatedData: Partial<APIProject> }) => {
+    mutationFn: async ({
+      id,
+      updatedData,
+    }: {
+      id: string;
+      updatedData: Partial<APIProject>;
+    }) => {
       const { data } = await api.put(`/projects/${id}`, updatedData);
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
-      queryClient.invalidateQueries({ queryKey: ['projects', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["projects", variables.id] });
     },
   });
 };
-

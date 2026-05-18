@@ -1,9 +1,9 @@
-import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
 
-import en from '@/assets/lang/en.json'
-import ko from '@/assets/lang/ko.json'
+import en from "@/assets/lang/en.json";
+import ko from "@/assets/lang/ko.json";
 
 i18n
   .use(LanguageDetector)
@@ -13,10 +13,10 @@ i18n
       en: { translation: en },
       ko: { translation: ko },
     },
-    fallbackLng: 'en',
+    fallbackLng: "en",
     interpolation: {
       escapeValue: false,
     },
-  })
+  });
 
-export default i18n
+export default i18n;

@@ -80,4 +80,3 @@ export interface Task {
   createdAt: string;
   updatedAt: string;
 }
-

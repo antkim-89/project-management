@@ -1,13 +1,13 @@
-import React from 'react'
-import { PlusCircle } from 'lucide-react'
+import React from "react";
+import { PlusCircle } from "lucide-react";
 
 interface NewProjectCardProps {
-  onClick?: () => void
+  onClick?: () => void;
 }
 
 export const NewProjectCard: React.FC<NewProjectCardProps> = ({ onClick }) => {
   return (
-    <div 
+    <div
       onClick={onClick}
       className="border-2 border-dashed border-outline-variant rounded p-6 flex flex-col items-center justify-center gap-4 hover:border-primary transition-colors cursor-pointer group"
     >
@@ -15,10 +15,13 @@ export const NewProjectCard: React.FC<NewProjectCardProps> = ({ onClick }) => {
         <PlusCircle className="w-8 h-8" />
       </div>
       <div className="text-center">
-        <p className="text-headline-md font-bold text-on-surface-variant group-hover:text-on-surface mb-1 transition-colors">Initiate Project</p>
-        <p className="text-label-md text-on-surface-variant/60">Define scope and allocate initial resources.</p>
+        <p className="text-headline-md font-bold text-on-surface-variant group-hover:text-on-surface mb-1 transition-colors">
+          Initiate Project
+        </p>
+        <p className="text-label-md text-on-surface-variant/60">
+          Define scope and allocate initial resources.
+        </p>
       </div>
     </div>
-  )
-}
-
+  );
+};

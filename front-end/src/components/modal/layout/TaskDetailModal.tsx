@@ -1,65 +1,80 @@
-import { useState } from 'react'
-import { User as UserIcon, Folder, AlertCircle, Trash2 } from 'lucide-react'
-import { BaseModal } from '@/components/base/BaseModal'
-import { useProjects } from '@/hooks/api/useProjects'
-import { useUsers } from '@/hooks/api/useUsers'
-import { useCreateTask, useUpdateTask, useDeleteTask } from '@/hooks/api/useTasks'
-import type { Task } from '@/types/api'
-import { cn } from '@/lib/utils'
-import { CalendarPicker } from '@/components/base/CalendarPicker'
+import { Button } from "@/components/base/Button";
+import { useState } from "react";
+import { User as UserIcon, Folder, AlertCircle, Trash2 } from "lucide-react";
+import { BaseModal } from "@/components/base/BaseModal";
+import { useProjects } from "@/hooks/api/useProjects";
+import { useUsers } from "@/hooks/api/useUsers";
+import {
+  useCreateTask,
+  useUpdateTask,
+  useDeleteTask,
+} from "@/hooks/api/useTasks";
+import type { Task } from "@/types/api";
+import { cn } from "@/lib/utils";
+import { CalendarPicker } from "@/components/base/CalendarPicker";
 
 interface TaskDetailModalProps {
-  isOpen: boolean
-  onClose: () => void
-  task?: Task | null
+  isOpen: boolean;
+  onClose: () => void;
+  task?: Task | null;
 }
 
-export function TaskDetailModal({ isOpen, onClose, task }: TaskDetailModalProps) {
-  const isEditMode = !!task
+export function TaskDetailModal({
+  isOpen,
+  onClose,
+  task,
+}: TaskDetailModalProps) {
+  const isEditMode = !!task;
 
   // API hooks
-  const { data: projects, isLoading: projectsLoading } = useProjects()
-  const { data: users, isLoading: usersLoading } = useUsers()
-  
-  const createTaskMutation = useCreateTask()
-  const updateTaskMutation = useUpdateTask()
-  const deleteTaskMutation = useDeleteTask()
+  const { data: projects, isLoading: projectsLoading } = useProjects();
+  const { data: users, isLoading: usersLoading } = useUsers();
+
+  const createTaskMutation = useCreateTask();
+  const updateTaskMutation = useUpdateTask();
+  const deleteTaskMutation = useDeleteTask();
 
   // Form states
-  const [title, setTitle] = useState(task ? task.title : '')
-  const [description, setDescription] = useState(task ? (task.description || '') : '')
-  const [projectId, setProjectId] = useState(task ? task.projectId : (projects?.[0]?.id || ''))
-  const [userId, setUserId] = useState<string | null>(task ? (task.userId || null) : null)
-  const [status, setStatus] = useState(task ? task.status : 'TODO')
+  const [title, setTitle] = useState(task ? task.title : "");
+  const [description, setDescription] = useState(
+    task ? task.description || "" : "",
+  );
+  const [projectId, setProjectId] = useState(
+    task ? task.projectId : projects?.[0]?.id || "",
+  );
+  const [userId, setUserId] = useState<string | null>(
+    task ? task.userId || null : null,
+  );
+  const [status, setStatus] = useState(task ? task.status : "TODO");
   const [dueDate, setDueDate] = useState(() => {
     if (task && task.dueDate) {
-      const dateObj = new Date(task.dueDate)
-      return dateObj.toISOString().split('T')[0]
+      const dateObj = new Date(task.dueDate);
+      return dateObj.toISOString().split("T")[0];
     }
     // Set today's date + 3 days as default
-    const defaultDate = new Date()
-    defaultDate.setDate(defaultDate.getDate() + 3)
-    return defaultDate.toISOString().split('T')[0]
-  })
-  
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 3);
+    return defaultDate.toISOString().split("T")[0];
+  });
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Automatically select first project if loaded and nothing selected
   if (!task && !projectId && projects && projects.length > 0) {
-    setProjectId(projects[0].id)
+    setProjectId(projects[0].id);
   }
 
   const validate = () => {
-    const newErrors: { [key: string]: string } = {}
-    if (!title.trim()) newErrors.title = '업무 제목을 입력해주세요.'
-    if (!projectId) newErrors.projectId = '프로젝트를 선택해주세요.'
-    if (!dueDate) newErrors.dueDate = '마감일을 선택해주세요.'
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    const newErrors: { [key: string]: string } = {};
+    if (!title.trim()) newErrors.title = "업무 제목을 입력해주세요.";
+    if (!projectId) newErrors.projectId = "프로젝트를 선택해주세요.";
+    if (!dueDate) newErrors.dueDate = "마감일을 선택해주세요.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSave = async () => {
-    if (!validate()) return
+    if (!validate()) return;
 
     const payload = {
       title,
@@ -68,72 +83,76 @@ export function TaskDetailModal({ isOpen, onClose, task }: TaskDetailModalProps)
       projectId,
       userId: userId || null,
       dueDate: new Date(dueDate).toISOString(),
-    }
+    };
 
     try {
       if (isEditMode && task) {
         await updateTaskMutation.mutateAsync({
           id: task.id,
           updatedFields: payload,
-        })
+        });
       } else {
-        await createTaskMutation.mutateAsync(payload)
+        await createTaskMutation.mutateAsync(payload);
       }
-      onClose()
+      onClose();
     } catch (error) {
-      console.error('Error saving task:', error)
+      console.error("Error saving task:", error);
     }
-  }
+  };
 
   const handleDelete = async () => {
-    if (!task) return
-    if (window.confirm('정말로 이 할 일을 삭제하시겠습니까?')) {
+    if (!task) return;
+    if (window.confirm("정말로 이 할 일을 삭제하시겠습니까?")) {
       try {
-        await deleteTaskMutation.mutateAsync(task.id)
-        onClose()
+        await deleteTaskMutation.mutateAsync(task.id);
+        onClose();
       } catch (error) {
-        console.error('Error deleting task:', error)
+        console.error("Error deleting task:", error);
       }
     }
-  }
+  };
 
   const footer = (
     <div className="flex items-center justify-between w-full">
       <div>
         {isEditMode && (
-          <button
+          <Button
             onClick={handleDelete}
             className="flex items-center gap-2 px-4 py-2 text-error hover:bg-error/10 active:scale-95 transition-all rounded-xl font-bold text-label-md"
             disabled={deleteTaskMutation.isPending}
           >
             <Trash2 className="w-4 h-4" />
             삭제하기
-          </button>
+          </Button>
         )}
       </div>
       <div className="flex items-center gap-3">
-        <button
+        <Button
+          variant="glass"
           onClick={onClose}
-          className="btn-glass px-5 h-10 rounded-xl"
+          className=" px-5 h-10 rounded-xl"
         >
           취소
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="primary"
           onClick={handleSave}
-          className="btn-primary px-6 h-10 rounded-xl"
-          disabled={createTaskMutation.isPending || updateTaskMutation.isPending}
+          className=" px-6 h-10 rounded-xl"
+          disabled={
+            createTaskMutation.isPending || updateTaskMutation.isPending
+          }
         >
-          {isEditMode ? '저장 완료' : '추가하기'}
-        </button>
+          {isEditMode ? "저장 완료" : "추가하기"}
+        </Button>
       </div>
     </div>
-  )
+  );
 
   return (
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEditMode ? '할 일 상세 편집' : '새 할 일 추가'}
+      title={isEditMode ? "할 일 상세 편집" : "새 할 일 추가"}
       footer={footer}
       size="md"
     >
@@ -150,7 +169,7 @@ export function TaskDetailModal({ isOpen, onClose, task }: TaskDetailModalProps)
             placeholder="예: 디자인 시스템 변경 기획"
             className={cn(
               "w-full bg-surface-container-low border text-on-surface rounded-xl px-4 py-3 outline-none transition-all text-body-md focus:border-primary",
-              errors.title ? "border-error" : "border-outline-variant/30"
+              errors.title ? "border-error" : "border-outline-variant/30",
             )}
           />
           {errors.title && (
@@ -217,7 +236,7 @@ export function TaskDetailModal({ isOpen, onClose, task }: TaskDetailModalProps)
             <div className="relative flex items-center">
               <UserIcon className="absolute left-4 w-4 h-4 text-on-surface-variant" />
               <select
-                value={userId || ''}
+                value={userId || ""}
                 onChange={(e) => setUserId(e.target.value || null)}
                 className="w-full bg-surface-container-low border border-outline-variant/30 text-on-surface rounded-xl pl-11 pr-4 py-3 outline-none transition-all text-body-md focus:border-primary appearance-none cursor-pointer"
                 disabled={usersLoading}
@@ -264,11 +283,19 @@ export function TaskDetailModal({ isOpen, onClose, task }: TaskDetailModalProps)
             </label>
             <div className="flex bg-surface-container-low border border-outline-variant/30 rounded-xl p-1 w-full justify-between gap-1">
               {[
-                { label: '할 일', value: 'TODO', color: 'text-on-surface-variant' },
-                { label: '진행 중', value: 'IN_PROGRESS', color: 'text-secondary' },
-                { label: '완료', value: 'DONE', color: 'text-primary' },
+                {
+                  label: "할 일",
+                  value: "TODO",
+                  color: "text-on-surface-variant",
+                },
+                {
+                  label: "진행 중",
+                  value: "IN_PROGRESS",
+                  color: "text-secondary",
+                },
+                { label: "완료", value: "DONE", color: "text-primary" },
               ].map((item) => (
-                <button
+                <Button
                   key={item.value}
                   type="button"
                   onClick={() => setStatus(item.value)}
@@ -276,16 +303,18 @@ export function TaskDetailModal({ isOpen, onClose, task }: TaskDetailModalProps)
                     "flex-1 py-2 text-label-md font-bold rounded-lg transition-all active:scale-95",
                     status === item.value
                       ? "bg-surface-container-highest text-on-surface shadow-md"
-                      : "text-on-surface-variant/75 hover:text-on-surface"
+                      : "text-on-surface-variant/75 hover:text-on-surface",
                   )}
                 >
-                  <span className={cn(status === item.value && item.color)}>{item.label}</span>
-                </button>
+                  <span className={cn(status === item.value && item.color)}>
+                    {item.label}
+                  </span>
+                </Button>
               ))}
             </div>
           </div>
         </div>
       </div>
     </BaseModal>
-  )
+  );
 }

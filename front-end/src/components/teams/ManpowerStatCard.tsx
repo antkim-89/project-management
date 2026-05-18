@@ -1,15 +1,15 @@
-import React from 'react';
-import type { LucideIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { GlassCard } from '@/components/base/GlassCard';
+import React from "react";
+import type { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { GlassCard } from "@/components/base/GlassCard";
 
 interface ManpowerStatCardProps {
   title: string;
   value: string | number;
   change?: string;
   icon: LucideIcon;
-  trend?: 'up' | 'down' | 'neutral';
-  accentColor?: 'primary' | 'secondary' | 'error';
+  trend?: "up" | "down" | "neutral";
+  accentColor?: "primary" | "secondary" | "error";
 }
 
 export const ManpowerStatCard: React.FC<ManpowerStatCardProps> = ({
@@ -18,18 +18,18 @@ export const ManpowerStatCard: React.FC<ManpowerStatCardProps> = ({
   change,
   icon: Icon,
   trend,
-  accentColor = 'primary'
+  accentColor = "primary",
 }) => {
   const getTrendColor = () => {
-    if (trend === 'up') return 'text-secondary';
-    if (trend === 'down') return 'text-error';
-    return 'text-on-surface-variant';
+    if (trend === "up") return "text-secondary";
+    if (trend === "down") return "text-error";
+    return "text-on-surface-variant";
   };
 
   const getIconColor = () => {
-    if (accentColor === 'secondary') return 'text-secondary';
-    if (accentColor === 'error') return 'text-error';
-    return 'text-primary';
+    if (accentColor === "secondary") return "text-secondary";
+    if (accentColor === "error") return "text-error";
+    return "text-primary";
   };
 
   return (
@@ -42,7 +42,9 @@ export const ManpowerStatCard: React.FC<ManpowerStatCardProps> = ({
           </span>
         )}
       </div>
-      <p className="text-on-surface-variant text-[11px] font-bold uppercase tracking-wider">{title}</p>
+      <p className="text-on-surface-variant text-[11px] font-bold uppercase tracking-wider">
+        {title}
+      </p>
       <h3 className="text-2xl font-mono mt-1 text-on-surface">{value}</h3>
     </GlassCard>
   );

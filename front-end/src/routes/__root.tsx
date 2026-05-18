@@ -1,20 +1,20 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { useEffect } from 'react'
-import { Sidebar } from '@/components/layout/Sidebar'
-import { Header } from '@/components/layout/Header'
-import { useUIStore } from '@/store/useUIStore'
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Header } from "@/components/layout/Header";
+import { useUIStore } from "@/store/useUIStore";
 
 export const Route = createRootRoute({
   component: RootComponent,
-})
+});
 
 function RootComponent() {
-  const { theme } = useUIStore()
+  const { theme } = useUIStore();
 
   // Apply theme to the document element
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   return (
     <div className="flex flex-col w-screen h-screen overflow-hidden">
@@ -26,5 +26,5 @@ function RootComponent() {
         </main>
       </div>
     </div>
-  )
+  );
 }

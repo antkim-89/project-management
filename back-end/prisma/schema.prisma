@@ -31,17 +31,22 @@ model User {
 }
 
 model Project {
-  id          String       @id @default(cuid())
-  title       String
-  description String?      @db.Text
-  status      String       @default("Active") // Active, At Risk, Completed
-  startDate   DateTime
-  endDate     DateTime
-  budget      Float
-  assignments Assignment[]
-  tasks       Task[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id             String          @id @default(cuid())
+  title          String
+  description    String?         @db.Text
+  status         String          @default("Active") // Active, At Risk, Completed
+  startDate      DateTime
+  endDate        DateTime
+  budget         Float
+  totalManMonths Float?
+  price          Float?
+  categoryId     String?
+  category       ProjectCategory? @relation(fields: [categoryId], references: [id])
+  assignments    Assignment[]
+  tasks          Task[]
+  requiredSkills ProjectSkill[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model Assignment {
@@ -78,10 +83,11 @@ model LeaveRequest {
 }
 
 model SkillSet {
-  id       String      @id @default(cuid())
-  name     String      @unique
+  id       String         @id @default(cuid())
+  name     String         @unique
   category String // Frontend, Backend, Design
   users    UserSkill[]
+  projects ProjectSkill[]
 }
 
 model UserSkill {
@@ -105,4 +111,20 @@ model Task {
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model ProjectCategory {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  projects Project[]
+}
+
+model ProjectSkill {
+  id         String   @id @default(cuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skillSetId String
+  skillSet   SkillSet @relation(fields: [skillSetId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, skillSetId])
 }

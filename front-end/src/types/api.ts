@@ -15,6 +15,18 @@ export interface User {
   updatedAt: string;
 }
 
+export interface ProjectCategory {
+  id: string;
+  name: string;
+}
+
+export interface ProjectSkill {
+  id: string;
+  projectId: string;
+  skillSetId: string;
+  skillSet: SkillSet;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -23,6 +35,11 @@ export interface Project {
   startDate: string;
   endDate: string;
   budget: number;
+  totalManMonths?: number;
+  price?: number;
+  categoryId?: string;
+  category?: ProjectCategory;
+  requiredSkills?: string[] | ProjectSkill[];
   assignments?: Assignment[];
   createdAt: string;
   updatedAt: string;

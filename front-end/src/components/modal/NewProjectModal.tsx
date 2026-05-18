@@ -4,6 +4,8 @@ import { BaseModal } from "@/components/base/BaseModal";
 import { CalendarPicker } from "@/components/base/CalendarPicker";
 import { useUsers } from "@/hooks/api/useUsers";
 import { useCreateProject } from "@/hooks/api/useProjects";
+import { useProjectCategories } from "@/hooks/api/useProjectCategories";
+import { useSkills } from "@/hooks/api/useSkills";
 import { Select } from "@/components/base/Select";
 import api from "@/lib/axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -52,6 +54,14 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
   const [budget, setBudget] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [totalManMonths, setTotalManMonths] = useState("");
+  const [price, setPrice] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [requiredSkills, setRequiredSkills] = useState<string[]>([]);
+
+  // Fetch reference data
+  const { data: projectCategories } = useProjectCategories();
+  const { data: allSkills } = useSkills();
 
   // Resource Allocation states
   const [allocations, setAllocations] = useState<Allocation[]>([]);
@@ -122,6 +132,10 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
           startDate: new Date(startDate) as any,
           endDate: new Date(endDate) as any,
           budget: parseFloat(budget),
+          totalManMonths: totalManMonths ? parseFloat(totalManMonths) : undefined,
+          price: price ? parseFloat(price) : undefined,
+          categoryId: categoryId || undefined,
+          requiredSkills: requiredSkills.length > 0 ? requiredSkills : undefined,
           status: "Active",
         },
         {
@@ -160,6 +174,10 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     setTitle("");
     setDescription("");
     setBudget("");
+    setTotalManMonths("");
+    setPrice("");
+    setCategoryId("");
+    setRequiredSkills([]);
     setStartDate("");
     setEndDate("");
     setAllocations([]);
@@ -221,8 +239,8 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     >
       {step === 1 ? (
         <div className="flex flex-col gap-6 animate-fade-in">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
               <label className="block text-label-caps font-bold text-on-surface-variant mb-1.5">
                 Project Title *
               </label>
@@ -234,24 +252,83 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                 className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors"
               />
             </div>
-            <div>
+            
+            <div className="md:col-span-2">
               <label className="block text-label-caps font-bold text-on-surface-variant mb-1.5">
                 Scope Description
               </label>
               <textarea
-                rows={4}
+                rows={3}
                 placeholder="Detail the scope, roadmap, and deliverables..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors resize-none"
               />
             </div>
+
+            <div className="relative z-50">
+              <label className="block text-label-caps font-bold text-on-surface-variant mb-1.5">
+                Project Category
+              </label>
+              <Select
+                value={categoryId}
+                onChange={setCategoryId}
+                options={[
+                  { value: "", label: "Select Category..." },
+                  ...(projectCategories?.map((c) => ({ value: c.id, label: c.name })) || []),
+                ]}
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
+                Required Tech Stacks
+              </label>
+              <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-surface-container border border-outline-variant rounded-lg">
+                {allSkills?.map((skill) => {
+                  const isSelected = requiredSkills.includes(skill.id);
+                  return (
+                    <button
+                      key={skill.id}
+                      type="button"
+                      onClick={() => {
+                        setRequiredSkills((prev) =>
+                          isSelected ? prev.filter((id) => id !== skill.id) : [...prev, skill.id]
+                        );
+                      }}
+                      className={cn(
+                        "px-2.5 py-1 rounded-full text-[11px] font-bold border transition-colors",
+                        isSelected
+                          ? "bg-primary text-on-primary border-primary"
+                          : "bg-surface text-on-surface-variant border-outline-variant hover:border-primary/50"
+                      )}
+                    >
+                      {skill.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-                <DollarSign className="w-4 h-4 text-primary" /> Budget (USD) *
+                Total Man-Months
+              </label>
+              <input
+                type="number"
+                placeholder="e.g. 12.5"
+                value={totalManMonths}
+                onChange={(e) => setTotalManMonths(e.target.value)}
+                className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors"
+                step="0.1"
+              />
+            </div>
+            <div>
+              <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
+                <DollarSign className="w-4 h-4 text-primary" /> Budget Cost (USD) *
               </label>
               <input
                 type="number"
@@ -263,6 +340,18 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
             </div>
             <div>
               <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
+                <DollarSign className="w-4 h-4 text-emerald-500" /> Sale Price (USD)
+              </label>
+              <input
+                type="number"
+                placeholder="e.g. 750000"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors"
+              />
+            </div>
+            <div className="relative z-40">
+              <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
                 <Calendar className="w-4 h-4 text-secondary" /> Start Date *
               </label>
               <CalendarPicker
@@ -270,7 +359,7 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                 onChange={setStartDate}
               />
             </div>
-            <div>
+            <div className="relative z-40">
               <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
                 <Calendar className="w-4 h-4 text-secondary" /> End Date *
               </label>

@@ -10,6 +10,7 @@
 - **Routing**: TanStack Router
 - **State Management**: Zustand
 - **Styling**: Tailwind CSS v4 (Glassmorphism 디자인)
+- **Data Visualization**: Chart.js & react-chartjs-2 (동적 차트 구현)
 - **Icons**: Lucide React
 - **Internationalization**: i18next
 
@@ -21,3 +22,4 @@
 - **Framework**: Express.js (TypeScript)
 - **ORM**: Prisma
 - **Database**: MySQL / MariaDB
+

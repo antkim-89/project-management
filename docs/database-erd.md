@@ -11,7 +11,10 @@ erDiagram
     USER ||--o{ USER_SKILL : "possesses"
     
     PROJECT ||--o{ ASSIGNMENT : "contains"
+    PROJECT ||--o{ PROJECT_SKILL : "requires"
+    PROJECT_CATEGORY ||--o{ PROJECT : "categorizes"
     SKILL_SET ||--o{ USER_SKILL : "included in"
+    SKILL_SET ||--o{ PROJECT_SKILL : "referenced in"
 
     USER {
         string id PK
@@ -36,6 +39,20 @@ erDiagram
         datetime startDate
         datetime endDate
         float budget
+        float totalManMonths
+        float price
+        string categoryId FK
+    }
+
+    PROJECT_CATEGORY {
+        string id PK
+        string name
+    }
+
+    PROJECT_SKILL {
+        string id PK
+        string projectId FK
+        string skillSetId FK
     }
 
     ASSIGNMENT {
@@ -85,9 +102,12 @@ erDiagram
 
 - **USER**: 시스템 사용자 정보.
 - **RANK**: 사용자의 직급 및 기본 단가 정보.
-- **PROJECT**: 관리 대상 프로젝트 정보 및 상태.
+- **PROJECT**: 관리 대상 프로젝트 정보 및 상태 (총 투입 공수, 수주 가격, 카테고리 정보가 포함됨).
+- **PROJECT_CATEGORY**: 프로젝트의 종류(DevOps, SI, Infra, Gateway 등) 마스터 데이터.
+- **PROJECT_SKILL**: 프로젝트 실행에 요구되는 기술 스택(SKILL_SET)과 프로젝트 간의 매핑 테이블.
 - **ASSIGNMENT**: 프로젝트에 투입된 인력 정보와 역할.
 - **EQUIPMENT**: 사용자에게 할당된 자산(노트북, 모니터 등).
 - **LEAVE_REQUEST**: 사용자의 휴가 신청 내역 및 결재 상태.
 - **SKILL_SET**: 기술 스택 마스터 데이터.
 - **USER_SKILL**: 사용자가 보유한 기술과 숙련도 정보.
+

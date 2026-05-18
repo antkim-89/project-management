@@ -20,6 +20,8 @@ import {
   MilestoneItem,
   TaskItem,
   ProgressItem,
+  AreaChart,
+  CircularProgressChart,
 } from "@/components/dashboard";
 
 export const Route = createFileRoute("/")({
@@ -111,42 +113,7 @@ function Index() {
             <h4 className="text-lg font-bold">Insights</h4>
             <MoreHorizontal className="text-on-surface-variant cursor-pointer" />
           </div>
-          <div className="relative w-48 h-48 mx-auto flex items-center justify-center">
-            <svg
-              viewBox="0 0 192 192"
-              className="w-full h-full -rotate-90 transform"
-            >
-              <circle
-                cx="96"
-                cy="96"
-                r="80"
-                fill="transparent"
-                stroke="currentColor"
-                strokeWidth="12"
-                className="text-outline-variant/30"
-              />
-              <circle
-                cx="96"
-                cy="96"
-                r="80"
-                fill="transparent"
-                stroke="currentColor"
-                strokeWidth="12"
-                strokeDasharray="502"
-                strokeDashoffset="75"
-                strokeLinecap="round"
-                className="text-primary transition-all duration-1000"
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-display-lg font-bold text-on-surface">
-                85%
-              </span>
-              <span className="text-label-caps text-on-surface-variant font-bold uppercase tracking-widest">
-                Efficiency
-              </span>
-            </div>
-          </div>
+          <CircularProgressChart />
           <div className="mt-6 space-y-3">
             <MetricItem
               label="Task Completion"
@@ -217,54 +184,8 @@ function Index() {
               </div>
             </div>
           </div>
-          <div className="flex-1 relative">
-            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-5">
-              <div className="w-full border-b border-outline" />
-              <div className="w-full border-b border-outline" />
-              <div className="w-full border-b border-outline" />
-              <div className="w-full border-b border-outline" />
-            </div>
-            <svg
-              viewBox="0 0 800 200"
-              preserveAspectRatio="none"
-              className="w-full h-full"
-            >
-              <defs>
-                <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-                  <stop
-                    offset="0%"
-                    stopColor="var(--color-primary)"
-                    stopOpacity="0.3"
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor="var(--color-primary)"
-                    stopOpacity="0"
-                  />
-                </linearGradient>
-              </defs>
-              <path
-                d="M0,180 C100,160 200,80 300,100 C400,120 500,40 600,60 C700,80 800,50 L800,200 L0,200 Z"
-                fill="url(#areaGradient)"
-                className="transition-all duration-1000"
-              />
-              <path
-                d="M0,180 C100,160 200,80 300,100 C400,120 500,40 600,60 C700,80 800,50"
-                fill="none"
-                stroke="var(--color-primary)"
-                strokeWidth="2.5"
-                className="transition-all duration-1000"
-              />
-              <circle cx="500" cy="40" r="4" fill="var(--color-primary)" />
-            </svg>
-          </div>
-          <div className="flex justify-between mt-4 text-label-caps font-bold text-on-surface-variant uppercase tracking-widest px-2">
-            <span>Jul</span>
-            <span>Aug</span>
-            <span>Sep</span>
-            <span>Oct</span>
-            <span>Nov</span>
-            <span>Dec</span>
+          <div className="flex-1 relative mt-4">
+            <AreaChart />
           </div>
         </GlassCard>
 

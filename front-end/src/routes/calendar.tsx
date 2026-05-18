@@ -79,18 +79,18 @@ function CalendarPage() {
           {viewMode !== "TASKS" && (
             <div className="flex items-center bg-surface-container-low border border-outline-variant rounded p-1">
               {["Week", "Month", "Quarter"].map((tab) => (
-                <Button
+                <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={cn(
-                    "px-4 py-1.5 text-label-caps font-bold rounded transition-colors tracking-widest",
+                    "px-4 py-1.5 text-label-caps font-bold rounded transition-colors tracking-widest cursor-pointer",
                     activeTab === tab
                       ? "bg-primary-container/20 text-primary"
                       : "text-on-surface-variant hover:text-on-surface",
                   )}
                 >
                   {tab}
-                </Button>
+                </button>
               ))}
             </div>
           )}
@@ -103,7 +103,7 @@ function CalendarPage() {
 
       {/* View Mode Toggle */}
       <div className="flex gap-4 border-b border-outline-variant/30 mb-8 shrink-0">
-        <Button
+        <button
           onClick={() => setViewMode("TASKS")}
           className={cn(
             "pb-4 text-label-md font-bold uppercase tracking-widest transition-all relative cursor-pointer",
@@ -116,8 +116,8 @@ function CalendarPage() {
           {viewMode === "TASKS" && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />
           )}
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={() => setViewMode("PROJECTS")}
           className={cn(
             "pb-4 text-label-md font-bold uppercase tracking-widest transition-all relative cursor-pointer",
@@ -130,8 +130,8 @@ function CalendarPage() {
           {viewMode === "PROJECTS" && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />
           )}
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={() => setViewMode("LEAVE")}
           className={cn(
             "pb-4 text-label-md font-bold uppercase tracking-widest transition-all relative cursor-pointer",
@@ -144,7 +144,7 @@ function CalendarPage() {
           {viewMode === "LEAVE" && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />
           )}
-        </Button>
+        </button>
       </div>
 
       {viewMode === "TASKS" ? (

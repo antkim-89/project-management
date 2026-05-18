@@ -4,6 +4,7 @@ import { BaseModal } from "@/components/base/BaseModal";
 import { CalendarPicker } from "@/components/base/CalendarPicker";
 import { useUpdateProject } from "@/hooks/api/useProjects";
 import { Calendar, DollarSign, Activity } from "lucide-react";
+import { RadioGroup } from "@/components/base/Radio";
 
 interface EditProjectModalProps {
   isOpen: boolean;
@@ -136,16 +137,22 @@ export function EditProjectModal({
             <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
               <Activity className="w-4 h-4 text-primary" /> Status
             </label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors appearance-none"
-            >
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="AT RISK">AT RISK</option>
-              <option value="COMPLETED">COMPLETED</option>
-              <option value="ON HOLD">ON HOLD</option>
-            </select>
+            <div className="flex flex-col">
+              <RadioGroup
+                name="edit-project-status"
+                variant="segmented"
+                options={[
+                  { value: "ACTIVE", label: "ACTIVE" },
+                  { value: "AT RISK", label: "AT RISK" },
+                  { value: "COMPLETED", label: "COMPLETED" },
+                  { value: "ON HOLD", label: "ON HOLD" },
+                ]}
+                value={status}
+                onChange={setStatus}
+                className="w-full flex-wrap gap-1"
+                optionClassName="flex-1 text-center py-2"
+              />
+            </div>
           </div>
           <div>
             <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">

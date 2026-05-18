@@ -180,13 +180,13 @@ function Assets() {
                         </span>
                       </td>
                       <td>
-                        <Button className="text-on-surface-variant hover:text-primary transition-colors">
+                        <button className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
                           {asset.urgent ? (
                             <AlertTriangle size={18} className="text-error" />
                           ) : (
                             <MoreVertical size={18} />
                           )}
-                        </Button>
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -238,9 +238,9 @@ function Assets() {
             <h3 className="text-headline-md font-bold flex items-center gap-2 text-on-surface">
               <Activity size={18} className="text-secondary" /> Employee Welfare
             </h3>
-            <Button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">
+            <button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline cursor-pointer">
               View All
-            </Button>
+            </button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -267,17 +267,17 @@ function Assets() {
                   <p className="text-label-sm text-on-surface-variant mb-3">
                     {course.chapters}
                   </p>
-                  <Button className="w-full py-1.5 border border-primary/30 text-primary text-label-sm font-bold rounded hover:bg-interaction-primary-hover transition-colors">
+                  <button className="w-full py-1.5 border border-primary/30 text-primary text-label-sm font-bold rounded hover:bg-interaction-primary-hover transition-colors cursor-pointer">
                     {course.type === "Digital" ? "Request Access" : "Borrow"}
-                  </Button>
+                  </button>
                 </div>
               </GlassCard>
             ))}
           </div>
 
-          <Button className="h-12 w-full bg-secondary text-on-secondary font-bold text-label-md uppercase tracking-widest rounded flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+          <button className="h-12 w-full bg-secondary text-on-secondary font-bold text-label-md uppercase tracking-widest rounded flex items-center justify-center gap-2 hover:opacity-90 transition-all cursor-pointer">
             <ShoppingCart size={18} /> Request Purchase
-          </Button>
+          </button>
 
           <GlassCard className="p-4 space-y-4">
             <div className="flex items-center justify-between mb-2">
@@ -302,12 +302,12 @@ function Assets() {
                 </div>
               </div>
               <div className="flex gap-1">
-                <Button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary">
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary cursor-pointer">
                   <Check size={14} />
-                </Button>
-                <Button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error">
+                </button>
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error cursor-pointer">
                   <X size={14} />
-                </Button>
+                </button>
               </div>
             </div>
 
@@ -324,12 +324,12 @@ function Assets() {
                 </div>
               </div>
               <div className="flex gap-1">
-                <Button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary">
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary cursor-pointer">
                   <Check size={14} />
-                </Button>
-                <Button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error">
+                </button>
+                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error cursor-pointer">
                   <X size={14} />
-                </Button>
+                </button>
               </div>
             </div>
           </GlassCard>

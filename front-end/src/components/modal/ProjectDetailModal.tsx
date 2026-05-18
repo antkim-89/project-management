@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BaseModal } from "@/components/base/BaseModal";
-import { ManageTeamModal } from "@/components/modal/layout/ManageTeamModal";
-import { EditProjectModal } from "@/components/modal/layout/EditProjectModal";
+import { ManageTeamModal } from "@/components/modal/ManageTeamModal";
+import { EditProjectModal } from "@/components/modal/EditProjectModal";
 
 interface ProjectDetailModalProps {
   isOpen: boolean;

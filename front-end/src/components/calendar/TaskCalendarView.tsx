@@ -1,4 +1,3 @@
-import { Button } from "@/components/base/Button";
 import React, { useState } from "react";
 import {
   ChevronLeft,
@@ -10,7 +9,7 @@ import {
 import { GlassCard } from "@/components/base/GlassCard";
 import { useTasks } from "@/hooks/api/useTasks";
 import { useProjects } from "@/hooks/api/useProjects";
-import { TaskDetailModal } from "@/components/modal/layout/TaskDetailModal";
+import { TaskDetailModal } from "@/components/modal/TaskDetailModal";
 import type { Task } from "@/types/api";
 import { cn } from "@/lib/utils";
 
@@ -175,24 +174,24 @@ export const TaskCalendarView: React.FC = () => {
         {/* Month Navigation */}
         <div className="flex items-center gap-4">
           <div className="flex items-center bg-surface-container-low border border-outline-variant/30 rounded-xl p-1 shrink-0">
-            <Button
+            <button
               onClick={handlePrevMonth}
-              className="p-2 hover:bg-interaction-hover text-on-surface-variant hover:text-on-surface rounded-lg transition-all active:scale-90"
+              className="p-2 hover:bg-interaction-hover text-on-surface-variant hover:text-on-surface rounded-lg transition-all active:scale-90 cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5" />
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleToday}
-              className="px-4 py-1.5 text-label-md font-bold text-on-surface hover:bg-interaction-hover rounded-lg transition-all active:scale-95"
+              className="px-4 py-1.5 text-label-md font-bold text-on-surface hover:bg-interaction-hover rounded-lg transition-all active:scale-95 cursor-pointer"
             >
               오늘
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleNextMonth}
-              className="p-2 hover:bg-interaction-hover text-on-surface-variant hover:text-on-surface rounded-lg transition-all active:scale-90"
+              className="p-2 hover:bg-interaction-hover text-on-surface-variant hover:text-on-surface rounded-lg transition-all active:scale-90 cursor-pointer"
             >
               <ChevronRight className="w-5 h-5" />
-            </Button>
+            </button>
           </div>
 
           <h3 className="text-xl md:text-2xl font-bold text-on-surface font-mono">
@@ -202,7 +201,7 @@ export const TaskCalendarView: React.FC = () => {
 
         {/* Multi-Select Project Filter */}
         <div className="relative shrink-0">
-          <Button
+          <button
             onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
             className={cn(
               "btn-glass px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 text-label-md cursor-pointer",
@@ -216,7 +215,7 @@ export const TaskCalendarView: React.FC = () => {
                 ? "전체 프로젝트 업무"
                 : `프로젝트 ${selectedProjectIds.length}개 선택됨`}
             </span>
-          </Button>
+          </button>
 
           {/* Project Filter Dropdown Popover */}
           {isFilterDropdownOpen && (
@@ -230,14 +229,14 @@ export const TaskCalendarView: React.FC = () => {
                   <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                     프로젝트 필터
                   </span>
-                  <Button
+                  <button
                     onClick={handleToggleAllProjects}
-                    className="text-[11px] font-bold text-primary hover:underline"
+                    className="text-[11px] font-bold text-primary hover:underline cursor-pointer"
                   >
                     {projects && selectedProjectIds.length === projects.length
                       ? "전체 해제"
                       : "전체 선택"}
-                  </Button>
+                  </button>
                 </div>
 
                 {projectsLoading ? (
@@ -249,11 +248,11 @@ export const TaskCalendarView: React.FC = () => {
                     {projects?.map((proj) => {
                       const isSelected = selectedProjectIds.includes(proj.id);
                       return (
-                        <Button
+                        <button
                           key={proj.id}
                           onClick={() => handleToggleProject(proj.id)}
                           className={cn(
-                            "flex items-center gap-3 p-2.5 rounded-xl text-left text-body-md transition-all hover:bg-interaction-hover w-full",
+                            "flex items-center gap-3 p-2.5 rounded-xl text-left text-body-md transition-all hover:bg-interaction-hover w-full cursor-pointer",
                             isSelected
                               ? "text-primary font-bold"
                               : "text-on-surface font-normal",
@@ -265,7 +264,7 @@ export const TaskCalendarView: React.FC = () => {
                             <Square className="w-5 h-5 text-on-surface-variant shrink-0" />
                           )}
                           <span className="truncate">{proj.title}</span>
-                        </Button>
+                        </button>
                       );
                     })}
                   </div>

@@ -15,7 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useUIStore } from "@/store/useUIStore";
-import { UserDetailModal } from "@/components/modal/layout/UserDetailModal";
+import { UserDetailModal } from "@/components/modal/UserDetailModal";
 import { BasePopover } from "@/components/base/BasePopover";
 
 export function Header() {
@@ -63,8 +63,8 @@ export function Header() {
         {/* Right: User, Language, Theme, Auth */}
         <div className="flex items-center gap-2">
           {/* Theme Toggle */}
-          <Button
-            className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95"
+          <button
+            className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95 cursor-pointer"
             onClick={toggleTheme}
             title={
               theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"
@@ -78,18 +78,18 @@ export function Header() {
             <span className="uppercase text-[10px] font-bold tracking-widest">
               {theme}
             </span>
-          </Button>
+          </button>
 
           {/* Language Selector */}
-          <Button
-            className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95"
+          <button
+            className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95 cursor-pointer"
             onClick={toggleLanguage}
           >
             <Globe className="w-4 h-4" />
             <span className="uppercase text-[10px] font-bold tracking-widest">
               {i18n.language.split("-")[0]}
             </span>
-          </Button>
+          </button>
 
           <div className="w-px h-6 bg-outline-variant/30 mx-2" />
 
@@ -97,9 +97,9 @@ export function Header() {
           <div className="flex items-center">
             {isAuthenticated && user ? (
               <>
-                <Button
+                <button
                   ref={userBtnRef}
-                  className="flex items-center gap-3 p-1.5 rounded-full hover:bg-interaction-hover transition-all"
+                  className="flex items-center gap-3 p-1.5 rounded-full hover:bg-interaction-hover transition-all cursor-pointer"
                   onClick={handleUserClick}
                 >
                   <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-on-secondary font-bold shadow-md shadow-secondary/20">
@@ -108,7 +108,7 @@ export function Header() {
                   <span className="text-label-md font-bold text-on-surface mr-2 hidden md:block">
                     {user.name}
                   </span>
-                </Button>
+                </button>
 
                 {/* BasePopover Integration */}
                 <BasePopover
@@ -128,8 +128,8 @@ export function Header() {
                     </div>
                   </div>
                   <div className="p-2 bg-surface-container">
-                    <Button
-                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all group"
+                    <button
+                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all group cursor-pointer"
                       onClick={handleOpenModal}
                     >
                       <UserIcon className="w-4 h-4" />
@@ -137,23 +137,23 @@ export function Header() {
                         Profile Detail
                       </span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-50 transition-opacity" />
-                    </Button>
-                    <Button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all">
+                    </button>
+                    <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all cursor-pointer">
                       <Settings className="w-4 h-4" />
                       <span className="text-label-md font-bold">
                         Account Settings
                       </span>
-                    </Button>
+                    </button>
                     <div className="h-px bg-outline-variant/30 my-2" />
-                    <Button
-                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-error hover:bg-error/10 transition-all"
+                    <button
+                      className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-error hover:bg-error/10 transition-all cursor-pointer"
                       onClick={logout}
                     >
                       <LogOut className="w-4 h-4" />
                       <span className="text-label-md font-bold">
                         {t("common.logout")}
                       </span>
-                    </Button>
+                    </button>
                   </div>
                 </BasePopover>
               </>

@@ -4,6 +4,7 @@ import { BaseModal } from "@/components/base/BaseModal";
 import { useUsers } from "@/hooks/api/useUsers";
 import { useProjectDetail } from "@/hooks/api/useProjects";
 import api from "@/lib/axios";
+import { Select } from "@/components/base/Select";
 import { useQueryClient } from "@tanstack/react-query";
 import { Search, Check, Briefcase, Users, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -241,18 +242,15 @@ export function ManageTeamModal({
               className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
             />
           </div>
-          <select
+          <Select
             value={selectedSkill}
-            onChange={(e) => setSelectedSkill(e.target.value)}
-            className="bg-surface-container border border-outline-variant text-on-surface text-label-md rounded-lg px-3 py-2 outline-none focus:border-primary min-w-[150px]"
-          >
-            <option value="ALL">All Skills</option>
-            {uniqueSkills.map((skill) => (
-              <option key={skill} value={skill}>
-                {skill}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedSkill}
+            options={[
+              { value: "ALL", label: "All Skills" },
+              ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
+            ]}
+            className="min-w-[150px]"
+          />
         </div>
 
         {/* Allocation Resource Cards Grid */}

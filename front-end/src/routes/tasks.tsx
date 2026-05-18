@@ -10,7 +10,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { GlassCard } from "@/components/base/GlassCard";
-import { TaskDetailModal } from "@/components/modal/layout/TaskDetailModal";
+import { TaskDetailModal } from "@/components/modal/TaskDetailModal";
 import { useTasks, useUpdateTask } from "@/hooks/api/useTasks";
 import type { Task } from "@/types/api";
 import { cn } from "@/lib/utils";
@@ -239,22 +239,22 @@ function Tasks() {
                         {/* Status Quick Controller for better interactivity */}
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center bg-surface-container-highest border border-outline-variant/45 rounded-lg overflow-hidden shrink-0">
                           {column.id !== "TODO" && (
-                            <Button
+                            <button
                               onClick={(e) => handleMoveStatus(task, "prev", e)}
                               title="이전 단계로 이동"
-                              className="p-1 text-on-surface-variant hover:text-on-surface hover:bg-interaction-hover transition-colors"
+                              className="p-1 text-on-surface-variant hover:text-on-surface hover:bg-interaction-hover transition-colors cursor-pointer"
                             >
                               <ChevronLeft className="w-3.5 h-3.5" />
-                            </Button>
+                            </button>
                           )}
                           {column.id !== "DONE" && (
-                            <Button
+                            <button
                               onClick={(e) => handleMoveStatus(task, "next", e)}
                               title="다음 단계로 이동"
-                              className="p-1 text-on-surface-variant hover:text-on-surface hover:bg-interaction-hover transition-colors"
+                              className="p-1 text-on-surface-variant hover:text-on-surface hover:bg-interaction-hover transition-colors cursor-pointer"
                             >
                               <ChevronRight className="w-3.5 h-3.5" />
-                            </Button>
+                            </button>
                           )}
                         </div>
                       </div>

@@ -4,6 +4,7 @@ import { BaseModal } from "@/components/base/BaseModal";
 import { CalendarPicker } from "@/components/base/CalendarPicker";
 import { useUsers } from "@/hooks/api/useUsers";
 import { useCreateProject } from "@/hooks/api/useProjects";
+import { Select } from "@/components/base/Select";
 import api from "@/lib/axios";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -169,12 +170,12 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
   const footer = (
     <div className="flex justify-between items-center w-full">
       {step === 2 ? (
-        <Button
+        <button
           onClick={() => setStep(1)}
           className="btn-glass px-4 h-10 cursor-pointer"
         >
           Back
-        </Button>
+        </button>
       ) : (
         <div></div>
       )}
@@ -187,13 +188,13 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
           Cancel
         </Button>
         {step === 1 ? (
-          <Button
+          <button
             onClick={() => setStep(2)}
             className="btn-primary px-6 h-10 cursor-pointer"
             disabled={!title || !startDate || !endDate || !budget}
           >
             Allocate Resources
-          </Button>
+          </button>
         ) : (
           <Button
             variant="primary"
@@ -294,18 +295,15 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                 className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
               />
             </div>
-            <select
+            <Select
               value={selectedSkill}
-              onChange={(e) => setSelectedSkill(e.target.value)}
-              className="bg-surface-container border border-outline-variant text-on-surface text-label-md rounded-lg px-3 py-2 outline-none focus:border-primary min-w-[150px]"
-            >
-              <option value="ALL">All Skills</option>
-              {uniqueSkills.map((skill) => (
-                <option key={skill} value={skill}>
-                  {skill}
-                </option>
-              ))}
-            </select>
+              onChange={setSelectedSkill}
+              options={[
+                { value: "ALL", label: "All Skills" },
+                ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
+              ]}
+              className="min-w-[150px]"
+            />
           </div>
 
           {/* Allocation Resource Cards Grid */}

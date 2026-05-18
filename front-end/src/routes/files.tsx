@@ -1,4 +1,3 @@
-import { Button } from "@/components/base/Button";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   FolderOpen,
@@ -30,9 +29,9 @@ function FileCard({
         <div className="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center group-hover:scale-110 transition-transform">
           {icon}
         </div>
-        <Button className="text-on-surface-variant hover:text-on-surface">
+        <button className="text-on-surface-variant hover:text-on-surface cursor-pointer">
           <MoreVertical className="w-5 h-5" />
-        </Button>
+        </button>
       </div>
       <h3 className="font-bold text-lg text-on-surface group-hover:text-primary transition-colors">
         {name}

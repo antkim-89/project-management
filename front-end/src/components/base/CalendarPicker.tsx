@@ -1,4 +1,3 @@
-import { Button } from "@/components/base/Button";
 import { useState, useRef } from "react";
 import {
   Calendar as CalendarIcon,
@@ -169,23 +168,23 @@ export function CalendarPicker({
         >
           {/* Header: Month & Navigation */}
           <div className="flex items-center justify-between">
-            <Button
+            <button
               type="button"
               onClick={handlePrevMonth}
-              className="p-1.5 rounded-lg hover:bg-interaction-hover text-on-surface transition-colors"
+              className="p-1.5 rounded-lg hover:bg-interaction-hover text-on-surface transition-colors cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
-            </Button>
+            </button>
             <h4 className="font-bold text-title-sm text-on-surface">
               {year}년 {month + 1}월
             </h4>
-            <Button
+            <button
               type="button"
               onClick={handleNextMonth}
-              className="p-1.5 rounded-lg hover:bg-interaction-hover text-on-surface transition-colors"
+              className="p-1.5 rounded-lg hover:bg-interaction-hover text-on-surface transition-colors cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
-            </Button>
+            </button>
           </div>
 
           {/* Weekday Names */}
@@ -212,12 +211,12 @@ export function CalendarPicker({
               const isOtherMonth = cell.type !== "current";
 
               return (
-                <Button
+                <button
                   key={`${cell.type}-${cell.day}-${index}`}
                   type="button"
                   onClick={() => handleDateSelect(cell.day, cell.type)}
                   className={cn(
-                    "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all relative active:scale-90 hover:scale-105",
+                    "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all relative active:scale-90 hover:scale-105 cursor-pointer",
                     isOtherMonth
                       ? "text-on-surface-variant/20 hover:bg-interaction-hover/40"
                       : "text-on-surface hover:bg-interaction-hover",
@@ -236,7 +235,7 @@ export function CalendarPicker({
                   )}
                 >
                   {cell.day}
-                </Button>
+                </button>
               );
             })}
           </div>

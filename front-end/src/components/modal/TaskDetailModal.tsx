@@ -12,6 +12,7 @@ import {
 import type { Task } from "@/types/api";
 import { cn } from "@/lib/utils";
 import { CalendarPicker } from "@/components/base/CalendarPicker";
+import { Select } from "@/components/base/Select";
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -116,14 +117,14 @@ export function TaskDetailModal({
     <div className="flex items-center justify-between w-full">
       <div>
         {isEditMode && (
-          <Button
+          <button
             onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 text-error hover:bg-error/10 active:scale-95 transition-all rounded-xl font-bold text-label-md"
+            className="flex items-center gap-2 px-4 py-2 text-error hover:bg-error/10 active:scale-95 transition-all rounded-xl font-bold text-label-md cursor-pointer"
             disabled={deleteTaskMutation.isPending}
           >
             <Trash2 className="w-4 h-4" />
             삭제하기
-          </Button>
+          </button>
         )}
       </div>
       <div className="flex items-center gap-3">
@@ -201,25 +202,18 @@ export function TaskDetailModal({
             <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-2">
               연동 프로젝트 <span className="text-error">*</span>
             </label>
-            <div className="relative flex items-center">
-              <Folder className="absolute left-4 w-4 h-4 text-on-surface-variant" />
-              <select
-                value={projectId}
-                onChange={(e) => setProjectId(e.target.value)}
-                className="w-full bg-surface-container-low border border-outline-variant/30 text-on-surface rounded-xl pl-11 pr-4 py-3 outline-none transition-all text-body-md focus:border-primary appearance-none cursor-pointer"
-                disabled={projectsLoading}
-              >
-                {projectsLoading ? (
-                  <option>로딩 중...</option>
-                ) : (
-                  projects?.map((proj) => (
-                    <option key={proj.id} value={proj.id}>
-                      {proj.title}
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
+            <Select
+              value={projectId}
+              onChange={setProjectId}
+              options={
+                projectsLoading
+                  ? [{ value: "", label: "로딩 중..." }]
+                  : projects?.map((proj) => ({ value: proj.id, label: proj.title })) || []
+              }
+              prefixIcon={<Folder className="w-4 h-4" />}
+              disabled={projectsLoading}
+              error={!!errors.projectId}
+            />
             {errors.projectId && (
               <p className="text-error text-label-sm mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" />
@@ -233,26 +227,21 @@ export function TaskDetailModal({
             <label className="block text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-2">
               담당자 지정
             </label>
-            <div className="relative flex items-center">
-              <UserIcon className="absolute left-4 w-4 h-4 text-on-surface-variant" />
-              <select
-                value={userId || ""}
-                onChange={(e) => setUserId(e.target.value || null)}
-                className="w-full bg-surface-container-low border border-outline-variant/30 text-on-surface rounded-xl pl-11 pr-4 py-3 outline-none transition-all text-body-md focus:border-primary appearance-none cursor-pointer"
-                disabled={usersLoading}
-              >
-                <option value="">미지정</option>
-                {usersLoading ? (
-                  <option>로딩 중...</option>
-                ) : (
-                  users?.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name} ({user.email})
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
+            <Select
+              value={userId || ""}
+              onChange={(val) => setUserId(val || null)}
+              options={[
+                { value: "", label: "미지정" },
+                ...(usersLoading
+                  ? []
+                  : users?.map((user) => ({
+                      value: user.id,
+                      label: `${user.name} (${user.email})`,
+                    })) || []),
+              ]}
+              prefixIcon={<UserIcon className="w-4 h-4" />}
+              disabled={usersLoading}
+            />
           </div>
         </div>
 
@@ -295,12 +284,12 @@ export function TaskDetailModal({
                 },
                 { label: "완료", value: "DONE", color: "text-primary" },
               ].map((item) => (
-                <Button
+                <button
                   key={item.value}
                   type="button"
                   onClick={() => setStatus(item.value)}
                   className={cn(
-                    "flex-1 py-2 text-label-md font-bold rounded-lg transition-all active:scale-95",
+                    "flex-1 py-2 text-label-md font-bold rounded-lg transition-all active:scale-95 cursor-pointer",
                     status === item.value
                       ? "bg-surface-container-highest text-on-surface shadow-md"
                       : "text-on-surface-variant/75 hover:text-on-surface",
@@ -309,7 +298,7 @@ export function TaskDetailModal({
                   <span className={cn(status === item.value && item.color)}>
                     {item.label}
                   </span>
-                </Button>
+                </button>
               ))}
             </div>
           </div>

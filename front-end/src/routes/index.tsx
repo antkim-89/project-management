@@ -6,8 +6,6 @@ import {
   DollarSign,
   Calendar,
   Clock,
-  CheckCircle2,
-  XCircle,
   MoreHorizontal,
   Sun,
   FolderKanban,
@@ -16,6 +14,13 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { GlassCard } from "@/components/base/GlassCard";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
+import {
+  StatCard,
+  MetricItem,
+  MilestoneItem,
+  TaskItem,
+  ProgressItem,
+} from "@/components/dashboard";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -49,8 +54,7 @@ function Index() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button className="h-10 flex items-center gap-2 px-4 bg-surface-container-high rounded text-label-md font-medium text-on-surface border border-outline-variant transition-colors hover:bg-interaction-hover">
-            <Calendar className="w-4 h-4" />
+          <Button prefixIcon={<Calendar className="w-4 h-4" />} variant="outline" className="flex items-center gap-2 px-4 rounded text-label-md font-medium text-on-surface transition-colors hover:bg-interaction-hover">
             This Month
           </Button>
         </div>
@@ -59,7 +63,7 @@ function Index() {
       {/* Dashboard Grid */}
       <div className="grid grid-cols-12 gap-6">
         {/* Main KPI Card */}
-        <GlassCard className="col-span-12 lg:col-span-8 p-6 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
+        <GlassCard className="col-span-full lg:col-span-8 p-6 relative overflow-hidden flex flex-col justify-between min-h-[220px]">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-primary/5 to-transparent pointer-events-none" />
           <div>
             <h3 className="text-headline-lg font-bold text-on-surface mb-2">
@@ -144,55 +148,55 @@ function Index() {
             </div>
           </div>
           <div className="mt-6 space-y-3">
-            {MetricItem({
-              label: "Task Completion",
-              value: "+12.4%",
-              color: "bg-primary",
-            })}
-            {MetricItem({
-              label: "Average Wait",
-              value: "32 min",
-              color: "bg-outline-variant",
-            })}
+            <MetricItem
+              label="Task Completion"
+              value="+12.4%"
+              color="bg-primary"
+            />
+            <MetricItem
+              label="Average Wait"
+              value="32 min"
+              color="bg-outline-variant"
+            />
           </div>
         </GlassCard>
 
         {/* 4 Stats Grid */}
-        {StatCard({
-          icon: <Users className="w-5 h-5 text-emerald-400" />,
-          label: "Total Personnel",
-          value: totalPersonnel.toString(),
-          badge: "Active",
-          badgeColor: "bg-emerald-400/10 text-emerald-400",
-          borderColor: "border-emerald-500",
-        })}
+        <StatCard
+          icon={<Users className="w-5 h-5 text-emerald-400" />}
+          label="Total Personnel"
+          value={totalPersonnel.toString()}
+          badge="Active"
+          badgeColor="bg-emerald-400/10 text-emerald-400"
+          borderColor="border-emerald-500"
+        />
 
-        {StatCard({
-          icon: <FolderKanban className="w-5 h-5 text-primary" />,
-          label: "Total Active Projects",
-          value: activeProjectsCount.toString(),
-          badge: "Stable",
-          badgeColor: "bg-surface-container-highest text-on-surface-variant",
-          borderColor: "border-primary",
-        })}
+        <StatCard
+          icon={<FolderKanban className="w-5 h-5 text-primary" />}
+          label="Total Active Projects"
+          value={activeProjectsCount.toString()}
+          badge="Stable"
+          badgeColor="bg-surface-container-highest text-on-surface-variant"
+          borderColor="border-primary"
+        />
 
-        {StatCard({
-          icon: <Package className="w-5 h-5 text-rose-400" />,
-          label: "Equipment Replacements",
-          value: "12",
-          badge: "Action Required",
-          badgeColor: "bg-rose-400/10 text-rose-400",
-          borderColor: "border-rose-500",
-        })}
+        <StatCard
+          icon={<Package className="w-5 h-5 text-rose-400" />}
+          label="Equipment Replacements"
+          value="12"
+          badge="Action Required"
+          badgeColor="bg-rose-400/10 text-rose-400"
+          borderColor="border-rose-500"
+        />
 
-        {StatCard({
-          icon: <DollarSign className="w-5 h-5 text-purple-400" />,
-          label: "Monthly M/M Cost",
-          value: `₩${(monthlyCost / 1000000).toFixed(1)}M`,
-          badge: "On Budget",
-          badgeColor: "bg-purple-400/10 text-purple-400",
-          borderColor: "border-purple-500",
-        })}
+        <StatCard
+          icon={<DollarSign className="w-5 h-5 text-purple-400" />}
+          label="Monthly M/M Cost"
+          value={`₩${(monthlyCost / 1000000).toFixed(1)}M`}
+          badge="On Budget"
+          badgeColor="bg-purple-400/10 text-purple-400"
+          borderColor="border-purple-500"
+        />
 
         {/* Main Area Chart - Manpower Availability */}
         <GlassCard className="col-span-12 lg:col-span-8 p-6 flex flex-col min-h-[340px]">
@@ -302,16 +306,16 @@ function Index() {
             <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
               Upcoming Today
             </p>
-            {MilestoneItem({
-              name: "Project Alpha Deployment",
-              time: "14:00",
-              color: "bg-emerald-400",
-            })}
-            {MilestoneItem({
-              name: "Q4 Resource Planning",
-              time: "16:30",
-              color: "bg-primary",
-            })}
+            <MilestoneItem
+              name="Project Alpha Deployment"
+              time="14:00"
+              color="bg-emerald-400"
+            />
+            <MilestoneItem
+              name="Q4 Resource Planning"
+              time="16:30"
+              color="bg-primary"
+            />
           </div>
         </GlassCard>
 
@@ -321,21 +325,21 @@ function Index() {
             <h4 className="text-headline-md font-bold text-on-surface">
               Quick Tasks & Approvals
             </h4>
-            <Button className="text-primary text-label-caps font-bold uppercase tracking-widest hover:underline">
+            <Button variant="outline" className="text-primary text-label-caps font-bold uppercase tracking-widest hover:underline">
               View All
             </Button>
           </div>
           <div className="space-y-4">
-            {TaskItem({
-              icon: <Users className="w-5 h-5" />,
-              name: "Leave Request: Sarah Miller",
-              desc: "Annual Leave • 3 Days • Pending Approval",
-            })}
-            {TaskItem({
-              icon: <DollarSign className="w-5 h-5" />,
-              name: "Purchase Order: Server Rack B4",
-              desc: "$2,450.00 • IT Infrastructure",
-            })}
+            <TaskItem
+              icon={<Users className="w-5 h-5" />}
+              name="Leave Request: Sarah Miller"
+              desc="Annual Leave • 3 Days • Pending Approval"
+            />
+            <TaskItem
+              icon={<DollarSign className="w-5 h-5" />}
+              name="Purchase Order: Server Rack B4"
+              desc="$2,450.00 • IT Infrastructure"
+            />
           </div>
         </GlassCard>
 
@@ -343,21 +347,21 @@ function Index() {
         <GlassCard className="col-span-12 lg:col-span-4 p-6 flex flex-col">
           <h4 className="text-lg font-bold mb-6">Project Cost Efficiency</h4>
           <div className="space-y-6">
-            {ProgressItem({
-              name: "Data Center Migration",
-              percent: 92,
-              color: "bg-emerald-400",
-            })}
-            {ProgressItem({
-              name: "Network Security Audit",
-              percent: 78,
-              color: "bg-primary",
-            })}
-            {ProgressItem({
-              name: "Cloud Infrastructure Build",
-              percent: 45,
-              color: "bg-rose-400",
-            })}
+            <ProgressItem
+              name="Data Center Migration"
+              percent={92}
+              color="bg-emerald-400"
+            />
+            <ProgressItem
+              name="Network Security Audit"
+              percent={78}
+              color="bg-primary"
+            />
+            <ProgressItem
+              name="Cloud Infrastructure Build"
+              percent={45}
+              color="bg-rose-400"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-outline-variant/30">
             <div className="text-center">
@@ -383,154 +387,3 @@ function Index() {
   );
 }
 
-function StatCard({
-  icon,
-  label,
-  value,
-  badge,
-  badgeColor,
-  borderColor,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  badge: string;
-  badgeColor: string;
-  borderColor: string;
-}) {
-  return (
-    <GlassCard
-      className={cn(
-        "col-span-12 md:col-span-6 lg:col-span-3 p-6 border-l-4",
-        borderColor,
-      )}
-    >
-      <div className="flex justify-between items-start mb-2">
-        <div className="w-5 h-5">{icon}</div>
-        <span
-          className={cn(
-            "text-[10px] font-bold px-2 py-0.5 rounded-full",
-            badgeColor,
-          )}
-        >
-          {badge}
-        </span>
-      </div>
-      <p className="text-on-surface-variant text-label-caps font-bold uppercase tracking-wider">
-        {label}
-      </p>
-      <p className="text-headline-lg font-bold font-mono mt-1 text-on-surface">
-        {value}
-      </p>
-    </GlassCard>
-  );
-}
-
-function MetricItem({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div className="flex justify-between items-center text-body-sm">
-      <div className="flex items-center gap-2 text-on-surface-variant">
-        <div className={cn("w-2 h-2 rounded-full", color)} />
-        <span>{label}</span>
-      </div>
-      <span className="font-mono font-bold text-on-surface">{value}</span>
-    </div>
-  );
-}
-
-function MilestoneItem({
-  name,
-  time,
-  color,
-}: {
-  name: string;
-  time: string;
-  color: string;
-}) {
-  return (
-    <div className="flex gap-3 items-center p-2 rounded-xl bg-surface-container-high/50 border border-outline-variant/30">
-      <div className={cn("w-1 h-8 rounded-full", color)} />
-      <div>
-        <p className="text-sm font-bold text-on-surface">{name}</p>
-        <p className="text-[10px] text-on-surface-variant">
-          {time} • Conference Room A
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function TaskItem({
-  icon,
-  name,
-  desc,
-}: {
-  icon: React.ReactNode;
-  name: string;
-  desc: string;
-}) {
-  return (
-    <div className="flex items-center justify-between p-4 bg-surface-container-lowest border border-outline-variant/30 hover:border-primary/50 transition-all rounded cursor-pointer group">
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
-          {icon}
-        </div>
-        <div>
-          <p className="text-label-md font-bold text-on-surface">{name}</p>
-          <p className="text-label-sm text-on-surface-variant mt-0.5">{desc}</p>
-        </div>
-      </div>
-      <div className="flex gap-1">
-        <Button className="p-2 rounded transition-colors hover:bg-interaction-hover text-error">
-          <XCircle className="w-5 h-5" />
-        </Button>
-        <Button className="p-2 rounded transition-colors hover:bg-interaction-hover text-secondary">
-          <CheckCircle2 className="w-5 h-5" />
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function ProgressItem({
-  name,
-  percent,
-  color,
-}: {
-  name: string;
-  percent: number;
-  color: string;
-}) {
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <span className="text-label-md font-bold text-on-surface">{name}</span>
-        <span
-          className={cn(
-            "font-mono text-label-md font-bold",
-            percent > 80 ? "text-emerald-400" : "text-on-surface",
-          )}
-        >
-          {percent}%
-        </span>
-      </div>
-      <div className="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-        <div
-          className={cn(
-            "h-full rounded-full transition-all duration-1000",
-            color,
-          )}
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-    </div>
-  );
-}

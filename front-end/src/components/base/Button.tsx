@@ -15,8 +15,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: ButtonSize;
   variant?: ButtonVariant;
   isLoading?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  prefixIcon?: React.ReactNode;
+  suffixIcon?: React.ReactNode;
 }
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -38,7 +38,7 @@ const variantStyles: Record<ButtonVariant, string> = {
   glass:
     "bg-glass-bg backdrop-blur-md border border-glass-border text-on-surface hover:bg-surface-container-high/60 active:scale-[0.98] shadow-glass shadow-sm",
   outline:
-    "bg-transparent border-2 border-primary text-primary hover:bg-primary/5 active:scale-[0.98]",
+    "bg-surface-container-high border-2 border-outline-variant text-on-surface-variant hover:bg-surface-container-high active:scale-[0.98]",
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -49,8 +49,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant = "primary",
       isLoading = false,
       disabled,
-      leftIcon,
-      rightIcon,
+      prefixIcon,
+      suffixIcon,
       children,
       ...props
     },
@@ -74,11 +74,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading && <Loader2 className="w-4 h-4 animate-spin shrink-0" />}
-        {!isLoading && leftIcon && <span className="shrink-0">{leftIcon}</span>}
+        {!isLoading && prefixIcon && <span className="shrink-0">{prefixIcon}</span>}
         <span className="truncate">{children}</span>
-        {!isLoading && rightIcon && (
-          <span className="shrink-0">{rightIcon}</span>
-        )}
+        {!isLoading && suffixIcon && <span className="shrink-0">{suffixIcon}</span>}
       </button>
     );
   },

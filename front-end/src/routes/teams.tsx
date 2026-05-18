@@ -9,8 +9,6 @@ import {
   Search,
   Filter,
   Download,
-  ChevronLeft,
-  ChevronRight,
   Table,
   Network,
 } from "lucide-react";
@@ -18,6 +16,8 @@ import { cn } from "@/lib/utils";
 import { ManpowerStatCard } from "@/components/teams/ManpowerStatCard";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 import { useUsers } from "@/hooks/api/useUsers";
+import { Select } from "@/components/base/Select";
+import { Pagination } from "@/components/base/Pagination";
 import type { User, SkillSet } from "@/types/api";
 
 interface UserSkill {
@@ -41,6 +41,10 @@ function Teams() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("ALL");
   const [selectedRank, setSelectedRank] = useState("ALL");
+  
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   // Apply filters to users
   const filteredUsers =
@@ -59,6 +63,16 @@ function Teams() {
 
       return matchesSearch && matchesSkill && matchesRank;
     }) || [];
+
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  
+  // Normalize current page to prevent empty page index if filter changes
+  const normalizedPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+
+  const paginatedUsers = filteredUsers.slice(
+    (normalizedPage - 1) * itemsPerPage,
+    normalizedPage * itemsPerPage
+  );
 
   // Extract unique skills & ranks dynamically for selectors
   const uniqueSkills = Array.from(
@@ -159,7 +173,7 @@ function Teams() {
 
       {/* Tabs Selector */}
       <div className="flex border-b border-outline-variant/30 mb-8 gap-2">
-        <Button
+        <button
           onClick={() => setActiveTab("TABLE")}
           className={cn(
             "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer",
@@ -169,8 +183,8 @@ function Teams() {
           )}
         >
           <Table className="w-4.5 h-4.5" /> Members Table
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={() => setActiveTab("ORG_CHART")}
           className={cn(
             "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer",
@@ -180,7 +194,7 @@ function Teams() {
           )}
         >
           <Network className="w-4.5 h-4.5" /> Org Chart
-        </Button>
+        </button>
       </div>
 
       {/* Search & Filter Strip */}
@@ -196,30 +210,24 @@ function Teams() {
           />
         </div>
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <select
+          <Select
             value={selectedSkill}
-            onChange={(e) => setSelectedSkill(e.target.value)}
-            className="bg-surface-container border border-outline-variant text-on-surface text-label-md rounded-lg px-3 py-2 outline-none focus:border-primary min-w-[140px]"
-          >
-            <option value="ALL">All Skills</option>
-            {uniqueSkills.map((skill) => (
-              <option key={skill} value={skill}>
-                {skill}
-              </option>
-            ))}
-          </select>
-          <select
+            onChange={setSelectedSkill}
+            options={[
+              { value: "ALL", label: "All Skills" },
+              ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
+            ]}
+            className="min-w-[150px]"
+          />
+          <Select
             value={selectedRank}
-            onChange={(e) => setSelectedRank(e.target.value)}
-            className="bg-surface-container border border-outline-variant text-on-surface text-label-md rounded-lg px-3 py-2 outline-none focus:border-primary min-w-[140px]"
-          >
-            <option value="ALL">Rank: All</option>
-            {uniqueRanksList.map((rank) => (
-              <option key={rank} value={rank}>
-                {rank}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedRank}
+            options={[
+              { value: "ALL", label: "Rank: All" },
+              ...uniqueRanksList.map((rank) => ({ value: rank, label: rank })),
+            ]}
+            className="min-w-[150px]"
+          />
         </div>
       </div>
 
@@ -251,8 +259,8 @@ function Teams() {
                 </tr>
               </thead>
               <tbody>
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map((member) => (
+                {paginatedUsers.length > 0 ? (
+                  paginatedUsers.map((member) => (
                     <tr
                       key={member.id}
                       className="border-b border-outline-variant/50 hover:bg-interaction-hover transition-colors"
@@ -312,9 +320,9 @@ function Teams() {
                         </span>
                       </td>
                       <td className="p-4">
-                        <Button className="px-3 py-1.5 text-label-sm font-bold border border-outline hover:border-primary text-on-surface hover:text-primary rounded-lg transition-colors cursor-pointer">
+                        <button className="px-3 py-1.5 text-label-sm font-bold border border-outline hover:border-primary text-on-surface hover:text-primary rounded-lg transition-colors cursor-pointer">
                           View Detail
-                        </Button>
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -402,31 +410,15 @@ function Teams() {
       )}
 
       {/* Pagination */}
-      <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-label-md text-on-surface-variant">
-          Showing {filteredUsers.length} of {users?.length || 0} entries
+          Showing {paginatedUsers.length > 0 ? (normalizedPage - 1) * itemsPerPage + 1 : 0} - {Math.min(normalizedPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} entries
         </p>
-        <div className="flex items-center gap-1">
-          <Button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-colors">
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
-          <Button className="w-10 h-10 flex items-center justify-center rounded bg-primary-container/20 text-primary border border-primary/20 font-bold">
-            1
-          </Button>
-          <Button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-colors font-bold">
-            2
-          </Button>
-          <Button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-colors font-bold">
-            3
-          </Button>
-          <span className="px-2 text-on-surface-variant">...</span>
-          <Button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-colors font-bold">
-            12
-          </Button>
-          <Button className="w-10 h-10 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-colors">
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
+        <Pagination
+          currentPage={normalizedPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

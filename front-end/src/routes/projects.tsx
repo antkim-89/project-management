@@ -3,12 +3,13 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Calendar, TrendingUp, ChevronDown, ListFilter } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { NewProjectCard } from "@/components/projects/NewProjectCard";
-import { ProjectDetailModal } from "@/components/modal/layout/ProjectDetailModal";
-import { NewProjectModal } from "@/components/modal/layout/NewProjectModal";
+import { ProjectDetailModal } from "@/components/modal/ProjectDetailModal";
+import { NewProjectModal } from "@/components/modal/NewProjectModal";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
+import { Select } from "@/components/base/Select";
+import { RadioGroup } from "@/components/base/Radio";
 
 import { useProjects } from "@/hooks/api/useProjects";
 import type { Project as APIProject } from "@/types/api";
@@ -58,6 +59,7 @@ function Projects() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("ALL");
+  const [selectedDept, setSelectedDept] = useState("All Departments");
 
   const { data: projects, isLoading, error } = useProjects();
 
@@ -112,9 +114,11 @@ function Projects() {
       };
     }) || [];
 
-  const filteredProjects = mappedProjects.filter(
-    (p) => activeFilter === "ALL" || p.status === activeFilter,
-  );
+  const filteredProjects = mappedProjects.filter((p) => {
+    const matchesFilter = activeFilter === "ALL" || p.status === activeFilter;
+    const matchesDept = selectedDept === "All Departments" || p.department === selectedDept;
+    return matchesFilter && matchesDept;
+  });
 
   if (isLoading) return <div className="p-6">Loading projects...</div>;
   if (error)
@@ -139,32 +143,33 @@ function Projects() {
             Managing 12 active infrastructure deployments across 4 regions.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center bg-surface-container-low border border-outline-variant rounded p-1">
-            {["ALL", "ACTIVE", "ON HOLD"].map((filter) => (
-              <Button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={cn(
-                  "px-4 py-1.5 text-label-caps font-bold rounded transition-colors tracking-widest",
-                  activeFilter === filter
-                    ? "bg-primary-container/20 text-primary"
-                    : "text-on-surface-variant hover:text-on-surface",
-                )}
-              >
-                {filter}
-              </Button>
-            ))}
-          </div>
-          <select className="bg-surface-container-low border border-outline-variant text-on-surface text-label-md rounded px-3 py-2 outline-none focus:border-primary">
-            <option>All Departments</option>
-            <option>Network Ops</option>
-            <option>Cloud Infrastructure</option>
-            <option>Cyber Security</option>
-          </select>
-          <Button className="flex items-center gap-2 text-on-surface-variant transition-all px-2 py-2 rounded cursor-pointer hover:bg-interaction-hover hover:text-on-surface active:bg-interaction-pressed active:scale-90">
+        <div className="flex flex-wrap items-center gap-3">
+          <RadioGroup
+            name="project-filter"
+            variant="segmented"
+            options={[
+              { value: "ALL", label: "ALL" },
+              { value: "ACTIVE", label: "ACTIVE" },
+              { value: "ON HOLD", label: "ON HOLD" },
+            ]}
+            value={activeFilter}
+            onChange={setActiveFilter}
+          />
+          <Select
+            value={selectedDept}
+            onChange={setSelectedDept}
+            options={[
+              { value: "All Departments", label: "All Departments" },
+              { value: "Software Engineering", label: "Software Engineering" },
+              { value: "Network Ops", label: "Network Ops" },
+              { value: "Cloud Infrastructure", label: "Cloud Infrastructure" },
+              { value: "Cyber Security", label: "Cyber Security" },
+            ]}
+            className="min-w-[180px]"
+          />
+          <button className="flex items-center gap-2 text-on-surface-variant transition-all px-2 py-2 rounded cursor-pointer hover:bg-interaction-hover hover:text-on-surface active:bg-interaction-pressed active:scale-90">
             <ListFilter className="w-5 h-5" />
-          </Button>
+          </button>
         </div>
       </div>
 

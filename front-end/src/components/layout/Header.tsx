@@ -44,7 +44,7 @@ export function Header() {
 
   return (
     <>
-      <header className="h-16 bg-surface-container-low border-b border-outline-variant flex items-center justify-between px-6 shrink-0 relative z-50">
+      <header className="h-16 bg-surface-container-low border-b border-outline-variant flex items-center justify-between px-6 shrink-0 relative z-[30]">
         {/* Left: Brand Logo & Navigation */}
         <div className="flex items-center gap-8">
           <Link
@@ -158,11 +158,12 @@ export function Header() {
                 </BasePopover>
               </>
             ) : (
-              <Button variant="primary" className=" px-5 h-10" onClick={login}>
-                <div className="flex items-center gap-2">
-                  <LogIn className="w-4 h-4" />
-                  <span>{t("common.login")}</span>
-                </div>
+              <Button
+                variant="primary"
+                onClick={login}
+                prefixIcon={<LogIn className="w-4 h-4" />}
+              >
+                {t("common.login")}
               </Button>
             )}
           </div>

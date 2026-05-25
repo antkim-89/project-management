@@ -95,14 +95,16 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
     <div className="flex items-center justify-between w-full">
       <div className="flex gap-2">
         <Button
+          variant="glass"
           onClick={() => setIsEditModalOpen(true)}
-          className="btn-glass px-3 h-10 cursor-pointer hover:text-primary transition-colors"
-        >
-          <Edit2 className="w-4 h-4" />
-        </Button>
-        <Button variant="glass" className=" px-3 h-10">
-          <Share2 className="w-4 h-4" />
-        </Button>
+          className="px-3 h-10 cursor-pointer hover:text-primary transition-colors"
+          prefixIcon={<Edit2 className="w-4 h-4" />}
+        />
+        <Button
+          variant="glass"
+          className="px-3 h-10"
+          prefixIcon={<Share2 className="w-4 h-4" />}
+        />
       </div>
       <Button variant="primary" className=" px-8 h-10">
         View Full Report
@@ -125,11 +127,11 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
         <div className="flex justify-between items-start">
           {header}
           <Button
+            variant="ghost"
             className="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all"
             onClick={onClose}
-          >
-            <X className="w-6 h-6" />
-          </Button>
+            prefixIcon={<X className="w-6 h-6" />}
+          />
         </div>
       </div>
 

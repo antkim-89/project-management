@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-
-const API_URL = 'http://localhost:3001/api';
+import api from '@/lib/axios';
 
 export interface ProjectCategory {
   id: string;
@@ -11,9 +10,8 @@ export function useProjectCategories() {
   return useQuery<ProjectCategory[]>({
     queryKey: ['projectCategories'],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/project-categories`);
-      if (!res.ok) throw new Error('Failed to fetch project categories');
-      return res.json();
+      const res = await api.get('/project-categories');
+      return res.data;
     },
   });
 }
@@ -23,15 +21,8 @@ export function useCreateProjectCategory() {
   
   return useMutation({
     mutationFn: async (name: string) => {
-      const res = await fetch(`${API_URL}/project-categories`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name }),
-      });
-      if (!res.ok) throw new Error('Failed to create project category');
-      return res.json();
+      const res = await api.post('/project-categories', { name });
+      return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projectCategories'] });
@@ -44,10 +35,7 @@ export function useDeleteProjectCategory() {
   
   return useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`${API_URL}/project-categories/${id}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) throw new Error('Failed to delete project category');
+      await api.delete(`/project-categories/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projectCategories'] });

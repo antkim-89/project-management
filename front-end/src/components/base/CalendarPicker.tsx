@@ -8,26 +8,36 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
 
 interface CalendarPickerProps {
-  value: string; // YYYY-MM-DD
-  onChange: (date: string) => void;
+  value?: string; // YYYY-MM-DD (single mode)
+  onChange?: (date: string) => void; // (single mode)
+  mode?: "single" | "range";
+  rangeValue?: { startDate: string; endDate: string };
+  onRangeChange?: (range: { startDate: string; endDate: string }) => void;
   error?: string;
 }
 
 export function CalendarPicker({
   value,
   onChange,
+  mode = "single",
+  rangeValue,
+  onRangeChange,
   error,
 }: CalendarPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Parse initial selected date or default to today
-  const selectedDate = value ? new Date(value) : null;
+  const selectedDate = mode === "single" && value ? new Date(value) : null;
 
   // Track currently viewed month/year in picker
   const [currentDate, setCurrentDate] = useState(() => {
-    return selectedDate
-      ? new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
-      : new Date();
+    if (mode === "single" && selectedDate) {
+      return new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+    } else if (mode === "range" && rangeValue?.startDate) {
+      const start = new Date(rangeValue.startDate);
+      return new Date(start.getFullYear(), start.getMonth(), 1);
+    }
+    return new Date();
   });
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,30 +75,54 @@ export function CalendarPicker({
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
+  const getCellDateString = (day: number, type: "current" | "prev" | "next") => {
+    let y = year;
+    let m = month;
+    if (type === "prev") {
+      m = month - 1;
+      if (m < 0) {
+        m = 11;
+        y -= 1;
+      }
+    } else if (type === "next") {
+      m = month + 1;
+      if (m > 11) {
+        m = 0;
+        y += 1;
+      }
+    }
+    return `${y}-${String(m + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  };
+
   const handleDateSelect = (
     day: number,
     isCurrentMonth: "current" | "prev" | "next",
   ) => {
-    let targetYear = year;
-    let targetMonth = month;
+    const formattedDate = getCellDateString(day, isCurrentMonth);
 
-    if (isCurrentMonth === "prev") {
-      targetMonth = month - 1;
-      if (targetMonth < 0) {
-        targetMonth = 11;
-        targetYear -= 1;
+    if (mode === "single") {
+      if (onChange) {
+        onChange(formattedDate);
       }
-    } else if (isCurrentMonth === "next") {
-      targetMonth = month + 1;
-      if (targetMonth > 11) {
-        targetMonth = 0;
-        targetYear += 1;
+      setIsOpen(false);
+    } else if (mode === "range" && onRangeChange) {
+      const currentStart = rangeValue?.startDate;
+      const currentEnd = rangeValue?.endDate;
+
+      if (!currentStart || (currentStart && currentEnd)) {
+        onRangeChange({ startDate: formattedDate, endDate: "" });
+      } else {
+        const start = new Date(currentStart);
+        const selected = new Date(formattedDate);
+
+        if (selected < start) {
+          onRangeChange({ startDate: formattedDate, endDate: "" });
+        } else {
+          onRangeChange({ startDate: currentStart, endDate: formattedDate });
+          setIsOpen(false);
+        }
       }
     }
-
-    const formattedDate = `${targetYear}-${String(targetMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-    onChange(formattedDate);
-    setIsOpen(false);
   };
 
   // Generate calendar grid array
@@ -124,12 +158,33 @@ export function CalendarPicker({
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
   const isSelected = (day: number, type: "current" | "prev" | "next") => {
-    if (!selectedDate || type !== "current") return false;
-    return (
-      selectedDate.getFullYear() === year &&
-      selectedDate.getMonth() === month &&
-      selectedDate.getDate() === day
-    );
+    const cellDateStr = getCellDateString(day, type);
+    if (mode === "single") {
+      return value === cellDateStr;
+    } else {
+      return (
+        rangeValue?.startDate === cellDateStr ||
+        rangeValue?.endDate === cellDateStr
+      );
+    }
+  };
+
+  const isRangeStart = (day: number, type: "current" | "prev" | "next") => {
+    if (mode !== "range" || !rangeValue?.startDate) return false;
+    return rangeValue.startDate === getCellDateString(day, type);
+  };
+
+  const isRangeEnd = (day: number, type: "current" | "prev" | "next") => {
+    if (mode !== "range" || !rangeValue?.endDate) return false;
+    return rangeValue.endDate === getCellDateString(day, type);
+  };
+
+  const isInRange = (day: number, type: "current" | "prev" | "next") => {
+    if (mode !== "range" || !rangeValue?.startDate || !rangeValue?.endDate) return false;
+    const cellDate = new Date(getCellDateString(day, type));
+    const start = new Date(rangeValue.startDate);
+    const end = new Date(rangeValue.endDate);
+    return cellDate > start && cellDate < end;
   };
 
   const isToday = (day: number, type: "current" | "prev" | "next") => {
@@ -149,7 +204,7 @@ export function CalendarPicker({
         ref={triggerRef}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "relative flex items-center font-mono cursor-pointer w-full bg-surface-container-low border text-on-surface rounded-xl pl-11 pr-4 py-3 outline-none transition-all text-body-md select-none",
+          "relative flex items-center font-mono cursor-pointer w-full bg-surface-container-low border text-on-surface rounded-[10px] pl-11 pr-4 py-3 outline-none transition-all text-body-md select-none",
           isOpen
             ? "border-primary ring-1 ring-primary"
             : "border-outline-variant/30",
@@ -157,14 +212,22 @@ export function CalendarPicker({
         )}
       >
         <CalendarIcon className="absolute left-4 w-4 h-4 text-on-surface-variant pointer-events-none" />
-        <span>{value || "날짜 선택"}</span>
+        <span>
+          {mode === "single"
+            ? value || "날짜 선택"
+            : rangeValue?.startDate
+              ? rangeValue.endDate
+                ? `${rangeValue.startDate} ~ ${rangeValue.endDate}`
+                : `${rangeValue.startDate} ~ 기간 선택`
+              : "기간 선택"}
+        </span>
       </div>
 
       {/* Calendar Popover */}
       {isOpen && (
         <div
           ref={containerRef}
-          className="absolute z-9999 bottom-full mb-2 left-0 w-80 bg-surface-container-high/95 backdrop-blur-md border border-outline-variant/35 rounded-2xl p-4 shadow-2xl animate-fade-in flex flex-col gap-4 select-none"
+          className="absolute z-[50] bottom-full mb-2 left-0 w-80 bg-surface-container-high/95 backdrop-blur-md border border-outline-variant/35 rounded-[20px] p-4 shadow-2xl animate-fade-in flex flex-col gap-4 select-none"
         >
           {/* Header: Month & Navigation */}
           <div className="flex items-center justify-between">
@@ -194,7 +257,7 @@ export function CalendarPicker({
                 key={wd}
                 className={cn(
                   index === 0 ? "text-error" : "",
-                  index === 6 ? "text-primary" : "",
+                  index === 6 ? "text-secondary" : "",
                 )}
               >
                 {wd}
@@ -203,12 +266,36 @@ export function CalendarPicker({
           </div>
 
           {/* Days Grid */}
-          <div className="grid grid-cols-7 gap-1 text-center font-mono text-body-sm">
+          <div className="grid grid-cols-7 gap-y-1 gap-x-0 text-center font-mono text-body-sm">
             {calendarCells.map((cell, index) => {
               const dayOfWeek = index % 7;
               const active = isSelected(cell.day, cell.type);
+              const activeStart = isRangeStart(cell.day, cell.type);
+              const activeEnd = isRangeEnd(cell.day, cell.type);
+              const inRange = isInRange(cell.day, cell.type);
               const today = isToday(cell.day, cell.type);
               const isOtherMonth = cell.type !== "current";
+
+              // Determine classes for styling ranges
+              let cellClass = "";
+              if (mode === "single") {
+                cellClass = cn(
+                  "rounded-full",
+                  active
+                    ? "bg-primary text-on-primary hover:bg-primary/95 shadow-md shadow-primary/20 scale-105"
+                    : "",
+                );
+              } else {
+                if (activeStart && activeEnd) {
+                  cellClass = "bg-primary text-on-primary rounded-full shadow-md shadow-primary/20 scale-105 z-10";
+                } else if (activeStart) {
+                  cellClass = "bg-primary text-on-primary rounded-l-full rounded-r-none shadow-md shadow-primary/20 scale-105 z-10";
+                } else if (activeEnd) {
+                  cellClass = "bg-primary text-on-primary rounded-r-full rounded-l-none shadow-md shadow-primary/20 scale-105 z-10";
+                } else if (inRange) {
+                  cellClass = "bg-primary/15 text-primary rounded-none hover:bg-primary/25";
+                }
+              }
 
               return (
                 <button
@@ -216,21 +303,21 @@ export function CalendarPicker({
                   type="button"
                   onClick={() => handleDateSelect(cell.day, cell.type)}
                   className={cn(
-                    "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold transition-all relative active:scale-90 hover:scale-105 cursor-pointer",
-                    isOtherMonth
-                      ? "text-on-surface-variant/20 hover:bg-interaction-hover/40"
-                      : "text-on-surface hover:bg-interaction-hover",
-                    dayOfWeek === 0 && !isOtherMonth && !active
+                    "h-8 w-8 flex items-center justify-center text-xs font-bold transition-all relative active:scale-90 hover:scale-105 cursor-pointer",
+                    cellClass,
+                    !active && !activeStart && !activeEnd && !inRange && (
+                      isOtherMonth
+                        ? "text-on-surface-variant/20 hover:bg-interaction-hover/40 rounded-full"
+                        : "text-on-surface hover:bg-interaction-hover rounded-full"
+                    ),
+                    dayOfWeek === 0 && !isOtherMonth && !active && !activeStart && !activeEnd && !inRange
                       ? "text-error"
                       : "",
-                    dayOfWeek === 6 && !isOtherMonth && !active
-                      ? "text-primary"
+                    dayOfWeek === 6 && !isOtherMonth && !active && !activeStart && !activeEnd && !inRange
+                      ? "text-secondary"
                       : "",
-                    today && !active
-                      ? "border border-primary text-primary"
-                      : "",
-                    active
-                      ? "bg-primary text-on-primary hover:bg-primary/95 shadow-md shadow-primary/20 scale-105"
+                    today && !active && !activeStart && !activeEnd
+                      ? "border border-primary text-primary rounded-full"
                       : "",
                   )}
                 >

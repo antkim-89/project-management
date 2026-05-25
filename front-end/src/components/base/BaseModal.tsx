@@ -48,12 +48,12 @@ export function BaseModal({
 
   return (
     <div
-      className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       <div
         className={cn(
-          "w-full bg-surface-container border border-outline-variant rounded-2xl shadow-2xl flex flex-col max-h-[calc(100vh-4rem)] animate-zoom-in",
+          "w-full bg-surface-container border border-outline-variant rounded-[30px] shadow-2xl flex flex-col max-h-[calc(100vh-4rem)] animate-zoom-in",
           sizeClasses[size],
           className,
         )}
@@ -71,9 +71,9 @@ export function BaseModal({
               <Button
                 onClick={onClose}
                 variant="glass"
-              >
-                <X className="w-5 h-5" />
-              </Button>
+                size="icon"
+                prefixIcon={<X className="w-5 h-5" />}
+              />
             )}
           </header>
         )}

@@ -1,7 +1,7 @@
 @layer components {
-  /* Common Glassmorphism Card */
+  /* Common Glassmorphism Card - Default rounded.xl (20px) */
   .glass-card {
-    @apply bg-surface-container/40 border border-outline-variant/30 transition-all duration-300;
+    @apply bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded-[20px];
     
     &:hover {
       @apply border-primary/20 bg-surface-container/60;
@@ -10,7 +10,7 @@
 
   /* Standardized Table Styles */
   .data-table-container {
-    @apply bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded overflow-hidden;
+    @apply bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded-[20px] overflow-hidden;
     
     &:hover {
       @apply border-primary/20 bg-surface-container/60;
@@ -42,9 +42,9 @@
     @apply bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent;
   }
 
-  /* Common Button Variants (if not using a component) */
+  /* Common Button Variants (if not using a component) - Aligned with rounded.pill */
   .btn-glass {
-    @apply h-10 flex items-center gap-2 px-4 bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded text-on-surface font-bold text-label-caps hover:border-primary;
+    @apply h-10 flex items-center gap-2 px-4 bg-surface-container/40 border border-outline-variant/30 transition-all duration-300 rounded-full text-on-surface font-bold text-label-caps hover:border-primary;
     
     &:hover {
       @apply border-primary/20 bg-surface-container/60;

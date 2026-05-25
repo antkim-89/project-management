@@ -19,7 +19,7 @@ export const GlassCard = ({
   return (
     <div
       className={cn(
-        "glass-card rounded",
+        "glass-card",
         !hoverable &&
           "hover:border-outline-variant/30 hover:bg-surface-container/40",
         className,

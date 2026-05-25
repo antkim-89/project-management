@@ -189,9 +189,11 @@ function Projects() {
 
       {/* Pagination/Load More */}
       <div className="mt-8 flex justify-center">
-        <Button variant="glass" className=" px-6">
+        <Button
+          variant="glass"
+          suffixIcon={<ChevronDown className="w-4 h-4" />}
+        >
           View More Projects
-          <ChevronDown className="w-4 h-4" />
         </Button>
       </div>
 

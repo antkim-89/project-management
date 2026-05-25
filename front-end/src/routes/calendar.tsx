@@ -8,6 +8,8 @@ import { UserLeaveView } from "@/components/calendar/UserLeaveView";
 import { TaskCalendarView } from "@/components/calendar/TaskCalendarView";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 
+import { useProjects } from "@/hooks/api/useProjects";
+
 export const Route = createFileRoute("/calendar")({
   component: CalendarPage,
 });
@@ -18,41 +20,70 @@ function CalendarPage() {
     "TASKS",
   );
 
-  const projectList = [
-    {
-      id: "8821",
-      status: "ACTIVE" as const,
-      title: "Global Data Migration",
-      avatars: [
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDlPCKzEd8otqFQLZNnxb3HgTi2hX6nNWyYSAeIvYqee_WzpMvOrSrK8dj9pakQMpI4G1MzOxqHW-K6xoRZNIvhfqPWkwltLum_23u9KhP1UZseaVofWymgt9hEjH-vlia1jX9_DCezC0butlTIfpEy5cLDLkHrPUIRk7nmxKvlM9L1uzao-D3weM0E8CkUHBnQc7L_iGfdmHY9Keohh7ywIBIZQNdeXMEZt-d8lUT7LqOrfs1OpnLWPwjQzUFDRTLM3sRh4al82fs",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAv0g9nNDhpuagyFX_JDsm2Xk31wQdB34kYj0HLv9fZdd8urnCbX8NNzphCAFzuEcg8PGpQcEGBeMFWaEaDnh0qtrpS2kQBN58c7tTx9w7EsHCfA41gv-3dz5cv9FHtvBzQl2fR9ehJ50a5UhYm9-vLb4F_lHUq0HEr_OQWqoC_jPAws4fYl46MevLdisr3rPoDe56NJsf9NP5vpe_9KJ1j_qqagGNogK_23NCJZyVAU2QScWjA-Plw8GzFjBClPmoOuvVChH3af78",
-      ],
-      avatarMore: 3,
-      progress: 68,
-      variant: "secondary",
-    },
-    {
-      id: "9014",
-      status: "AT RISK" as const,
-      title: "Quantum Security Patch",
-      avatars: [
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBpKuSw843oBbZt61M5aIQNjKm9IrnpoHBOnQ8oMxe69oofVofrjhsZIyEmKRQ9Q4bHlGwb1nuf1FUQIAsLov1Yjsp-Gw1C_GSr9e8OCUztfDeRrV1-PJrn3WtCW5kmHpybrMD2SnJtdxLotiV18qlGDuYW5R2yNJEA3mbcclEbbE6bcIw8GHqBT7vXGH_bx9dpLrj6FKRyDPNyj_SHlH-AWLtU7JwHiUjhgQYEtvNbviDAMAYVAH5LBW9izjnAcPj8lZFWsoHWC2M",
-      ],
-      avatarMore: 1,
-      progress: 32,
-      variant: "error",
-    },
-    {
-      id: "7220",
-      status: "COMPLETED" as const,
-      title: "Server Refresh Ph.1",
-      avatars: [
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCEQKD6t6VJDcLrcHz_3K4jLMASEU3Z5UsFS_gp4GTFG2J3WsXOPYRrpCc3I9J2U6iBIJAzrKZORt0u0KUgizvlkCwHH6dkL1oFneZVTf9X0nDuSZ95A93zIadIeEVQgTmQD_IdLzEioCZcLuYH0ktN7q7_nOEk2vkbsyAad9NhhbR5hpLeHJ_Ge9z6PgCP1n7D7njcjUtLVcE5LnJOXix56-T5yICNgMJnUtV9TrxIWmUHCkg3ztiz4eNYIuJs0It2JCcg1Gxtu6w",
-      ],
-      progress: 100,
-      variant: "primary",
-    },
-  ];
+  const { data: projects, isLoading, error } = useProjects();
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 p-6 flex items-center justify-center text-on-surface-variant animate-fade-in">
+        Loading calendar data...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 p-6 text-error flex items-center justify-center animate-fade-in">
+        Error loading calendar data.
+      </div>
+    );
+  }
+
+  const projectList = projects?.map((p) => {
+    const statusVal = p.status.toUpperCase();
+    const finalStatus = (
+      ["ACTIVE", "AT RISK", "COMPLETED", "ON HOLD"].includes(statusVal)
+        ? statusVal
+        : "ACTIVE"
+    ) as "ACTIVE" | "AT RISK" | "COMPLETED" | "ON HOLD";
+
+    const avatars = p.assignments?.map((a) => a.user?.avatarUrl || "").filter(Boolean) || [];
+    const avatarMore = avatars.length > 2 ? avatars.length - 2 : 0;
+
+    // progress 동적 계산: (오늘 - 시작일) / (종료일 - 시작일) * 100
+    const start = new Date(p.startDate).getTime();
+    const end = new Date(p.endDate).getTime();
+    const now = new Date().getTime();
+    let progress = 0;
+    if (end > start) {
+      progress = Math.min(
+        100,
+        Math.max(0, Math.round(((now - start) / (end - start)) * 100))
+      );
+    } else if (now >= start) {
+      progress = 100;
+    }
+
+    const variant =
+      finalStatus === "ACTIVE"
+        ? "secondary"
+        : finalStatus === "AT RISK"
+          ? "error"
+          : finalStatus === "COMPLETED"
+            ? "primary"
+            : "neutral";
+
+    return {
+      id: p.id,
+      status: finalStatus,
+      title: p.title,
+      avatars: avatars,
+      avatarMore: avatarMore,
+      progress,
+      variant,
+      startDate: p.startDate,
+      endDate: p.endDate,
+    };
+  }) || [];
 
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
@@ -94,8 +125,10 @@ function CalendarPage() {
               ))}
             </div>
           )}
-          <Button variant="glass" className=" px-4">
-            <Download className="w-4 h-4" />
+          <Button
+            variant="glass"
+            prefixIcon={<Download className="w-4 h-4" />}
+          >
             Export Data
           </Button>
         </div>

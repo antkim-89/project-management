@@ -11,6 +11,8 @@ interface Project {
   avatarMore?: number;
   progress: number;
   variant: string;
+  startDate: string | Date;
+  endDate: string | Date;
 }
 
 interface ProjectTimelineProps {
@@ -20,42 +22,88 @@ interface ProjectTimelineProps {
 export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({
   projects,
 }) => {
-  // Mock dates for the header
-  const dates = [
-    { day: "MON", date: "15", isToday: true },
-    { day: "TUE", date: "16" },
-    { day: "WED", date: "17" },
-    { day: "THU", date: "18" },
-    { day: "FRI", date: "19" },
-    { day: "SAT", date: "20", isWeekend: true },
-    { day: "SUN", date: "21", isWeekend: true },
-    { day: "MON", date: "22" },
-    { day: "TUE", date: "23" },
-    { day: "WED", date: "24" },
-  ];
+  // 오늘 기준으로 10일간의 날짜 동적 생성
+  const dates = React.useMemo(() => {
+    const arr = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  // Mock positions for the bars (in pixels, 80px per day)
-  const getBarProps = (index: number, status: string) => {
-    const offsets = [0, 80, 240, 0, 160];
-    const widths = [480, 600, 320, 240, 400];
+    const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+    for (let i = 0; i < 10; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+
+      arr.push({
+        day: dayNames[d.getDay()],
+        date: String(d.getDate()),
+        isToday: i === 0,
+        isWeekend: d.getDay() === 0 || d.getDay() === 6,
+        fullDateStr: d.toISOString().split("T")[0],
+        rawDate: d,
+      });
+    }
+    return arr;
+  }, []);
+
+  const getBarProps = (project: Project) => {
+    const start = new Date(project.startDate);
+    const end = new Date(project.endDate);
+
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+
+    const timelineStart = dates[0].rawDate;
+    const timelineEnd = dates[dates.length - 1].rawDate;
+
+    // 만약 타임라인 영역과 프로젝트 기간이 전혀 겹치지 않는 경우
+    if (end < timelineStart || start > timelineEnd) {
+      return {
+        left: 0,
+        width: 0,
+        statusStyles: "hidden",
+        visible: false,
+      };
+    }
+
+    // 겹치는 구간의 시작점과 종료점 계산
+    const effectiveStart = start < timelineStart ? timelineStart : start;
+    const effectiveEnd = end > timelineEnd ? timelineEnd : end;
+
+    // timelineStart 대비 시작일 오프셋 일수 구하기
+    const leftDays = Math.round(
+      (effectiveStart.getTime() - timelineStart.getTime()) /
+        (24 * 60 * 60 * 1000),
+    );
+
+    // 겹치는 총 일수 구하기
+    const activeDays =
+      Math.round(
+        (effectiveEnd.getTime() - effectiveStart.getTime()) /
+          (24 * 60 * 60 * 1000),
+      ) + 1;
+
+    const status = project.status;
+    const statusStyles =
+      status === "ACTIVE"
+        ? "bg-secondary/20 text-secondary border-secondary/30"
+        : status === "AT RISK"
+          ? "bg-error/20 text-error border-error/30"
+          : status === "COMPLETED"
+            ? "bg-primary/20 text-primary border-primary/30"
+            : "bg-on-surface-variant/20 text-on-surface-variant border-on-surface-variant/30";
 
     return {
-      left: offsets[index % offsets.length],
-      width: widths[index % widths.length],
-      statusStyles:
-        status === "ACTIVE"
-          ? "bg-secondary/20 text-secondary border-secondary/30"
-          : status === "AT RISK"
-            ? "bg-error/20 text-error border-error/30"
-            : status === "COMPLETED"
-              ? "bg-primary/20 text-primary border-primary/30"
-              : "bg-on-surface-variant/20 text-on-surface-variant border-on-surface-variant/30",
+      left: leftDays * 80,
+      width: activeDays * 80 - 32, // 패딩 마진 16px 고려해 32px 차감
+      statusStyles,
+      visible: true,
     };
   };
 
   return (
     <GlassCard className="p-0 overflow-hidden flex flex-col min-h-[400px]">
-      <div className="flex border-b border-outline-variant/30 sticky top-0 bg-surface-container/60 backdrop-blur-md z-20">
+      <div className="flex border-b border-outline-variant/30 sticky top-0 bg-surface-container/60 backdrop-blur-md z-[10]">
         <div className="w-[280px] p-6 border-r border-outline-variant/30 flex items-center">
           <span className="text-label-caps font-bold text-on-surface-variant tracking-widest">
             Active Projects
@@ -91,11 +139,10 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {projects.map((project, idx) => {
-          const { left, width, statusStyles } = getBarProps(
-            idx,
-            project.status,
-          );
+        {projects.map((project) => {
+          const { left, width, statusStyles, visible } = getBarProps(project);
+          if (!visible) return null; // 타임라인 영역 내에 노출되지 않으면 건너뜀
+
           return (
             <div
               key={project.id}
@@ -132,11 +179,11 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({
                         className="w-5 h-5 rounded-full border border-surface-container object-cover"
                       />
                     ))}
-                    {project.avatarMore && (
+                    {project.avatarMore && project.avatarMore > 0 ? (
                       <div className="w-5 h-5 rounded-full bg-surface-container-highest border border-surface-container flex items-center justify-center text-[8px] font-bold text-on-surface">
                         +{project.avatarMore}
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -176,6 +223,11 @@ export const ProjectTimeline: React.FC<ProjectTimelineProps> = ({
             </div>
           );
         })}
+        {projects.filter((p) => getBarProps(p).visible).length === 0 && (
+          <div className="p-12 text-center text-on-surface-variant/40">
+            현재 10일간의 일정 영역 내에 진행 중인 프로젝트가 없습니다.
+          </div>
+        )}
       </div>
     </GlassCard>
   );

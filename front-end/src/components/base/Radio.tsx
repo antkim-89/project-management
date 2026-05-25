@@ -88,7 +88,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
     return (
       <div
         className={cn(
-          "inline-flex bg-surface-container-low border border-outline-variant/30 rounded-xl p-1 gap-1 select-none",
+          "inline-flex bg-surface-container-low border border-outline-variant/30 rounded-full p-1 gap-1 select-none",
           disabled && "opacity-50 pointer-events-none",
           className
         )}
@@ -102,7 +102,7 @@ export const RadioGroup: React.FC<RadioGroupProps> = ({
               disabled={disabled || option.disabled}
               onClick={() => onChange(option.value)}
               className={cn(
-                "px-4 py-1.5 text-label-caps font-bold rounded-lg transition-all tracking-wider text-xs cursor-pointer select-none",
+                "px-4 py-1.5 text-label-caps font-bold rounded-full transition-all tracking-wider text-xs cursor-pointer select-none",
                 isSelected
                   ? "bg-primary-container/20 text-primary border border-primary/20 shadow-sm"
                   : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40",

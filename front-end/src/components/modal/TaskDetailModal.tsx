@@ -117,14 +117,15 @@ export function TaskDetailModal({
     <div className="flex items-center justify-between w-full">
       <div>
         {isEditMode && (
-          <button
+          <Button
+            variant="ghost"
             onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 text-error hover:bg-error/10 active:scale-95 transition-all rounded-xl font-bold text-label-md cursor-pointer"
+            className="text-error hover:bg-error/10"
             disabled={deleteTaskMutation.isPending}
+            prefixIcon={<Trash2 className="w-4 h-4" />}
           >
-            <Trash2 className="w-4 h-4" />
             삭제하기
-          </button>
+          </Button>
         )}
       </div>
       <div className="flex items-center gap-3">

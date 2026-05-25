@@ -23,23 +23,94 @@ import {
   AreaChart,
   CircularProgressChart,
 } from "@/components/dashboard";
+import { useProjects } from "@/hooks/api/useProjects";
+import { useUsers } from "@/hooks/api/useUsers";
+import { useEquipment } from "@/hooks/api/useEquipment";
+import { useLeaveRequests } from "@/hooks/api/useLeaveRequests";
+import { useTasks } from "@/hooks/api/useTasks";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-import { useProjects } from "@/hooks/api/useProjects";
-import { useUsers } from "@/hooks/api/useUsers";
-
 function Index() {
   const { t } = useTranslation();
   const { data: projects } = useProjects();
   const { data: users } = useUsers();
+  const { data: equipment } = useEquipment();
+  const { data: leaveRequests } = useLeaveRequests();
+  const { data: tasks } = useTasks();
 
   const activeProjectsCount = projects?.length || 0;
   const totalPersonnel = users?.length || 0;
   const totalBudget = projects?.reduce((acc, p) => acc + p.budget, 0) || 0;
   const monthlyCost = totalBudget / 12;
+
+  // 프로젝트별 진행률 상위 3개 계산
+  const topProjects = useMemo(() => {
+    if (!projects) return [];
+    return [...projects]
+      .slice(0, 3)
+      .map((p) => {
+        const start = new Date(p.startDate).getTime();
+        const end = new Date(p.endDate).getTime();
+        const now = new Date().getTime();
+        let progress = 0;
+        if (end > start) {
+          progress = Math.min(100, Math.max(0, Math.round(((now - start) / (end - start)) * 100)));
+        } else if (now >= start) {
+          progress = 100;
+        }
+
+        let color = "bg-primary";
+        if (progress >= 80) {
+          color = "bg-emerald-400";
+        } else if (progress < 40) {
+          color = "bg-rose-400";
+        }
+
+        return {
+          name: p.title,
+          percent: progress,
+          color,
+        };
+      });
+  }, [projects]);
+
+  // 대기 중인 승인 요청 및 간편 할 일 목록 생성
+  const quickTasks = useMemo(() => {
+    const list: { id: string; icon: React.ReactNode; name: string; desc: string }[] = [];
+
+    // 1. 대기 중인 휴가 신청
+    const pendingLeaves = leaveRequests?.filter(r => r.status.toUpperCase() === "PENDING") || [];
+    pendingLeaves.forEach((r) => {
+      const start = new Date(r.startDate);
+      const end = new Date(r.endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+      list.push({
+        id: `leave-${r.id}`,
+        icon: <Users className="w-5 h-5 text-emerald-400" />,
+        name: `Leave Request: ${r.user?.name || "Unknown"}`,
+        desc: `${r.type} Leave • ${days} Days • Pending Approval`,
+      });
+    });
+
+    // 2. 미완료 태스크
+    const activeTasks = tasks?.filter(t => t.status === "TODO" || t.status === "IN_PROGRESS") || [];
+    activeTasks.slice(0, 3).forEach((t) => {
+      list.push({
+        id: `task-${t.id}`,
+        icon: <FolderKanban className="w-5 h-5 text-primary" />,
+        name: `Task: ${t.title}`,
+        desc: `Project: ${t.project?.title || "None"} • Due: ${t.dueDate ? t.dueDate.split("T")[0] : "No date"}`,
+      });
+    });
+
+    return list.slice(0, 4); // 최대 4개 노출
+  }, [leaveRequests, tasks]);
 
   return (
     <div className="p-6 space-y-6 bg-background min-h-full overflow-y-auto animate-fade-in">
@@ -56,7 +127,11 @@ function Index() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button prefixIcon={<Calendar className="w-4 h-4" />} variant="outline" className="flex items-center gap-2 px-4 rounded text-label-md font-medium text-on-surface transition-colors hover:bg-interaction-hover">
+          <Button
+            prefixIcon={<Calendar className="w-4 h-4" />}
+            variant="outline"
+            className="rounded text-label-md font-medium text-on-surface"
+          >
             This Month
           </Button>
         </div>
@@ -150,8 +225,8 @@ function Index() {
         <StatCard
           icon={<Package className="w-5 h-5 text-rose-400" />}
           label="Equipment Replacements"
-          value="12"
-          badge="Action Required"
+          value={(equipment?.length || 0).toString()}
+          badge="In Use"
           badgeColor="bg-rose-400/10 text-rose-400"
           borderColor="border-rose-500"
         />
@@ -251,16 +326,20 @@ function Index() {
             </Button>
           </div>
           <div className="space-y-4">
-            <TaskItem
-              icon={<Users className="w-5 h-5" />}
-              name="Leave Request: Sarah Miller"
-              desc="Annual Leave • 3 Days • Pending Approval"
-            />
-            <TaskItem
-              icon={<DollarSign className="w-5 h-5" />}
-              name="Purchase Order: Server Rack B4"
-              desc="$2,450.00 • IT Infrastructure"
-            />
+            {quickTasks.length === 0 ? (
+              <div className="text-sm text-on-surface-variant/40 text-center py-8">
+                No pending approvals or active tasks.
+              </div>
+            ) : (
+              quickTasks.map((item) => (
+                <TaskItem
+                  key={item.id}
+                  icon={item.icon}
+                  name={item.name}
+                  desc={item.desc}
+                />
+              ))
+            )}
           </div>
         </GlassCard>
 
@@ -268,21 +347,20 @@ function Index() {
         <GlassCard className="col-span-12 lg:col-span-4 p-6 flex flex-col">
           <h4 className="text-lg font-bold mb-6">Project Cost Efficiency</h4>
           <div className="space-y-6">
-            <ProgressItem
-              name="Data Center Migration"
-              percent={92}
-              color="bg-emerald-400"
-            />
-            <ProgressItem
-              name="Network Security Audit"
-              percent={78}
-              color="bg-primary"
-            />
-            <ProgressItem
-              name="Cloud Infrastructure Build"
-              percent={45}
-              color="bg-rose-400"
-            />
+            {topProjects.length === 0 ? (
+              <div className="text-sm text-on-surface-variant/40 text-center py-6">
+                No active projects.
+              </div>
+            ) : (
+              topProjects.map((p, idx) => (
+                <ProgressItem
+                  key={idx}
+                  name={p.name}
+                  percent={p.percent}
+                  color={p.color}
+                />
+              ))
+            )}
           </div>
           <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-outline-variant/30">
             <div className="text-center">
@@ -307,4 +385,3 @@ function Index() {
     </div>
   );
 }
-

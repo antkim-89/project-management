@@ -38,9 +38,19 @@
 
 ---
 
-## 4. 헬스체크 (Health Check)
+## 4. 휴가 신청 (Leave Requests)
+
+| HTTP 메서드 | 엔드포인트 | 설명 |
+| :--- | :--- | :--- |
+| `GET` | `/leave-requests` | 전체 직원 휴가 신청 내역 조회 (신청 직원 상세 정보 포함) |
+| `POST` | `/leave-requests` | 새 휴가 신청 내역 등록 (`userId`, `startDate`, `endDate`, `type`, `reason` 필드 필요) |
+
+---
+
+## 5. 헬스체크 (Health Check)
 
 | HTTP 메서드 | 엔드포인트 | 설명 |
 | :--- | :--- | :--- |
 | `GET` | `/health` | 서버 상태 확인 및 헬스체크 |
+
 

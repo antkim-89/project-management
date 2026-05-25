@@ -74,9 +74,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             {title}
           </h3>
         </div>
-        <Button className="text-on-surface-variant hover:text-on-surface transition-colors">
-          <MoreVertical className="w-5 h-5" />
-        </Button>
+        <Button
+          variant="ghost"
+          className="text-on-surface-variant hover:text-on-surface transition-colors p-1 h-auto"
+          prefixIcon={<MoreVertical className="w-5 h-5" />}
+        />
       </div>
 
       <div className="flex items-center gap-2 mb-6">

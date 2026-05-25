@@ -1,9 +1,14 @@
-import { Button } from "@/components/base/Button";
-import React from "react";
-import { MoreHorizontal, Plane, Home, Calendar, Plus } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Plane, Home, Calendar, Plus, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GlassCard } from "@/components/base/GlassCard";
 import { LeaveStatCard } from "./LeaveStatCard";
+import { Button } from "@/components/base/Button";
+import { BaseModal } from "@/components/base/BaseModal";
+import { Select } from "@/components/base/Select";
+import { CalendarPicker } from "@/components/base/CalendarPicker";
+import { useLeaveRequests, useCreateLeaveRequest } from "@/hooks/api/useLeaveRequests";
+import { useUsers } from "@/hooks/api/useUsers";
 
 interface LeaveRecord {
   id: string;
@@ -15,60 +20,169 @@ interface LeaveRecord {
   startDate: string;
   endDate: string;
   days: number;
+  rawStartDate: Date;
+  rawEndDate: Date;
 }
 
-const LEAVE_RECORDS: LeaveRecord[] = [
-  {
-    id: "L1",
-    userName: "Kenji Tanaka",
-    userRole: "Machine Learning Engineer",
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDnR-z9ORACpNW-FCUSomRy4jJstxDwz153csMvfPZ_cqqck8QI5yot-y05E5gUQoDppNZYJfQHbzZweT9X42yuPwj_c03d72WpQx5vprbx0FliRh9o19hck4fURwEv2SjNwDKOQ7uJ-nnPEzEdgBFbMCWdCG5htLl8idxDOYuRxwCdisF0jlH8d1S_fHVJoF0NnPI10XOgY1_jtD3WgmFqjuxM8QJdCM0bML9eCnn_V9edy15sOgA84oXrYMMEaBYij2rUlpRlb3E",
-    leaveType: "Annual",
-    status: "On Leave",
-    startDate: "2025-10-15",
-    endDate: "2025-10-20",
-    days: 5,
-  },
-  {
-    id: "L2",
-    userName: "Elena Rodriguez",
-    userRole: "Lead Frontend Architect",
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuC3qa9sUFtCA_RSSigw9rkk1tdqGNmvNrkuxrp3Rm3TVMpbDg3YvhjlqzKLT2VLcCSo4_BOBg-4ZbzgSHM56cia_KJNEs5DcUxPuvf-AEKaim4NIIOusJM4ZVdZqBG9nYV9_0_OMjrBcetfQC83MA4hHXBsvJL6X43kZsuLmBBHDcv3Cmhs39dUkiJaCIR9AXfspNLryVtjk2YMPX0DjLtwi43s-Z7mVqGosh7THM7G9aRIxL0QOdlHAGctiKN3bSQhrACLfTOPcJs",
-    leaveType: "Remote",
-    status: "Approved",
-    startDate: "2025-10-16",
-    endDate: "2025-10-16",
-    days: 1,
-  },
-  {
-    id: "L3",
-    userName: "Marcus Aurelius",
-    userRole: "Senior Principal Engineer",
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuD_PFfiI-e4FRBUJWRPVcndiaIw7xONCsVs2F5JkQjTBL7uppiMo2YQ0m5a8mPx8RSFW_IXPAisPj5XYRqnNPpeBYSg4WnTsTxgkjwgmHx0nLl7fRVYXfY9eyi7YFlznmYU6c1fjZctHrF0fgjfwMAOHCHgmJJtpeU5snf-3AdHfUnPvmlM9JgpUqu6C4KUu8QGjZNrPJrVTFZy9MG4_ZqP6eOvXbPQnRqMeJ9I1AeTRwuC7D4BhL360hqiFW_Vpgw57GI3yRmqXAc",
-    leaveType: "Personal",
-    status: "Pending",
-    startDate: "2025-10-22",
-    endDate: "2025-10-24",
-    days: 3,
-  },
-];
-
 export const UserLeaveView: React.FC = () => {
-  const dates = [
-    { day: "MON", date: "15", isToday: true },
-    { day: "TUE", date: "16" },
-    { day: "WED", date: "17" },
-    { day: "THU", date: "18" },
-    { day: "FRI", date: "19" },
-    { day: "SAT", date: "20", isWeekend: true },
-    { day: "SUN", date: "21", isWeekend: true },
-    { day: "MON", date: "22" },
-    { day: "TUE", date: "23" },
-    { day: "WED", date: "24" },
-  ];
+  const { data: requests, isLoading, error } = useLeaveRequests();
+  const { data: users } = useUsers();
+  const createMutation = useCreateLeaveRequest();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form, setForm] = useState({
+    userId: "",
+    leaveType: "Annual",
+    startDate: "",
+    endDate: "",
+    reason: "",
+  });
+
+  // 오늘 기준으로 10일간의 날짜 동적 생성
+  const dates = useMemo(() => {
+    const arr = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+    for (let i = 0; i < 10; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+
+      arr.push({
+        day: dayNames[d.getDay()],
+        date: String(d.getDate()),
+        isToday: i === 0,
+        isWeekend: d.getDay() === 0 || d.getDay() === 6,
+        fullDateStr: d.toISOString().split("T")[0],
+        rawDate: d,
+      });
+    }
+    return arr;
+  }, []);
+
+  const leaveRecords = useMemo<LeaveRecord[]>(() => {
+    return (
+      requests?.map((r) => {
+        const start = new Date(r.startDate);
+        const end = new Date(r.endDate);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+
+        const diffTime = Math.abs(end.getTime() - start.getTime());
+        const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+        const typeVal = r.type;
+        const leaveType = (
+          ["Annual", "Sick", "Personal", "Remote"].includes(typeVal)
+            ? typeVal
+            : "Annual"
+        ) as "Annual" | "Sick" | "Personal" | "Remote";
+
+        const statusVal = r.status.toUpperCase();
+        let finalStatus: "Approved" | "Pending" | "On Leave" = "Pending";
+        if (statusVal === "APPROVED") {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          if (today >= start && today <= end) {
+            finalStatus = "On Leave";
+          } else {
+            finalStatus = "Approved";
+          }
+        } else if (statusVal === "PENDING") {
+          finalStatus = "Pending";
+        }
+
+        return {
+          id: r.id,
+          userName: r.user?.name || "Unknown",
+          userRole: r.user?.rank?.name || "Member",
+          avatar: r.user?.avatarUrl || "",
+          leaveType,
+          status: finalStatus,
+          startDate: r.startDate.split("T")[0],
+          endDate: r.endDate.split("T")[0],
+          days,
+          rawStartDate: start,
+          rawEndDate: end,
+        };
+      }) || []
+    );
+  }, [requests]);
+
+  const stats = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const nextWeek = new Date(today);
+    nextWeek.setDate(today.getDate() + 7);
+
+    let currentlyAway = 0;
+    let upcomingNextWeek = 0;
+    let pendingRequests = 0;
+
+    requests?.forEach((r) => {
+      const start = new Date(r.startDate);
+      const end = new Date(r.endDate);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+
+      const statusVal = r.status.toUpperCase();
+
+      if (statusVal === "APPROVED") {
+        if (today >= start && today <= end) {
+          currentlyAway += 1;
+        } else if (start > today && start <= nextWeek) {
+          upcomingNextWeek += 1;
+        }
+      } else if (statusVal === "PENDING") {
+        pendingRequests += 1;
+      }
+    });
+
+    return {
+      currentlyAway,
+      upcomingNextWeek,
+      pendingRequests,
+    };
+  }, [requests]);
+
+  const getBarProps = (record: LeaveRecord) => {
+    const start = record.rawStartDate;
+    const end = record.rawEndDate;
+
+    const timelineStart = dates[0].rawDate;
+    const timelineEnd = dates[dates.length - 1].rawDate;
+
+    if (end < timelineStart || start > timelineEnd) {
+      return {
+        left: 0,
+        width: 0,
+        visible: false,
+      };
+    }
+
+    const effectiveStart = start < timelineStart ? timelineStart : start;
+    const effectiveEnd = end > timelineEnd ? timelineEnd : end;
+
+    const leftDays = Math.round(
+      (effectiveStart.getTime() - timelineStart.getTime()) /
+        (24 * 60 * 60 * 1000)
+    );
+
+    const activeDays =
+      Math.round(
+        (effectiveEnd.getTime() - effectiveStart.getTime()) /
+          (24 * 60 * 60 * 1000)
+      ) + 1;
+
+    return {
+      left: leftDays * 80,
+      width: activeDays * 80 - 32,
+      visible: true,
+    };
+  };
 
   const getLeaveColor = (type: string) => {
     switch (type) {
@@ -96,41 +210,100 @@ export const UserLeaveView: React.FC = () => {
     }
   };
 
+  const handleCreateLeave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.userId || !form.startDate || !form.endDate || !form.leaveType) {
+      alert("모든 필드를 입력해 주세요.");
+      return;
+    }
+
+    try {
+      await createMutation.mutateAsync({
+        userId: form.userId,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        type: form.leaveType,
+        reason: form.reason,
+        status: "PENDING",
+      });
+      setIsModalOpen(false);
+      setForm({
+        userId: "",
+        leaveType: "Annual",
+        startDate: "",
+        endDate: "",
+        reason: "",
+      });
+    } catch (err) {
+      alert("휴가 신청에 실패했습니다.");
+    }
+  };
+
+  const userOptions = useMemo(() => {
+    return users?.map((u) => ({ value: u.id, label: `${u.name} (${u.rank?.name || "Member"})` })) || [];
+  }, [users]);
+
+  const leaveTypeOptions = [
+    { value: "Annual", label: "Annual (연차)" },
+    { value: "Sick", label: "Sick (병가)" },
+    { value: "Personal", label: "Personal (개인 용무)" },
+    { value: "Remote", label: "Remote (원격 근무)" },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-12 text-on-surface-variant animate-fade-in">
+        Loading leave data...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-12 text-error animate-fade-in">
+        Error loading leave requests.
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
         <LeaveStatCard
           title="Currently Away"
-          value={12}
-          description="Out of 1,482"
+          value={stats.currentlyAway}
+          description="Out of active members"
           icon={Plane}
           variant="secondary"
         />
         <LeaveStatCard
           title="Upcoming Next Week"
-          value={24}
-          description="Peak Season"
+          value={stats.upcomingNextWeek}
+          description="Next 7 days approved"
           icon={Calendar}
         />
         <LeaveStatCard
           title="Pending Requests"
-          value={8}
+          value={stats.pendingRequests}
           description="Action Required"
           icon={MoreHorizontal}
           variant="neutral"
         />
       </div>
 
-      <GlassCard className="p-0 overflow-hidden flex flex-col min-h-[400px]">
-        <div className="flex border-b border-outline-variant/30 sticky top-0 bg-surface-container/60 backdrop-blur-md z-20">
+      <GlassCard className="p-0 overflow-hidden flex flex-col min-h-[400px] animate-fade-in">
+        <div className="flex border-b border-outline-variant/30 sticky top-0 bg-surface-container/60 backdrop-blur-md z-[10]">
           <div className="w-[300px] p-6 border-r border-outline-variant/30 flex items-center justify-between">
             <span className="text-label-caps font-bold text-on-surface-variant tracking-widest">
               Personnel Leave
             </span>
-            <Button className="text-primary hover:bg-primary/10 p-1 rounded transition-colors">
-              <Plus className="w-4 h-4" />
-            </Button>
+            <Button
+              variant="ghost"
+              className="text-primary hover:bg-primary/10 p-1 rounded transition-colors w-8 h-8 flex items-center justify-center cursor-pointer"
+              prefixIcon={<Plus className="w-4 h-4" />}
+              onClick={() => setIsModalOpen(true)}
+            />
           </div>
           <div className="flex-1 flex overflow-x-auto">
             {dates.map((d, i) => (
@@ -162,67 +335,154 @@ export const UserLeaveView: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {LEAVE_RECORDS.map((record) => (
-            <div
-              key={record.id}
-              className="flex border-b border-outline-variant/10 hover:bg-interaction-hover transition-colors group"
-            >
-              <div className="w-[300px] p-6 border-r border-outline-variant/30 shrink-0">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={record.avatar}
-                    alt={record.userName}
-                    className="w-10 h-10 rounded-full object-cover border border-outline-variant"
-                  />
-                  <div className="min-w-0">
-                    <p className="font-bold text-on-surface truncate">
-                      {record.userName}
-                    </p>
-                    <p className="text-[10px] text-on-surface-variant truncate uppercase tracking-widest font-bold">
-                      {record.userRole}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <span
-                    className={cn(
-                      "text-[10px] font-bold px-2 py-1 rounded border",
-                      getStatusStyles(record.status),
-                    )}
-                  >
-                    {record.status}
-                  </span>
-                </div>
-              </div>
+          {leaveRecords.map((record) => {
+            const barProps = getBarProps(record);
+            if (!barProps.visible) return null;
 
-              <div className="flex-1 flex overflow-x-auto relative min-h-[100px] items-center p-4">
-                {/* Horizontal Bar */}
-                <div
-                  className={cn(
-                    "absolute h-12 rounded-xl border flex items-center px-4 transition-all duration-500 shadow-sm",
-                    getLeaveColor(record.leaveType),
-                  )}
-                  style={{
-                    left: `${dates.findIndex((d) => d.date === record.startDate.split("-")[2]) * 80 + 16}px`,
-                    width: `${record.days * 80 - 32}px`,
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    {record.leaveType === "Annual" ? (
-                      <Plane className="w-3 h-3" />
-                    ) : (
-                      <Home className="w-3 h-3" />
-                    )}
-                    <span className="text-[10px] font-bold tracking-widest uppercase truncate whitespace-nowrap">
-                      {record.leaveType} • {record.days} DAYS
+            return (
+              <div
+                key={record.id}
+                className="flex border-b border-outline-variant/10 hover:bg-interaction-hover transition-colors group"
+              >
+                <div className="w-[300px] p-6 border-r border-outline-variant/30 shrink-0">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={record.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80"}
+                      alt={record.userName}
+                      className="w-10 h-10 rounded-full object-cover border border-outline-variant"
+                    />
+                    <div className="min-w-0">
+                      <p className="font-bold text-on-surface truncate">
+                        {record.userName}
+                      </p>
+                      <p className="text-[10px] text-on-surface-variant truncate uppercase tracking-widest font-bold">
+                        {record.userRole}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <span
+                      className={cn(
+                        "text-[10px] font-bold px-2 py-1 rounded border",
+                        getStatusStyles(record.status),
+                      )}
+                    >
+                      {record.status}
                     </span>
                   </div>
                 </div>
+
+                <div className="flex-1 flex overflow-x-auto relative min-h-[100px] items-center p-4">
+                  {/* Horizontal Bar */}
+                  <div
+                    className={cn(
+                      "absolute h-12 rounded-xl border flex items-center px-4 transition-all duration-500 shadow-sm",
+                      getLeaveColor(record.leaveType),
+                    )}
+                    style={{
+                      left: `${barProps.left + 16}px`,
+                      width: `${barProps.width}px`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      {record.leaveType === "Annual" ? (
+                        <Plane className="w-3 h-3" />
+                      ) : (
+                        <Home className="w-3 h-3" />
+                      )}
+                      <span className="text-[10px] font-bold tracking-widest uppercase truncate whitespace-nowrap">
+                        {record.leaveType} • {record.days} DAYS
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
+            );
+          })}
+          {leaveRecords.filter(r => getBarProps(r).visible).length === 0 && (
+            <div className="p-12 text-center text-on-surface-variant/40">
+              현재 10일간의 일정 영역 내에 휴가 중인 인원이 없습니다.
             </div>
-          ))}
+          )}
         </div>
       </GlassCard>
+
+      {/* New Leave Request Modal */}
+      <BaseModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Request Leave (휴가 신청)"
+        size="md"
+        footer={
+          <div className="flex justify-end gap-3">
+            <Button variant="glass" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleCreateLeave}
+              disabled={createMutation.isPending}
+            >
+              {createMutation.isPending ? "Submitting..." : "Submit Request"}
+            </Button>
+          </div>
+        }
+      >
+        <form onSubmit={handleCreateLeave} className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-label-caps font-bold text-on-surface-variant">
+              Employee (신청 직원)
+            </label>
+            <Select
+              options={userOptions}
+              value={form.userId}
+              onChange={(val) => setForm(f => ({ ...f, userId: val }))}
+              placeholder="직원을 선택하세요"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-label-caps font-bold text-on-surface-variant">
+              Leave Type (휴가 구분)
+            </label>
+            <Select
+              options={leaveTypeOptions}
+              value={form.leaveType}
+              onChange={(val) => setForm(f => ({ ...f, leaveType: val }))}
+              placeholder="휴가 구분을 선택하세요"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-label-caps font-bold text-on-surface-variant">
+              Duration (기간 선택)
+            </label>
+            <CalendarPicker
+              mode="range"
+              rangeValue={{ startDate: form.startDate, endDate: form.endDate }}
+              onRangeChange={(range) =>
+                setForm((f) => ({
+                  ...f,
+                  startDate: range.startDate,
+                  endDate: range.endDate || range.startDate,
+                }))
+              }
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-label-caps font-bold text-on-surface-variant">
+              Reason (사유)
+            </label>
+            <textarea
+              className="w-full bg-surface-container border border-outline-variant/40 text-on-surface rounded-xl px-4 py-3 text-body-md min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary/40"
+              placeholder="휴가 사유를 입력해 주세요 (선택 사항)"
+              value={form.reason}
+              onChange={(e) => setForm(f => ({ ...f, reason: e.target.value }))}
+            />
+          </div>
+        </form>
+      </BaseModal>
     </div>
   );
 };

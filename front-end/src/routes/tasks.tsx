@@ -161,9 +161,9 @@ function Tasks() {
         <Button
           variant="primary"
           onClick={handleAddTaskClick}
-          className=" px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-all"
+          prefixIcon={<Plus className="w-5 h-5" />}
         >
-          <Plus className="w-5 h-5" /> 할 일 추가
+          할 일 추가
         </Button>
       </div>
 

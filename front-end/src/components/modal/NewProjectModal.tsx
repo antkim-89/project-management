@@ -266,7 +266,7 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
               />
             </div>
 
-            <div className="relative z-50">
+            <div className="relative">
               <label className="block text-label-caps font-bold text-on-surface-variant mb-1.5">
                 Project Category
               </label>
@@ -350,22 +350,17 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                 className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors"
               />
             </div>
-            <div className="relative z-40">
+            <div className="relative md:col-span-2">
               <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-                <Calendar className="w-4 h-4 text-secondary" /> Start Date *
+                <Calendar className="w-4 h-4 text-secondary" /> Project Period (Start - End Date) *
               </label>
               <CalendarPicker
-                value={startDate}
-                onChange={setStartDate}
-              />
-            </div>
-            <div className="relative z-40">
-              <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-                <Calendar className="w-4 h-4 text-secondary" /> End Date *
-              </label>
-              <CalendarPicker
-                value={endDate}
-                onChange={setEndDate}
+                mode="range"
+                rangeValue={{ startDate, endDate }}
+                onRangeChange={(range) => {
+                  setStartDate(range.startDate);
+                  setEndDate(range.endDate);
+                }}
               />
             </div>
           </div>

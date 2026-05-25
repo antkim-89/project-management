@@ -131,7 +131,7 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
             Available {availableDate}
           </div>
         ) : (
-          <Button className="bg-primary text-on-primary px-4 py-2 rounded font-bold text-xs hover:opacity-90 active:scale-95 transition-all">
+          <Button variant="primary" size="sm">
             Assign to Project
           </Button>
         )}

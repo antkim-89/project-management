@@ -128,11 +128,11 @@ function Teams() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="glass" className=" px-4">
-            <Filter className="w-4 h-4" /> Advanced Filters
+          <Button variant="glass" prefixIcon={<Filter className="w-4 h-4" />}>
+            Advanced Filters
           </Button>
-          <Button variant="primary" className=" px-4">
-            <Download className="w-4 h-4" /> Export Data
+          <Button variant="primary" prefixIcon={<Download className="w-4 h-4" />}>
+            Export Data
           </Button>
         </div>
       </div>

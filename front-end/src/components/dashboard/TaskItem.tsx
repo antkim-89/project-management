@@ -21,12 +21,16 @@ export function TaskItem({ icon, name, desc }: TaskItemProps) {
         </div>
       </div>
       <div className="flex gap-1">
-        <Button variant="outline" className="p-2 rounded transition-colors hover:bg-error/10 text-error">
-          <XCircle className="w-5 h-5" />
-        </Button>
-        <Button variant="outline" className="p-2 rounded transition-colors hover:bg-secondary/10 text-secondary">
-          <CheckCircle2 className="w-5 h-5" />
-        </Button>
+        <Button
+          variant="outline"
+          className="p-2 rounded transition-colors hover:bg-error/10 text-error"
+          prefixIcon={<XCircle className="w-5 h-5" />}
+        />
+        <Button
+          variant="outline"
+          className="p-2 rounded transition-colors hover:bg-secondary/10 text-secondary"
+          prefixIcon={<CheckCircle2 className="w-5 h-5" />}
+        />
       </div>
     </div>
   );

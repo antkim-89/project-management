@@ -35,7 +35,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "h-full bg-surface-container-low border-r border-outline-variant flex flex-col transition-all duration-300 relative z-40",
+        "h-full bg-surface-container-low border-r border-outline-variant flex flex-col transition-all duration-300 relative z-[20]",
         isSidebarCollapsed ? "w-20" : "w-64",
       )}
     >
@@ -74,9 +74,8 @@ export function Sidebar() {
             isSidebarCollapsed && "rotate-180",
           )}
           onClick={toggleSidebar}
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
+          prefixIcon={<ChevronLeft className="w-4 h-4" />}
+        />
       </div>
     </aside>
   );

@@ -77,11 +77,11 @@ function Assets() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="glass" className="">
-            <Filter size={14} /> Filter View
+          <Button variant="glass" prefixIcon={<Filter size={14} />}>
+            Filter View
           </Button>
-          <Button variant="glass" className="">
-            <Download size={14} /> Export Inventory
+          <Button variant="glass" prefixIcon={<Download size={14} />}>
+            Export Inventory
           </Button>
         </div>
       </div>

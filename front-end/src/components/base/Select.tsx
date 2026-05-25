@@ -73,7 +73,7 @@ export const Select: React.FC<SelectProps> = ({
       <div
         onClick={handleToggle}
         className={cn(
-          "flex items-center justify-between gap-2 bg-surface-container border border-outline-variant/40 text-on-surface rounded-xl px-4 py-2.5 transition-all duration-200 cursor-pointer hover:bg-surface-container-high focus-within:ring-2 focus-within:ring-primary/40",
+          "flex items-center justify-between gap-2 bg-surface-container border border-outline-variant/40 text-on-surface rounded-[10px] px-4 py-2.5 transition-all duration-200 cursor-pointer hover:bg-surface-container-high focus-within:ring-2 focus-within:ring-primary/40",
           isOpen && "border-primary/80 ring-2 ring-primary/20 bg-surface-container-high shadow-md",
           error && "border-error/80 ring-2 ring-error/20",
           className
@@ -97,7 +97,7 @@ export const Select: React.FC<SelectProps> = ({
       {isOpen && (
         <div
           className={cn(
-            "absolute top-full left-0 right-0 mt-2 z-50 rounded-xl border border-glass-border bg-glass-bg/95 backdrop-blur-xl shadow-2xl max-h-60 overflow-y-auto animate-fade-in p-1",
+            "absolute top-full left-0 right-0 mt-2 z-[40] rounded-[10px] border border-glass-border bg-glass-bg/95 backdrop-blur-xl shadow-2xl max-h-60 overflow-y-auto animate-fade-in p-1",
             dropdownClassName
           )}
         >

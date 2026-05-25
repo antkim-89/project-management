@@ -81,34 +81,34 @@
   --animate-zoom-in: zoom-in 200ms ease-out;
 }
 
-/* Default Theme (Dark) - Keeping current dark theme as base */
+/* Default Theme (Dark) - Aligned with Framer Specs */
 :root {
   color-scheme: dark;
-  --background: #000000;
-  --on-background: #ffffff;
-  --surface: #111112;
-  --surface-dim: #111112;
-  --surface-bright: #303030;
-  --surface-container-lowest: #0c0e10;
-  --surface-container-low: #111112;
-  --surface-container: #111112;
-  --surface-container-high: #161617;
-  --surface-container-highest: #1b1b1c;
-  --on-surface: #e2e2e5;
-  --on-surface-variant: #c2c6d7;
-  --outline: #444746;
-  --outline-variant: #303030;
-  --surface-variant: #303030;
+  --background: #0a0a0a; /* Canvas */
+  --on-background: #ffffff; /* Ink */
+  --surface: #161616; /* Surface 1 */
+  --surface-dim: #0a0a0a;
+  --surface-bright: #222222;
+  --surface-container-lowest: #050505;
+  --surface-container-low: #0a0a0a;
+  --surface-container: #161616; /* Surface 1 */
+  --surface-container-high: #222222; /* Surface 2 */
+  --surface-container-highest: #2e2e2e;
+  --on-surface: #ffffff; /* Ink */
+  --on-surface-variant: #999999; /* Ink Muted */
+  --outline: #2e2e2e; /* Hairline */
+  --outline-variant: #242424; /* Hairline Soft */
+  --surface-variant: #222222;
   
-  --primary-color: #3b82f6;
-  --on-primary-color: #ffffff;
-  --primary-container-color: #004299;
-  --on-primary-container-color: #d9e2ff;
+  --primary-color: #ffffff; /* Pure White */
+  --on-primary-color: #0a0a0a; /* Canvas */
+  --primary-container-color: #222222;
+  --on-primary-container-color: #ffffff;
   
-  --secondary-color: #4edea3;
-  --on-secondary-color: #00391c;
-  --secondary-container-color: #005232;
-  --on-secondary-container-color: #6ffbbe;
+  --secondary-color: #0099ff; /* Sky Blue Accent */
+  --on-secondary-color: #ffffff;
+  --secondary-container-color: rgba(0, 153, 255, 0.15);
+  --on-secondary-container-color: #0099ff;
 
   --error-color: #ffb4ab;
   --on-error-color: #690005;

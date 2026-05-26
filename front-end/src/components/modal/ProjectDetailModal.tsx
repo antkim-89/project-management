@@ -97,7 +97,7 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
         <Button
           variant="glass"
           onClick={() => setIsEditModalOpen(true)}
-          className="px-3 h-10 cursor-pointer hover:text-primary transition-colors"
+          className="px-3 h-10 cursor-pointer hover:text-secondary transition-colors"
           prefixIcon={<Edit2 className="w-4 h-4" />}
         />
         <Button
@@ -154,12 +154,12 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
               <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest">
                 Assigned Personnel ({project.team.length})
               </h4>
-              <Button
+              <button
                 onClick={() => setIsManageTeamOpen(true)}
-                className="text-primary text-label-sm font-bold hover:underline cursor-pointer"
+                className="text-secondary text-label-sm font-bold hover:underline cursor-pointer bg-transparent border-0 p-0 outline-none"
               >
                 Manage Team
-              </Button>
+              </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {project.team.map((member, idx) => (

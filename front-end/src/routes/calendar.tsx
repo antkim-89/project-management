@@ -9,6 +9,7 @@ import { TaskCalendarView } from "@/components/calendar/TaskCalendarView";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 
 import { useProjects } from "@/hooks/api/useProjects";
+import { useTasks } from "@/hooks/api/useTasks";
 
 export const Route = createFileRoute("/calendar")({
   component: CalendarPage,
@@ -20,7 +21,11 @@ function CalendarPage() {
     "TASKS",
   );
 
-  const { data: projects, isLoading, error } = useProjects();
+  const { data: projects, isLoading: isProjectsLoading, error: projectsError } = useProjects();
+  const { data: tasks, isLoading: isTasksLoading, error: tasksError } = useTasks();
+
+  const isLoading = isProjectsLoading || isTasksLoading;
+  const error = projectsError || tasksError;
 
   if (isLoading) {
     return (
@@ -37,6 +42,9 @@ function CalendarPage() {
       </div>
     );
   }
+
+  const todayMidnight = new Date();
+  todayMidnight.setHours(0, 0, 0, 0);
 
   const projectList = projects?.map((p) => {
     const statusVal = p.status.toUpperCase();
@@ -72,6 +80,19 @@ function CalendarPage() {
             ? "primary"
             : "neutral";
 
+    // 해당 프로젝트에 할당된 할 일 정보 가공
+    const projectTasks = tasks?.filter((t) => t.projectId === p.id) || [];
+    const totalTasks = projectTasks.length;
+    const completedTasks = projectTasks.filter((t) => t.status === "DONE").length;
+    const inProgressTasks = projectTasks.filter((t) => t.status === "IN_PROGRESS").length;
+    const overdueTasks = projectTasks.filter((t) => {
+      if (t.status === "DONE") return false;
+      if (!t.dueDate) return false;
+      const dueDate = new Date(t.dueDate);
+      dueDate.setHours(0, 0, 0, 0);
+      return dueDate < todayMidnight;
+    }).length;
+
     return {
       id: p.id,
       status: finalStatus,
@@ -82,6 +103,10 @@ function CalendarPage() {
       variant,
       startDate: p.startDate,
       endDate: p.endDate,
+      totalTasks,
+      completedTasks,
+      inProgressTasks,
+      overdueTasks,
     };
   }) || [];
 
@@ -109,7 +134,7 @@ function CalendarPage() {
         <div className="flex flex-wrap items-center gap-2">
           {viewMode !== "TASKS" && (
             <div className="flex items-center bg-surface-container-low border border-outline-variant rounded p-1">
-              {["Week", "Month", "Quarter"].map((tab) => (
+              {["Week", "Month"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -183,7 +208,7 @@ function CalendarPage() {
       {viewMode === "TASKS" ? (
         <TaskCalendarView />
       ) : viewMode === "PROJECTS" ? (
-        <ProjectTimeline projects={projectList} />
+        <ProjectTimeline projects={projectList} viewTab={activeTab as "Week" | "Month"} />
       ) : (
         <UserLeaveView />
       )}

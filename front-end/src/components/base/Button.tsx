@@ -30,11 +30,11 @@ const sizeStyles: Record<ButtonSize, string> = {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-on-primary hover:opacity-90 active:scale-[0.98] rounded-full font-medium tracking-tight text-[14px]",
+    "bg-primary text-black hover:opacity-90 active:scale-[0.98] rounded-full font-medium tracking-tight text-[14px]",
   secondary:
-    "bg-surface-container-high text-on-surface hover:bg-surface-container-highest active:scale-[0.98] rounded-full font-medium tracking-tight text-[14px] border border-outline-variant/10",
+    "bg-surface-container-high text-white hover:bg-surface-container-highest active:scale-[0.98] rounded-full font-medium tracking-tight text-[14px] border border-outline-variant/10",
   translucent:
-    "bg-surface-container-highest/80 text-on-surface hover:bg-surface-container-highest active:scale-[0.98] rounded-[20px] px-3.5 py-2 font-medium tracking-tight text-[14px] border border-outline-variant/10",
+    "bg-surface-container-highest/80 text-white hover:bg-surface-container-highest active:scale-[0.98] rounded-[20px] px-3.5 py-2 font-medium tracking-tight text-[14px] border border-outline-variant/10",
   error:
     "bg-error text-on-error hover:bg-error/90 active:scale-[0.98] rounded-full font-medium tracking-tight text-[14px]",
   ghost:

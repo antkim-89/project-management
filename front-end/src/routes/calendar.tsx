@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ProjectTimeline } from "@/components/projects/ProjectTimeline";
-import { UserLeaveView } from "@/components/calendar/UserLeaveView";
+
 import { TaskCalendarView } from "@/components/calendar/TaskCalendarView";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/calendar")({
 
 function CalendarPage() {
   const [activeTab, setActiveTab] = useState("Week");
-  const [viewMode, setViewMode] = useState<"TASKS" | "PROJECTS" | "LEAVE">(
+  const [viewMode, setViewMode] = useState<"TASKS" | "PROJECTS">(
     "TASKS",
   );
 
@@ -119,16 +119,12 @@ function CalendarPage() {
           <h2 className="font-bold text-display-lg text-on-surface mb-1">
             {viewMode === "TASKS"
               ? "Task Schedule Calendar"
-              : viewMode === "PROJECTS"
-                ? "Timeline Availability"
-                : "Leave Management"}
+              : "Timeline Availability"}
           </h2>
           <p className="text-on-surface-variant text-body-md">
             {viewMode === "TASKS"
               ? "프로젝트별 마감일을 한눈에 확인하고 협업 효율을 극대화하세요."
-              : viewMode === "PROJECTS"
-                ? "Real-time resource allocation and project roadmap synchronization."
-                : "Monitor personnel availability and manage leave requests."}
+              : "Real-time resource allocation and project roadmap synchronization."}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -189,28 +185,13 @@ function CalendarPage() {
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />
           )}
         </button>
-        <button
-          onClick={() => setViewMode("LEAVE")}
-          className={cn(
-            "pb-4 text-label-md font-bold uppercase tracking-widest transition-all relative cursor-pointer",
-            viewMode === "LEAVE"
-              ? "text-primary"
-              : "text-on-surface-variant hover:text-on-surface",
-          )}
-        >
-          휴가 현황 (Leaves)
-          {viewMode === "LEAVE" && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />
-          )}
-        </button>
+
       </div>
 
       {viewMode === "TASKS" ? (
         <TaskCalendarView />
-      ) : viewMode === "PROJECTS" ? (
-        <ProjectTimeline projects={projectList} viewTab={activeTab as "Week" | "Month"} />
       ) : (
-        <UserLeaveView />
+        <ProjectTimeline projects={projectList} viewTab={activeTab as "Week" | "Month"} />
       )}
     </div>
   );

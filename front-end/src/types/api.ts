@@ -63,8 +63,16 @@ export interface Equipment {
   modelName: string;
   serialNumber: string;
   status: string;
+  health: number;
+  purchaseDate: string;
   userId?: string;
   user?: User;
+}
+
+export interface EquipmentSetting {
+  id: string;
+  type: string;
+  usefulLife: number;
 }
 
 export interface LeaveRequest {

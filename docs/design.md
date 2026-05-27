@@ -100,6 +100,31 @@
 - **`top-nav`**: Background `{colors.canvas}`, Height: 56px, Font: `{typography.body-sm}`.
 - **`footer`**: Background `{colors.canvas}`, Font: `{typography.caption}`, Padding: 64px 32px.
 
+### Component Implementation Guidelines
+
+#### 1) Common Button (`Button`)
+- **Icon Alignment**: Avoid hardcoding icons as children inside the button. Instead, use `prefixIcon` and `suffixIcon` props to keep icons properly aligned outside the text container.
+- **Icon-Only Button**: For standalone icon buttons (e.g., close buttons), leave `children` empty to eliminate asymmetric padding caused by gap settings and ensure precise vertical/horizontal centering.
+
+#### 2) Global Stacking Context (z-index)
+To prevent z-index collision and rendering overlaps, adhere strictly to the following layout layers:
+
+| Layer Name | Token | Description |
+| :--- | :--- | :--- |
+| **Sticky Header** | `z-[10]` | Table/timeline column headers within pages |
+| **Global Sidebar** | `z-[20]` | Main layout sidebar (fixed left) |
+| **Global Header** | `z-[30]` | Main layout header (fixed top) |
+| **Select Dropdown** | `z-[40]` | Custom select input options dropdown |
+| **Popover** | `z-[45]` | Tooltips and inline popover containers |
+| **Calendar Picker** | `z-[50]` | Popover calendar picker dropdowns |
+| **Base Modal** | `z-[100]` | Modal overlays, backdrop shadows, and dialogs |
+
+- **Caution**: To avoid popups/pickers slipping behind modal backdrops or form structures, do not hardcode inline z-indexes (e.g., `z-50`, `z-40`). Always rely on this global stacking context configuration.
+
+#### 3) Calendar Range Picker (`CalendarPicker`)
+- **Range Selection**: Pass `mode="range"` to calendar components when picking intervals to enable start-date and end-date range selections.
+- **Highlighting**: Selected days within the range must use a semi-transparent active background (`bg-primary/15`), with the start and end dates rounded and fully highlighted.
+
 ---
 
 ## Design Rules (Do's & Don'ts)

@@ -62,13 +62,23 @@ model Assignment {
 }
 
 model Equipment {
-  id           String  @id @default(cuid())
+  id           String   @id @default(cuid())
   type         String // Laptop, Monitor, Mobile
   modelName    String
-  serialNumber String  @unique
-  status       String  @default("Assigned") // Assigned, Maintenance
+  serialNumber String   @unique
+  status       String   @default("Assigned") // Assigned, Maintenance
+  health       Int      @default(100)
+  purchaseDate DateTime @default(now())
   userId       String?
-  user         User?   @relation(fields: [userId], references: [id])
+  user         User?    @relation(fields: [userId], references: [id])
+}
+
+model EquipmentSetting {
+  id          String   @id @default(cuid())
+  type        String   @unique
+  usefulLife  Int      // 수명 개월수
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model LeaveRequest {

@@ -24,3 +24,29 @@ export const useCreateLeaveRequest = () => {
     },
   });
 };
+
+export const useUpdateLeaveRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { data } = await api.put(`/leave-requests/${id}`, { status });
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leaveRequests"] });
+    },
+  });
+};
+
+export const useDeleteLeaveRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data } = await api.delete(`/leave-requests/${id}`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leaveRequests"] });
+    },
+  });
+};

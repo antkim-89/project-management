@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Button } from "@/components/base/Button";
 import { createFileRoute } from "@tanstack/react-router";
-import { User, Bell, Lock, Globe, Palette, LayoutGrid, Code2, Trash2, Plus } from "lucide-react";
+import { User, Bell, Lock, Globe, Palette, LayoutGrid, Code2, Trash2, Plus, Clock } from "lucide-react";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 import { GlassCard } from "@/components/base/GlassCard";
 import { useProjectCategories, useCreateProjectCategory, useDeleteProjectCategory } from "@/hooks/api/useProjectCategories";
 import { useSkills, useCreateSkill, useDeleteSkill } from "@/hooks/api/useSkills";
+import { useEquipmentSettings, useUpdateEquipmentSetting } from "@/hooks/api/useEquipment";
 
 export const Route = createFileRoute("/settings")({
   component: Settings,
@@ -50,6 +51,26 @@ function WorkspaceSettings() {
   const [newSkillName, setNewSkillName] = useState("");
   const [newSkillCategory, setNewSkillCategory] = useState("Frontend");
 
+  // 장비 수명 설정 관련
+  const { data: eqSettings, isLoading: isEqSettingsLoading } = useEquipmentSettings();
+  const updateEqSetting = useUpdateEquipmentSetting();
+  const [eqLifes, setEqLifes] = useState<Record<string, number>>({
+    Laptop: 36,
+    Monitor: 60,
+    Mobile: 24,
+    Package: 36,
+  });
+
+  React.useEffect(() => {
+    if (eqSettings) {
+      const newLifes = { ...eqLifes };
+      eqSettings.forEach((s) => {
+        newLifes[s.type] = s.usefulLife;
+      });
+      setEqLifes(newLifes);
+    }
+  }, [eqSettings]);
+
   const handleCreateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCategoryName.trim()) return;
@@ -62,6 +83,19 @@ function WorkspaceSettings() {
     if (!newSkillName.trim() || !newSkillCategory.trim()) return;
     await createSkill.mutateAsync({ name: newSkillName, category: newSkillCategory });
     setNewSkillName("");
+  };
+
+  const handleUpdateUsefulLife = async (type: string, life: number) => {
+    if (life <= 0) {
+      alert("수명은 1개월 이상이어야 합니다.");
+      return;
+    }
+    try {
+      await updateEqSetting.mutateAsync({ type, usefulLife: life });
+      alert(`${type} 수명 기준이 ${life}개월로 성공적으로 수정되었습니다.`);
+    } catch (err) {
+      alert("수명 기준 수정에 실패했습니다.");
+    }
   };
 
   return (
@@ -163,6 +197,53 @@ function WorkspaceSettings() {
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </GlassCard>
+
+      {/* Equipment Useful Life Settings Section */}
+      <GlassCard className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+            <Clock className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-headline-sm font-bold text-on-surface">Equipment Useful Life Settings</h3>
+            <p className="text-body-sm text-on-surface-variant">Manage the useful life (in months) of equipment types for dynamic health score calculation</p>
+          </div>
+        </div>
+
+        {isEqSettingsLoading ? (
+          <div className="text-center py-4 text-on-surface-variant">Loading settings...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {["Laptop", "Monitor", "Mobile", "Package"].map((type) => (
+              <div key={type} className="flex flex-col p-4 bg-surface-container rounded-lg border border-outline-variant/50 gap-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-on-surface text-body-md uppercase">{type}</span>
+                  <span className="text-label-sm text-on-surface-variant font-mono">
+                    Current: {eqSettings?.find((s) => s.type === type)?.usefulLife ?? (type === "Laptop" ? 36 : type === "Monitor" ? 60 : type === "Mobile" ? 24 : 36)} months
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    min="1"
+                    max="120"
+                    value={eqLifes[type] !== undefined ? eqLifes[type] : ""}
+                    onChange={(e) => setEqLifes((prev) => ({ ...prev, [type]: Number(e.target.value) }))}
+                    className="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-3 py-1.5 text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors"
+                  />
+                  <Button
+                    variant="glass"
+                    onClick={() => handleUpdateUsefulLife(type, eqLifes[type])}
+                    className="cursor-pointer font-bold text-label-sm px-4"
+                  >
+                    Save
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

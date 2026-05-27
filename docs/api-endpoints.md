@@ -47,10 +47,21 @@
 
 ---
 
-## 5. 헬스체크 (Health Check)
+## 5. 장비 및 자산 (Equipments)
+
+| HTTP 메서드 | 엔드포인트 | 설명 |
+| :--- | :--- | :--- |
+| `GET` | `/equipments` | 전체 장비 목록 조회 (구입일 및 장비 설정을 기반으로 동적 건강도 `health`를 계산하여 병합 반환) |
+| `POST` | `/equipments` | 새 장비 등록 (`type`, `modelName`, `serialNumber`, `userId`, `purchaseDate` 필드 필요) |
+| `PUT` | `/equipments/:id` | 장비 정보 수정 및 상태/배정 업데이트 (`purchaseDate` 및 `userId` 연동, 수리/정비 수동 지정 시 오버라이트 방지) |
+| `DELETE` | `/equipments/:id` | 장비 삭제 (폐기 처리) |
+| `GET` | `/equipments/settings` | 장비 유형별 유효 수명(Useful Life, 개월수) 설정 목록 조회 |
+| `PUT` | `/equipments/settings` | 특정 장비 유형의 수명 설정 수정 또는 생성 (`type`, `usefulLife` 필요) |
+
+---
+
+## 6. 헬스체크 (Health Check)
 
 | HTTP 메서드 | 엔드포인트 | 설명 |
 | :--- | :--- | :--- |
 | `GET` | `/health` | 서버 상태 확인 및 헬스체크 |
-
-

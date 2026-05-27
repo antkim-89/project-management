@@ -19,6 +19,7 @@ import { useUsers } from "@/hooks/api/useUsers";
 import { Select } from "@/components/base/Select";
 import { Pagination } from "@/components/base/Pagination";
 import type { User, SkillSet } from "@/types/api";
+import { UserLeaveView } from "@/components/teams/UserLeaveView";
 
 interface UserSkill {
   id: string;
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/teams")({
 
 function Teams() {
   const { data: users, isLoading, error } = useUsers();
-  const [activeTab, setActiveTab] = useState<"TABLE" | "ORG_CHART">("TABLE");
+  const [activeTab, setActiveTab] = useState<"TABLE" | "ORG_CHART" | "LEAVE">("TABLE");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("ALL");
   const [selectedRank, setSelectedRank] = useState("ALL");
@@ -195,41 +196,54 @@ function Teams() {
         >
           <Network className="w-4.5 h-4.5" /> Org Chart
         </button>
+        <button
+          onClick={() => setActiveTab("LEAVE")}
+          className={cn(
+            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer",
+            activeTab === "LEAVE"
+              ? "border-primary text-primary"
+              : "border-transparent text-on-surface-variant hover:text-on-surface",
+          )}
+        >
+          <CalendarCheck className="w-4.5 h-4.5" /> Leave Management
+        </button>
       </div>
 
       {/* Search & Filter Strip */}
-      <div className="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col md:flex-row items-center gap-4 mb-8">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
-          <input
-            type="text"
-            placeholder="Search by name, email, or rank..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
-          />
+      {activeTab !== "LEAVE" && (
+        <div className="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col md:flex-row items-center gap-4 mb-8">
+          <div className="relative flex-1 w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
+            <input
+              type="text"
+              placeholder="Search by name, email, or rank..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <Select
+              value={selectedSkill}
+              onChange={setSelectedSkill}
+              options={[
+                { value: "ALL", label: "All Skills" },
+                ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
+              ]}
+              className="min-w-[150px]"
+            />
+            <Select
+              value={selectedRank}
+              onChange={setSelectedRank}
+              options={[
+                { value: "ALL", label: "Rank: All" },
+                ...uniqueRanksList.map((rank) => ({ value: rank, label: rank })),
+              ]}
+              className="min-w-[150px]"
+            />
+          </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-          <Select
-            value={selectedSkill}
-            onChange={setSelectedSkill}
-            options={[
-              { value: "ALL", label: "All Skills" },
-              ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
-            ]}
-            className="min-w-[150px]"
-          />
-          <Select
-            value={selectedRank}
-            onChange={setSelectedRank}
-            options={[
-              { value: "ALL", label: "Rank: All" },
-              ...uniqueRanksList.map((rank) => ({ value: rank, label: rank })),
-            ]}
-            className="min-w-[150px]"
-          />
-        </div>
-      </div>
+      )}
 
       {/* Tab Contents */}
       {activeTab === "TABLE" && (
@@ -409,17 +423,23 @@ function Teams() {
         </div>
       )}
 
+      {activeTab === "LEAVE" && (
+        <UserLeaveView />
+      )}
+
       {/* Pagination */}
-      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-label-md text-on-surface-variant">
-          Showing {paginatedUsers.length > 0 ? (normalizedPage - 1) * itemsPerPage + 1 : 0} - {Math.min(normalizedPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} entries
-        </p>
-        <Pagination
-          currentPage={normalizedPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {activeTab === "TABLE" && (
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-label-md text-on-surface-variant">
+            Showing {paginatedUsers.length > 0 ? (normalizedPage - 1) * itemsPerPage + 1 : 0} - {Math.min(normalizedPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} entries
+          </p>
+          <Pagination
+            currentPage={normalizedPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
     </div>
   );
 }

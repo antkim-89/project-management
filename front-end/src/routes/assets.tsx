@@ -2,17 +2,11 @@ import { Button } from "@/components/base/Button";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Filter,
-  Download,
   Laptop,
   Monitor,
   MoreVertical,
   AlertTriangle,
   Activity,
-  Award,
-  ShoppingCart,
-  Check,
-  X,
-  Clock,
   Package,
   Info,
   Plus,
@@ -21,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { GlassCard } from "@/components/base/GlassCard";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   useEquipment,
   useCreateEquipment,
@@ -31,6 +25,7 @@ import {
 import { useUsers } from "@/hooks/api/useUsers";
 import { BaseModal } from "@/components/base/BaseModal";
 import { Select } from "@/components/base/Select";
+import { BasePopover } from "@/components/base/BasePopover";
 
 export const Route = createFileRoute("/assets")({
   component: Assets,
@@ -70,6 +65,12 @@ function Assets() {
     purchaseDate: todayStr,
   });
 
+  // 필터 관련 상태 추가
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterType, setFilterType] = useState<string>("All");
+  const [filterStatus, setFilterStatus] = useState<string>("All");
+  const filterBtnRef = useRef<HTMLButtonElement>(null);
+
   const mappedAssets = useMemo(() => {
     return (
       equipment?.map((e) => ({
@@ -89,6 +90,14 @@ function Assets() {
       })) || []
     );
   }, [equipment]);
+
+  const filteredAssets = useMemo(() => {
+    return mappedAssets.filter((asset) => {
+      const typeMatch = filterType === "All" || asset.type === filterType;
+      const statusMatch = filterStatus === "All" || asset.status === filterStatus;
+      return typeMatch && statusMatch;
+    });
+  }, [mappedAssets, filterType, filterStatus]);
 
   // 동적 통계 계산
   const stats = useMemo(() => {
@@ -201,22 +210,7 @@ function Assets() {
     { value: "Needs Repair", label: "Needs Repair (수리 필요)" },
   ];
 
-  const COURSES = [
-    {
-      title: "AWS Cloud Mastery",
-      chapters: "12 Chapters",
-      type: "Digital",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      title: "Systemic Design",
-      chapters: "5 Units Available",
-      type: "Hardcopy",
-      image:
-        "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=400&q=80",
-    },
-  ];
+
 
   if (isLoading) return <div className="p-6">Loading assets...</div>;
   if (error) return <div className="p-6 text-error">Error loading assets</div>;
@@ -231,7 +225,7 @@ function Assets() {
             Resource Lifecycle
           </h2>
           <p className="text-on-surface-variant text-body-md mt-1">
-            Manage global inventory and employee development programs.
+            Manage global resource and hardware inventory lifecycle.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -243,18 +237,75 @@ function Assets() {
           >
             Add Asset
           </Button>
-          <Button variant="glass" prefixIcon={<Filter size={14} />}>
-            Filter View
-          </Button>
-          <Button variant="glass" prefixIcon={<Download size={14} />}>
-            Export Inventory
-          </Button>
+          <div className="relative">
+            <Button
+              ref={filterBtnRef}
+              variant="glass"
+              prefixIcon={<Filter size={14} />}
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="cursor-pointer relative"
+            >
+              Filter View
+              {(filterType !== "All" || filterStatus !== "All") && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary rounded-full shadow-md" />
+              )}
+            </Button>
+            <BasePopover
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              triggerRef={filterBtnRef}
+              position="bottomRight"
+              className="w-72 p-4 bg-surface-container border border-outline-variant/40 shadow-xl rounded-xl space-y-4 z-[40]"
+            >
+              <div className="space-y-2">
+                <label className="text-label-caps font-bold text-on-surface-variant">
+                  Filter by Type (유형 필터)
+                </label>
+                <Select
+                  options={[
+                    { value: "All", label: "All Types (전체)" },
+                    ...typeOptions,
+                  ]}
+                  value={filterType}
+                  onChange={(val) => setFilterType(val)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-label-caps font-bold text-on-surface-variant">
+                  Filter by Status (상태 필터)
+                </label>
+                <Select
+                  options={[
+                    { value: "All", label: "All Statuses (전체)" },
+                    ...statusOptions,
+                  ]}
+                  value={filterStatus}
+                  onChange={(val) => setFilterStatus(val)}
+                />
+              </div>
+
+              {(filterType !== "All" || filterStatus !== "All") && (
+                <Button
+                  variant="glass"
+                  className="w-full text-label-sm font-bold text-error border-error/20 hover:bg-error/10 cursor-pointer"
+                  onClick={() => {
+                    setFilterType("All");
+                    setFilterStatus("All");
+                    setIsFilterOpen(false);
+                  }}
+                >
+                  Reset Filters (필터 초기화)
+                </Button>
+              )}
+            </BasePopover>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-12 gap-6">
         {/* Left Section: Inventory */}
-        <div className="col-span-12 xl:col-span-8 space-y-6">
+        <div className="col-span-12 space-y-6">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-headline-md font-bold flex items-center gap-2 text-on-surface">
               <Package size={18} className="text-primary" /> Asset Inventory
@@ -277,7 +328,7 @@ function Assets() {
                   </tr>
                 </thead>
                 <tbody>
-                  {mappedAssets.map((asset) => (
+                  {filteredAssets.map((asset) => (
                     <tr
                       key={asset.sn}
                       className={cn(asset.urgent && "bg-error/5")}
@@ -410,132 +461,6 @@ function Assets() {
               </div>
             </GlassCard>
           </div>
-        </div>
-
-        {/* Right Section: Welfare */}
-        <div className="col-span-12 xl:col-span-4 space-y-6">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-headline-md font-bold flex items-center gap-2 text-on-surface">
-              <Activity size={18} className="text-secondary" /> Employee Welfare
-            </h3>
-            <button className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline cursor-pointer">
-              View All
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            {COURSES.map((course) => (
-              <GlassCard
-                key={course.title}
-                className="p-0 overflow-hidden cursor-pointer group"
-              >
-                <div className="h-24 w-full bg-surface-container-highest relative overflow-hidden">
-                  <img
-                    src={course.image}
-                    alt={course.title}
-                    className="w-full h-full object-cover opacity-50 transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-background to-transparent opacity-60" />
-                  <span className="absolute top-2 right-2 px-1.5 py-0.5 bg-background/80 rounded-sm text-label-caps font-bold uppercase">
-                    {course.type}
-                  </span>
-                </div>
-                <div className="p-3">
-                  <h4 className="font-bold text-label-md truncate text-on-surface">
-                    {course.title}
-                  </h4>
-                  <p className="text-label-sm text-on-surface-variant mb-3">
-                    {course.chapters}
-                  </p>
-                  <button className="w-full py-1.5 border border-primary/30 text-primary text-label-sm font-bold rounded hover:bg-interaction-primary-hover transition-colors cursor-pointer">
-                    {course.type === "Digital" ? "Request Access" : "Borrow"}
-                  </button>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-
-          <button className="h-12 w-full bg-secondary text-on-secondary font-bold text-label-md uppercase tracking-widest rounded flex items-center justify-center gap-2 hover:opacity-90 transition-all cursor-pointer">
-            <ShoppingCart size={18} /> Request Purchase
-          </button>
-
-          <GlassCard className="p-4 space-y-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">
-                Pending Approvals
-              </div>
-              <span className="w-5 h-5 rounded-full bg-error text-white text-[10px] font-bold flex items-center justify-center">
-                2
-              </span>
-            </div>
-
-            <div className="flex items-start gap-3 p-2 rounded transition-colors cursor-pointer hover:bg-interaction-hover">
-              <div className="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary">
-                <Laptop size={14} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-label-md font-bold truncate text-on-surface">
-                  MacBook Pro Upgrade
-                </div>
-                <div className="text-label-sm text-on-surface-variant">
-                  Requested by Michael Chen
-                </div>
-              </div>
-              <div className="flex gap-1">
-                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary cursor-pointer">
-                  <Check size={14} />
-                </button>
-                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error cursor-pointer">
-                  <X size={14} />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-2 rounded transition-colors cursor-pointer hover:bg-interaction-hover">
-              <div className="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary">
-                <Award size={14} className="text-secondary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-label-md font-bold truncate text-on-surface">
-                  Advanced PM Training
-                </div>
-                <div className="text-label-sm text-on-surface-variant">
-                  Requested by Sarah Jenkins
-                </div>
-              </div>
-              <div className="flex gap-1">
-                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-secondary cursor-pointer">
-                  <Check size={14} />
-                </button>
-                <button className="p-1 rounded transition-colors hover:bg-interaction-hover text-error cursor-pointer">
-                  <X size={14} />
-                </button>
-              </div>
-            </div>
-          </GlassCard>
-
-          <GlassCard className="p-4 rounded-xl">
-            <div className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-4">
-              Well-being Calendar
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex flex-col items-center justify-center w-12 h-14 bg-primary/10 rounded-lg border border-primary/20">
-                <div className="text-[10px] font-bold text-primary">NOV</div>
-                <div className="text-lg font-black text-primary leading-none">
-                  18
-                </div>
-              </div>
-              <div>
-                <div className="text-xs font-bold text-on-surface">
-                  Mental Health Workshop
-                </div>
-                <div className="text-[10px] text-on-surface-variant flex items-center gap-1 mt-1">
-                  <Clock size={12} />
-                  14:00 - 15:30 • Zoom
-                </div>
-              </div>
-            </div>
-          </GlassCard>
         </div>
       </div>
 

@@ -7,21 +7,17 @@ import {
   LogOut,
   User as UserIcon,
   LogIn,
-  Sun,
-  Moon,
   Settings,
   ExternalLink,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useUIStore } from "@/store/useUIStore";
 import { UserDetailModal } from "@/components/modal/UserDetailModal";
 import { BasePopover } from "@/components/base/BasePopover";
 
 export function Header() {
   const { t, i18n } = useTranslation();
   const { user, isAuthenticated, login, logout } = useAuthStore();
-  const { theme, toggleTheme } = useUIStore();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,24 +58,6 @@ export function Header() {
 
         {/* Right: User, Language, Theme, Auth */}
         <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
-          <button
-            className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95 cursor-pointer"
-            onClick={toggleTheme}
-            title={
-              theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"
-            }
-          >
-            {theme === "light" ? (
-              <Moon className="w-4 h-4" />
-            ) : (
-              <Sun className="w-4 h-4 text-amber-400" />
-            )}
-            <span className="uppercase text-[10px] font-bold tracking-widest">
-              {theme}
-            </span>
-          </button>
-
           {/* Language Selector */}
           <button
             className="flex items-center gap-2 px-3 h-10 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all active:scale-95 cursor-pointer"

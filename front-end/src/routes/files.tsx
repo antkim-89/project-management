@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { GlassCard } from "@/components/base/GlassCard";
 
+import { useTranslation } from "react-i18next";
+
 export const Route = createFileRoute("/files")({
   component: Files,
 });
@@ -45,42 +47,43 @@ function FileCard({
 }
 
 function Files() {
+  const { t } = useTranslation();
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
           <h1 className="font-bold text-display-lg text-on-surface mb-1">
-            Files
+            {t("common.files")}
           </h1>
           <p className="text-on-surface-variant text-body-md">
-            Access and manage all project-related documents.
+            {t("files.subtitle")}
           </p>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {FileCard({
           icon: <FolderOpen className="text-blue-400" />,
-          name: "Design Assets",
+          name: t("files.designAssets"),
           size: "1.2 GB",
-          items: "42 files",
+          items: t("files.fileCount", { count: 42 }),
         })}
         {FileCard({
           icon: <FileText className="text-emerald-400" />,
-          name: "Documentation",
+          name: t("files.documentation"),
           size: "45 MB",
-          items: "12 files",
+          items: t("files.fileCount", { count: 12 }),
         })}
         {FileCard({
           icon: <ImageIcon className="text-purple-400" />,
-          name: "Screenshots",
+          name: t("files.screenshots"),
           size: "230 MB",
-          items: "85 files",
+          items: t("files.fileCount", { count: 85 }),
         })}
         {FileCard({
           icon: <Video className="text-rose-400" />,
-          name: "Presentations",
+          name: t("files.presentations"),
           size: "3.4 GB",
-          items: "5 files",
+          items: t("files.fileCount", { count: 5 }),
         })}
       </div>
     </div>

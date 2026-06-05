@@ -10,6 +10,7 @@ import { NewProjectModal } from "@/components/modal/NewProjectModal";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 import { Select } from "@/components/base/Select";
 import { RadioGroup } from "@/components/base/Radio";
+import { useTranslation } from "react-i18next";
 
 import { useProjects } from "@/hooks/api/useProjects";
 import type { Project as APIProject } from "@/types/api";
@@ -53,6 +54,7 @@ export const Route = createFileRoute("/projects")({
 });
 
 function Projects() {
+  const { t } = useTranslation();
   const [selectedProject, setSelectedProject] = useState<UIProject | null>(
     null,
   );
@@ -77,12 +79,12 @@ function Projects() {
         id: p.id,
         status: finalStatus,
         title: p.title,
-        subtitle: p.description || "No description",
+        subtitle: p.description || t("projects.noDescription"),
         department: "Software Engineering", // 임시
-        scope: p.description || "Project details from API",
+        scope: p.description || t("projects.detailsFromAPI"),
         team:
           p.assignments?.map((a) => ({
-            name: a.user?.name || "Unknown",
+            name: a.user?.name || t("projects.unknown"),
             role: a.role,
             avatar: a.user?.avatarUrl || "",
           })) || [],
@@ -102,7 +104,7 @@ function Projects() {
         mmCost: `$${(p.budget / 12).toFixed(0)}`,
         progress: Math.min(100, Math.max(10, (p.budget % 80) + 15)), // 임시
         period: `${new Date(p.startDate).toLocaleDateString()} - ${new Date(p.endDate).toLocaleDateString()}`,
-        statusText: p.status === "Active" ? "On Track" : p.status,
+        statusText: p.status === "Active" ? t("projects.status.onTrack") : p.status,
         statusIcon: <TrendingUp className="w-4 h-4" />,
         periodIcon: <Calendar className="w-4 h-4" />,
         variant: (p.status === "At Risk"
@@ -120,9 +122,9 @@ function Projects() {
     return matchesFilter && matchesDept;
   });
 
-  if (isLoading) return <div className="p-6">Loading projects...</div>;
+  if (isLoading) return <div className="p-6">{t("projects.loading")}</div>;
   if (error)
-    return <div className="p-6 text-error">Error loading projects</div>;
+    return <div className="p-6 text-error">{t("projects.error")}</div>;
 
   const handleCardClick = (project: UIProject) => {
     setSelectedProject(project);
@@ -131,16 +133,16 @@ function Projects() {
 
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
-      <Breadcrumbs items={[{ label: "Projects" }]} />
+      <Breadcrumbs items={[{ label: t("common.projects") }]} />
 
       {/* Page Header & Filters */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
           <h2 className="font-bold text-display-lg text-on-surface mb-1">
-            Project Portfolio
+            {t("projects.portfolio")}
           </h2>
           <p className="text-on-surface-variant text-body-md">
-            Managing 12 active infrastructure deployments across 4 regions.
+            {t("projects.subtitle")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -148,9 +150,9 @@ function Projects() {
             name="project-filter"
             variant="segmented"
             options={[
-              { value: "ALL", label: "ALL" },
-              { value: "ACTIVE", label: "ACTIVE" },
-              { value: "ON HOLD", label: "ON HOLD" },
+              { value: "ALL", label: t("projects.all") },
+              { value: "ACTIVE", label: t("projects.active") },
+              { value: "ON HOLD", label: t("projects.onHold") },
             ]}
             value={activeFilter}
             onChange={setActiveFilter}
@@ -159,11 +161,11 @@ function Projects() {
             value={selectedDept}
             onChange={setSelectedDept}
             options={[
-              { value: "All Departments", label: "All Departments" },
-              { value: "Software Engineering", label: "Software Engineering" },
-              { value: "Network Ops", label: "Network Ops" },
-              { value: "Cloud Infrastructure", label: "Cloud Infrastructure" },
-              { value: "Cyber Security", label: "Cyber Security" },
+              { value: "All Departments", label: t("projects.allDepts") },
+              { value: "Software Engineering", label: t("projects.softwareEng") },
+              { value: "Network Ops", label: t("projects.networkOps") },
+              { value: "Cloud Infrastructure", label: t("projects.cloudInfra") },
+              { value: "Cyber Security", label: t("projects.cyberSec") },
             ]}
             className="min-w-[180px]"
           />
@@ -193,21 +195,21 @@ function Projects() {
           variant="glass"
           suffixIcon={<ChevronDown className="w-4 h-4" />}
         >
-          View More Projects
+          {t("projects.viewMore")}
         </Button>
       </div>
 
       {/* Project Detail Modal */}
       <ProjectDetailModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        project={selectedProject}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          project={selectedProject}
       />
 
       {/* Initiate New Project Modal */}
       <NewProjectModal
-        isOpen={isNewProjectModalOpen}
-        onClose={() => setIsNewProjectModalOpen(false)}
+          isOpen={isNewProjectModalOpen}
+          onClose={() => setIsNewProjectModalOpen(false)}
       />
     </div>
   );

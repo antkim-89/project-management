@@ -20,6 +20,7 @@ import { Select } from "@/components/base/Select";
 import { Pagination } from "@/components/base/Pagination";
 import type { User, SkillSet } from "@/types/api";
 import { UserLeaveView } from "@/components/teams/UserLeaveView";
+import { useTranslation } from "react-i18next";
 
 interface UserSkill {
   id: string;
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/teams")({
 });
 
 function Teams() {
+  const { t } = useTranslation();
   const { data: users, isLoading, error } = useUsers();
   const [activeTab, setActiveTab] = useState<"TABLE" | "ORG_CHART" | "LEAVE">("TABLE");
   const [searchQuery, setSearchQuery] = useState("");
@@ -111,29 +113,29 @@ function Teams() {
     }))
     .filter((level) => level.members.length > 0);
 
-  if (isLoading) return <div className="p-6">Loading resources...</div>;
+  if (isLoading) return <div className="p-6">{t("teams.loading")}</div>;
   if (error)
-    return <div className="p-6 text-error">Error loading resources</div>;
+    return <div className="p-6 text-error">{t("teams.error")}</div>;
 
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
       {/* Breadcrumbs & Title */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
-          <Breadcrumbs items={[{ label: "Teams" }]} />
+          <Breadcrumbs items={[{ label: t("common.teams") }]} />
           <h2 className="font-bold text-display-lg text-on-surface mb-1">
-            Manpower Directory
+            {t("teams.directory")}
           </h2>
           <p className="text-on-surface-variant text-body-md">
-            Advanced resource allocation and skill mapping engine.
+            {t("teams.subtitle")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="glass" prefixIcon={<Filter className="w-4 h-4" />}>
-            Advanced Filters
+            {t("teams.advancedFilters")}
           </Button>
           <Button variant="primary" prefixIcon={<Download className="w-4 h-4" />}>
-            Export Data
+            {t("teams.exportData")}
           </Button>
         </div>
       </div>
@@ -141,22 +143,22 @@ function Teams() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <ManpowerStatCard
-          title="Total Personnel"
+          title={t("teams.totalPersonnel")}
           value={filteredUsers.length.toString()}
           change="+0% vs LY"
           icon={Users}
           trend="neutral"
         />
         <ManpowerStatCard
-          title="Utilization"
+          title={t("teams.utilization")}
           value="84.2%"
-          change="Optimal"
+          change={t("teams.optimal")}
           icon={CheckCircle2}
           trend="neutral"
           accentColor="secondary"
         />
         <ManpowerStatCard
-          title="Availability"
+          title={t("teams.availability")}
           value="156"
           change="32 New"
           icon={CalendarCheck}
@@ -164,7 +166,7 @@ function Teams() {
           accentColor="secondary"
         />
         <ManpowerStatCard
-          title="Avg. M/M Cost"
+          title={t("teams.avgCost")}
           value="₩68,500,000"
           change="Budget Bound"
           icon={DollarSign}
@@ -183,7 +185,7 @@ function Teams() {
               : "border-transparent text-on-surface-variant hover:text-on-surface",
           )}
         >
-          <Table className="w-4.5 h-4.5" /> Members Table
+          <Table className="w-4.5 h-4.5" /> {t("teams.membersTable")}
         </button>
         <button
           onClick={() => setActiveTab("ORG_CHART")}
@@ -194,7 +196,7 @@ function Teams() {
               : "border-transparent text-on-surface-variant hover:text-on-surface",
           )}
         >
-          <Network className="w-4.5 h-4.5" /> Org Chart
+          <Network className="w-4.5 h-4.5" /> {t("teams.orgChart")}
         </button>
         <button
           onClick={() => setActiveTab("LEAVE")}
@@ -205,7 +207,7 @@ function Teams() {
               : "border-transparent text-on-surface-variant hover:text-on-surface",
           )}
         >
-          <CalendarCheck className="w-4.5 h-4.5" /> Leave Management
+          <CalendarCheck className="w-4.5 h-4.5" /> {t("teams.leaveManagement")}
         </button>
       </div>
 
@@ -216,7 +218,7 @@ function Teams() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
             <input
               type="text"
-              placeholder="Search by name, email, or rank..."
+              placeholder={t("teams.searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
@@ -227,7 +229,7 @@ function Teams() {
               value={selectedSkill}
               onChange={setSelectedSkill}
               options={[
-                { value: "ALL", label: "All Skills" },
+                { value: "ALL", label: t("teams.allSkills") },
                 ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
               ]}
               className="min-w-[150px]"
@@ -236,7 +238,7 @@ function Teams() {
               value={selectedRank}
               onChange={setSelectedRank}
               options={[
-                { value: "ALL", label: "Rank: All" },
+                { value: "ALL", label: t("teams.rankAll") },
                 ...uniqueRanksList.map((rank) => ({ value: rank, label: rank })),
               ]}
               className="min-w-[150px]"
@@ -253,22 +255,22 @@ function Teams() {
               <thead>
                 <tr className="border-b border-outline-variant bg-surface-container/50">
                   <th className="p-4 text-label-caps font-bold text-on-surface-variant tracking-wider">
-                    Member
+                    {t("teams.member")}
                   </th>
                   <th className="p-4 text-label-caps font-bold text-on-surface-variant tracking-wider">
-                    Rank / Role
+                    {t("teams.rankRole")}
                   </th>
                   <th className="p-4 text-label-caps font-bold text-on-surface-variant tracking-wider">
-                    Monthly Base Salary
+                    {t("teams.monthlySalary")}
                   </th>
                   <th className="p-4 text-label-caps font-bold text-on-surface-variant tracking-wider">
-                    Skills
+                    {t("teams.skills")}
                   </th>
                   <th className="p-4 text-label-caps font-bold text-on-surface-variant tracking-wider">
-                    Status
+                    {t("teams.status")}
                   </th>
                   <th className="p-4 text-label-caps font-bold text-on-surface-variant tracking-wider">
-                    Actions
+                    {t("teams.actions")}
                   </th>
                 </tr>
               </thead>
@@ -301,7 +303,7 @@ function Teams() {
                       </td>
                       <td className="p-4">
                         <span className="text-label-md font-semibold text-on-surface">
-                          {member.rank?.name || "Employee"}
+                          {member.rank?.name || t("teams.employee")}
                         </span>
                       </td>
                       <td className="p-4">
@@ -322,7 +324,7 @@ function Teams() {
                             ))
                           ) : (
                             <span className="text-outline text-label-sm">
-                              No skills mapped
+                              {t("teams.noSkills")}
                             </span>
                           )}
                         </div>
@@ -330,12 +332,12 @@ function Teams() {
                       <td className="p-4">
                         <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider">
                           <span className="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                          Available
+                          {t("teams.available")}
                         </span>
                       </td>
                       <td className="p-4">
                         <button className="px-3 py-1.5 text-label-sm font-bold border border-outline hover:border-primary text-on-surface hover:text-primary rounded-lg transition-colors cursor-pointer">
-                          View Detail
+                          {t("teams.viewDetail")}
                         </button>
                       </td>
                     </tr>
@@ -346,7 +348,7 @@ function Teams() {
                       colSpan={6}
                       className="p-8 text-center text-on-surface-variant"
                     >
-                      No members matched the active filter criteria.
+                      {t("teams.noMembersFilter")}
                     </td>
                   </tr>
                 )}
@@ -416,8 +418,7 @@ function Teams() {
             </div>
           ) : (
             <div className="text-on-surface-variant py-8">
-              No members matched the criteria to construct an organization
-              chart.
+              {t("teams.noMembersOrgChart")}
             </div>
           )}
         </div>
@@ -431,7 +432,11 @@ function Teams() {
       {activeTab === "TABLE" && (
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-label-md text-on-surface-variant">
-            Showing {paginatedUsers.length > 0 ? (normalizedPage - 1) * itemsPerPage + 1 : 0} - {Math.min(normalizedPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} entries
+            {t("teams.showingEntries", {
+              start: paginatedUsers.length > 0 ? (normalizedPage - 1) * itemsPerPage + 1 : 0,
+              end: Math.min(normalizedPage * itemsPerPage, filteredUsers.length),
+              total: filteredUsers.length
+            })}
           </p>
           <Pagination
             currentPage={normalizedPage}

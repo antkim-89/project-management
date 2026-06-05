@@ -26,12 +26,14 @@ import { useUsers } from "@/hooks/api/useUsers";
 import { BaseModal } from "@/components/base/BaseModal";
 import { Select } from "@/components/base/Select";
 import { BasePopover } from "@/components/base/BasePopover";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/assets")({
   component: Assets,
 });
 
 function Assets() {
+  const { t } = useTranslation();
   const { data: equipment, isLoading, error } = useEquipment();
   const { data: users } = useUsers();
 
@@ -61,7 +63,8 @@ function Assets() {
     modelName: "",
     serialNumber: "",
     userId: "",
-    status: "Available",
+    status: "Available" as "Available" | "Assigned" | "Maintenance" | "Needs Repair",
+    physicalStatus: "Normal" as "Normal" | "Maintenance" | "Needs Repair",
     purchaseDate: todayStr,
   });
 
@@ -71,6 +74,12 @@ function Assets() {
   const [filterStatus, setFilterStatus] = useState<string>("All");
   const filterBtnRef = useRef<HTMLButtonElement>(null);
 
+  const computedStatus = useMemo(() => {
+    if (manageForm.physicalStatus === "Needs Repair") return "Needs Repair";
+    if (manageForm.physicalStatus === "Maintenance") return "Maintenance";
+    return manageForm.userId ? "Assigned" : "Available";
+  }, [manageForm.physicalStatus, manageForm.userId]);
+
   const mappedAssets = useMemo(() => {
     return (
       equipment?.map((e) => ({
@@ -78,7 +87,7 @@ function Assets() {
         name: e.modelName,
         sn: e.serialNumber,
         type: e.type,
-        user: e.user?.name || "Unassigned",
+        user: e.user?.name || t("assets.unassigned"),
         userId: e.userId || "",
         userInitial: e.user?.name?.substring(0, 2).toUpperCase() || "NA",
         health: e.health,
@@ -119,12 +128,19 @@ function Assets() {
 
   const handleOpenManageModal = (asset: any) => {
     setSelectedAssetId(asset.id);
+    const initialPhysicalStatus = (
+      asset.status === "Needs Repair" || asset.status === "Maintenance"
+        ? asset.status
+        : "Normal"
+    ) as "Normal" | "Maintenance" | "Needs Repair";
+
     setManageForm({
       type: asset.type,
       modelName: asset.name,
       serialNumber: asset.sn,
       userId: asset.userId,
       status: asset.status,
+      physicalStatus: initialPhysicalStatus,
       purchaseDate: asset.purchaseDate ? asset.purchaseDate.split("T")[0] : todayStr,
     });
     setIsManageModalOpen(true);
@@ -133,7 +149,7 @@ function Assets() {
   const handleAddAsset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!addForm.modelName || !addForm.serialNumber) {
-      alert("모델명과 시리얼 번호를 입력해 주세요.");
+      alert(t("assets.alertInputModelSn"));
       return;
     }
     try {
@@ -152,14 +168,23 @@ function Assets() {
         userId: "",
         purchaseDate: todayStr,
       });
-    } catch (err) {
-      alert("장비 등록에 실패했습니다.");
+    } catch {
+      alert(t("assets.alertFailAdd"));
     }
   };
 
   const handleUpdateAsset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAssetId) return;
+
+    // physicalStatus와 userId를 조합하여 최종 status 도출
+    let calculatedStatus: "Available" | "Assigned" | "Maintenance" | "Needs Repair";
+    if (manageForm.physicalStatus === "Normal") {
+      calculatedStatus = manageForm.userId ? "Assigned" : "Available";
+    } else {
+      calculatedStatus = manageForm.physicalStatus;
+    }
+
     try {
       await updateMutation.mutateAsync({
         id: selectedAssetId,
@@ -168,52 +193,58 @@ function Assets() {
           modelName: manageForm.modelName,
           serialNumber: manageForm.serialNumber,
           userId: manageForm.userId || null,
-          status: manageForm.status,
+          status: calculatedStatus,
           purchaseDate: manageForm.purchaseDate,
         },
       });
       setIsManageModalOpen(false);
-    } catch (err) {
-      alert("장비 수정에 실패했습니다.");
+    } catch {
+      alert(t("assets.alertFailUpdate"));
     }
   };
 
   const handleDeleteAsset = async () => {
     if (!selectedAssetId) return;
-    if (!confirm("정말로 이 장비를 영구 파기(삭제)하시겠습니까?")) return;
+    if (!confirm(t("assets.confirmDelete"))) return;
     try {
       await deleteMutation.mutateAsync(selectedAssetId);
       setIsManageModalOpen(false);
-    } catch (err) {
-      alert("장비 삭제에 실패했습니다.");
+    } catch {
+      alert(t("assets.alertFailDelete"));
     }
   };
 
   const userOptions = useMemo(() => {
     return [
-      { value: "", label: "Unassigned (배정 없음)" },
-      ...(users?.map((u) => ({ value: u.id, label: `${u.name} (${u.rank?.name || "Member"})` })) || [])
+      { value: "", label: t("assets.unassigned") },
+      ...(users?.map((u) => ({ value: u.id, label: `${u.name} (${u.rank?.name || t("assets.member")})` })) || [])
     ];
-  }, [users]);
+  }, [users, t]);
 
   const typeOptions = [
-    { value: "Laptop", label: "Laptop (노트북)" },
-    { value: "Monitor", label: "Monitor (모니터)" },
-    { value: "Mobile", label: "Mobile (모바일)" },
-    { value: "Package", label: "Package (기타 비품)" },
+    { value: "Laptop", label: t("assets.laptop") },
+    { value: "Monitor", label: t("assets.monitor") },
+    { value: "Mobile", label: t("assets.mobile") },
+    { value: "Package", label: t("assets.package") },
   ];
 
   const statusOptions = [
-    { value: "Assigned", label: "Assigned (배정됨)" },
-    { value: "Available", label: "Available (배정 가능)" },
-    { value: "Maintenance", label: "Maintenance (정비 중)" },
-    { value: "Needs Repair", label: "Needs Repair (수리 필요)" },
+    { value: "Assigned", label: t("assets.assigned") },
+    { value: "Available", label: t("assets.available") },
+    { value: "Maintenance", label: t("assets.maintenance") },
+    { value: "Needs Repair", label: t("assets.needsRepair") },
+  ];
+
+  const physicalStatusOptions = [
+    { value: "Normal", label: t("assets.normal") },
+    { value: "Maintenance", label: t("assets.maintenance") },
+    { value: "Needs Repair", label: t("assets.needsRepair") },
   ];
 
 
 
-  if (isLoading) return <div className="p-6">Loading assets...</div>;
-  if (error) return <div className="p-6 text-error">Error loading assets</div>;
+  if (isLoading) return <div className="p-6">{t("assets.loading")}</div>;
+  if (error) return <div className="p-6 text-error">{t("assets.error")}</div>;
 
   return (
     <div className="p-6 space-y-8 max-w-[1600px] mx-auto w-full animate-fade-in">
@@ -222,10 +253,10 @@ function Assets() {
         <div>
           <Breadcrumbs items={[{ label: "Assets" }]} />
           <h2 className="text-display-lg font-bold text-on-surface tracking-tight">
-            Resource Lifecycle
+            {t("assets.title")}
           </h2>
           <p className="text-on-surface-variant text-body-md mt-1">
-            Manage global resource and hardware inventory lifecycle.
+            {t("assets.subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -235,7 +266,7 @@ function Assets() {
             onClick={() => setIsAddModalOpen(true)}
             className="cursor-pointer"
           >
-            Add Asset
+            {t("assets.addAsset")}
           </Button>
           <div className="relative">
             <Button
@@ -245,7 +276,7 @@ function Assets() {
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               className="cursor-pointer relative"
             >
-              Filter View
+              {t("assets.filterView")}
               {(filterType !== "All" || filterStatus !== "All") && (
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary rounded-full shadow-md" />
               )}
@@ -259,11 +290,11 @@ function Assets() {
             >
               <div className="space-y-2">
                 <label className="text-label-caps font-bold text-on-surface-variant">
-                  Filter by Type (유형 필터)
+                  {t("assets.filterByType")}
                 </label>
                 <Select
                   options={[
-                    { value: "All", label: "All Types (전체)" },
+                    { value: "All", label: t("assets.allTypes") },
                     ...typeOptions,
                   ]}
                   value={filterType}
@@ -273,11 +304,11 @@ function Assets() {
 
               <div className="space-y-2">
                 <label className="text-label-caps font-bold text-on-surface-variant">
-                  Filter by Status (상태 필터)
+                  {t("assets.filterByStatus")}
                 </label>
                 <Select
                   options={[
-                    { value: "All", label: "All Statuses (전체)" },
+                    { value: "All", label: t("assets.allStatuses") },
                     ...statusOptions,
                   ]}
                   value={filterStatus}
@@ -295,7 +326,7 @@ function Assets() {
                     setIsFilterOpen(false);
                   }}
                 >
-                  Reset Filters (필터 초기화)
+                  {t("assets.resetFilters")}
                 </Button>
               )}
             </BasePopover>
@@ -308,10 +339,10 @@ function Assets() {
         <div className="col-span-12 space-y-6">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-headline-md font-bold flex items-center gap-2 text-on-surface">
-              <Package size={18} className="text-primary" /> Asset Inventory
+              <Package size={18} className="text-primary" /> {t("assets.inventory")}
             </h3>
             <span className="font-mono text-label-sm text-on-surface-variant">
-              {equipment?.length || 0} Active Units
+              {equipment?.length || 0} {t("assets.activeUnits")}
             </span>
           </div>
 
@@ -320,11 +351,11 @@ function Assets() {
               <table>
                 <thead>
                   <tr>
-                    <th>Asset Name</th>
-                    <th>Assigned User</th>
-                    <th>Life Cycle</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th>{t("assets.name")}</th>
+                    <th>{t("assets.user")}</th>
+                    <th>{t("assets.lifeCycle")}</th>
+                    <th>{t("assets.status")}</th>
+                    <th>{t("common.action")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -348,7 +379,7 @@ function Assets() {
                               {asset.name}
                             </div>
                             <div className="text-label-caps font-mono text-outline uppercase">
-                              SN: {asset.sn}
+                              {t("assets.serialNumber")}: {asset.sn}
                             </div>
                           </div>
                         </div>
@@ -397,7 +428,13 @@ function Assets() {
                                   : "bg-on-surface-variant/10 text-on-surface-variant border-outline-variant",
                           )}
                         >
-                          {asset.status}
+                          {asset.status === "Needs Repair"
+                            ? t("assets.needsRepair")
+                            : asset.status === "Maintenance"
+                              ? t("assets.maintenance")
+                              : asset.status === "Assigned"
+                                ? t("assets.assigned")
+                                : t("assets.available")}
                         </span>
                       </td>
                       <td>
@@ -423,7 +460,7 @@ function Assets() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <GlassCard className="p-4 rounded-xl">
               <div className="text-on-surface-variant text-xs mb-1 font-bold uppercase tracking-wider">
-                Needs Repair
+                {t("assets.needsRepair")}
               </div>
               <div className="text-2xl font-mono text-on-surface">
                 {stats.needsRepair.toString().padStart(2, "0")}
@@ -433,31 +470,31 @@ function Assets() {
                 stats.needsRepair > 0 ? "text-error animate-pulse" : "text-secondary"
               )}>
                 <AlertTriangle size={14} />
-                {stats.needsRepair > 0 ? "Action Required" : "All clean"}
+                {stats.needsRepair > 0 ? t("assets.actionRequired") : t("assets.allClean")}
               </div>
             </GlassCard>
             <GlassCard className="p-4 rounded-xl">
               <div className="text-on-surface-variant text-xs mb-1 font-bold uppercase tracking-wider">
-                In Maintenance
+                {t("assets.maintenance")}
               </div>
               <div className="text-2xl font-mono text-on-surface">
                 {stats.maintenance.toString().padStart(2, "0")}
               </div>
               <div className="flex items-center gap-1 text-primary text-[10px] mt-2">
                 <Activity size={14} />
-                Under inspection
+                {t("assets.underInspection")}
               </div>
             </GlassCard>
             <GlassCard className="p-4 rounded-xl">
               <div className="text-on-surface-variant text-xs mb-1 font-bold uppercase tracking-wider">
-                Average Fleet Health
+                {t("assets.avgHealth")}
               </div>
               <div className="text-2xl font-mono text-on-surface">
                 {stats.avgHealth}%
               </div>
               <div className="flex items-center gap-1 text-secondary text-[10px] mt-2">
                 <Info size={14} />
-                Healthy fleet status
+                {t("assets.healthText")}
               </div>
             </GlassCard>
           </div>
@@ -468,19 +505,19 @@ function Assets() {
       <BaseModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="Add New Asset (비품 등록)"
+        title={t("assets.addTitle")}
         size="md"
         footer={
           <div className="flex justify-end gap-3">
             <Button variant="glass" onClick={() => setIsAddModalOpen(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               variant="primary"
               onClick={handleAddAsset}
               disabled={createMutation.isPending}
             >
-              {createMutation.isPending ? "Registering..." : "Register Asset"}
+              {createMutation.isPending ? t("assets.registering") : t("assets.registerAsset")}
             </Button>
           </div>
         }
@@ -488,7 +525,7 @@ function Assets() {
         <form onSubmit={handleAddAsset} className="space-y-6">
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Asset Type (장비 유형)
+              {t("assets.assetType")}
             </label>
             <Select
               options={typeOptions}
@@ -499,12 +536,12 @@ function Assets() {
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Model Name (모델명)
+              {t("assets.modelName")}
             </label>
             <input
               type="text"
               className="w-full bg-surface-container border border-outline-variant/40 text-on-surface rounded-xl px-4 py-3 text-body-md focus:outline-none focus:ring-2 focus:ring-primary/40"
-              placeholder="예: MacBook Pro 16 또는 LG Gram 15"
+              placeholder={t("assets.placeholderModel")}
               value={addForm.modelName}
               onChange={(e) => setAddForm((f) => ({ ...f, modelName: e.target.value }))}
             />
@@ -512,12 +549,12 @@ function Assets() {
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Serial Number (시리얼 번호)
+              {t("assets.serialNumber")}
             </label>
             <input
               type="text"
               className="w-full bg-surface-container border border-outline-variant/40 text-on-surface rounded-xl px-4 py-3 text-body-md focus:outline-none focus:ring-2 focus:ring-primary/40"
-              placeholder="고유 번호 입력"
+              placeholder={t("assets.placeholderSn")}
               value={addForm.serialNumber}
               onChange={(e) => setAddForm((f) => ({ ...f, serialNumber: e.target.value }))}
             />
@@ -525,19 +562,19 @@ function Assets() {
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Assign User (초기 직원 배정)
+              {t("assets.assignUser")}
             </label>
             <Select
               options={userOptions}
               value={addForm.userId}
               onChange={(val) => setAddForm((f) => ({ ...f, userId: val }))}
-              placeholder="배정할 직원을 고르세요 (선택)"
+              placeholder={t("assets.placeholderAssign")}
             />
           </div>
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Purchase Date (구입일)
+              {t("assets.purchaseDate")}
             </label>
             <input
               type="date"
@@ -553,7 +590,7 @@ function Assets() {
       <BaseModal
         isOpen={isManageModalOpen}
         onClose={() => setIsManageModalOpen(false)}
-        title="Manage Asset (비품 관리)"
+        title={t("assets.manageAsset")}
         size="md"
         footer={
           <div className="flex justify-between w-full">
@@ -564,18 +601,18 @@ function Assets() {
               onClick={handleDeleteAsset}
               disabled={deleteMutation.isPending}
             >
-              Scrap Asset (폐기)
+              {t("assets.scrapAsset")}
             </Button>
             <div className="flex gap-3">
               <Button variant="glass" onClick={() => setIsManageModalOpen(false)}>
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button
                 variant="primary"
                 onClick={handleUpdateAsset}
                 disabled={updateMutation.isPending}
               >
-                {updateMutation.isPending ? "Saving..." : "Save Changes"}
+                {updateMutation.isPending ? t("assets.saving") : t("common.save")}
               </Button>
             </div>
           </div>
@@ -584,7 +621,7 @@ function Assets() {
         <form onSubmit={handleUpdateAsset} className="space-y-6">
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Asset Type (장비 유형)
+              {t("assets.assetType")}
             </label>
             <Select
               options={typeOptions}
@@ -595,7 +632,7 @@ function Assets() {
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Model Name (모델명)
+              {t("assets.modelName")}
             </label>
             <input
               type="text"
@@ -607,7 +644,7 @@ function Assets() {
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Serial Number (시리얼 번호)
+              {t("assets.serialNumber")}
             </label>
             <input
               type="text"
@@ -619,7 +656,7 @@ function Assets() {
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Assign User (직원 배정 변경)
+              {t("assets.assignUser")}
             </label>
             <Select
               options={userOptions}
@@ -630,18 +667,46 @@ function Assets() {
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Hardware Status (하드웨어 상태)
+              {t("assets.hardwareStatus")} [{t("assets.autoDisplay")}]
+            </label>
+            <div className="flex items-center h-12">
+              <span
+                className={cn(
+                  "px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border",
+                  computedStatus === "Needs Repair"
+                    ? "bg-error/15 text-error border-error/25 animate-pulse"
+                    : computedStatus === "Maintenance"
+                      ? "bg-primary/15 text-primary border-primary/25"
+                      : computedStatus === "Assigned"
+                        ? "bg-secondary/15 text-secondary border-secondary/25"
+                        : "bg-on-surface-variant/10 text-on-surface-variant border-outline-variant",
+                )}
+              >
+                {computedStatus === "Needs Repair"
+                  ? t("assets.needsRepair")
+                  : computedStatus === "Maintenance"
+                    ? t("assets.maintenance")
+                    : computedStatus === "Assigned"
+                      ? t("assets.assigned")
+                      : t("assets.available")}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-label-caps font-bold text-on-surface-variant">
+              {t("assets.deviceStatus")}
             </label>
             <Select
-              options={statusOptions}
-              value={manageForm.status}
-              onChange={(val) => setManageForm((f) => ({ ...f, status: val }))}
+              options={physicalStatusOptions}
+              value={manageForm.physicalStatus}
+              onChange={(val) => setManageForm((f) => ({ ...f, physicalStatus: val as any }))}
             />
           </div>
 
           <div className="space-y-2">
             <label className="text-label-caps font-bold text-on-surface-variant">
-              Purchase Date (구입일)
+              {t("assets.purchaseDate")}
             </label>
             <input
               type="date"

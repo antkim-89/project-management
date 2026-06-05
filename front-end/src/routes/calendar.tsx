@@ -10,12 +10,14 @@ import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 
 import { useProjects } from "@/hooks/api/useProjects";
 import { useTasks } from "@/hooks/api/useTasks";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/calendar")({
   component: CalendarPage,
 });
 
 function CalendarPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("Week");
   const [viewMode, setViewMode] = useState<"TASKS" | "PROJECTS">(
     "TASKS",
@@ -30,7 +32,7 @@ function CalendarPage() {
   if (isLoading) {
     return (
       <div className="flex-1 p-6 flex items-center justify-center text-on-surface-variant animate-fade-in">
-        Loading calendar data...
+        {t("calendar.loading")}
       </div>
     );
   }
@@ -38,7 +40,7 @@ function CalendarPage() {
   if (error) {
     return (
       <div className="flex-1 p-6 text-error flex items-center justify-center animate-fade-in">
-        Error loading calendar data.
+        {t("calendar.error")}
       </div>
     );
   }
@@ -112,19 +114,19 @@ function CalendarPage() {
 
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-surface animate-fade-in">
-      <Breadcrumbs items={[{ label: "Calendar" }]} />
+      <Breadcrumbs items={[{ label: t("common.calendar") }]} />
 
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
         <div>
           <h2 className="font-bold text-display-lg text-on-surface mb-1">
             {viewMode === "TASKS"
-              ? "Task Schedule Calendar"
-              : "Timeline Availability"}
+              ? t("calendar.taskScheduleTitle")
+              : t("calendar.timelineTitle")}
           </h2>
           <p className="text-on-surface-variant text-body-md">
             {viewMode === "TASKS"
-              ? "프로젝트별 마감일을 한눈에 확인하고 협업 효율을 극대화하세요."
-              : "Real-time resource allocation and project roadmap synchronization."}
+              ? t("calendar.taskScheduleSubtitle")
+              : t("calendar.timelineSubtitle")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -141,7 +143,7 @@ function CalendarPage() {
                       : "text-on-surface-variant hover:text-on-surface",
                   )}
                 >
-                  {tab}
+                  {tab === "Week" ? t("calendar.week") : t("calendar.month")}
                 </button>
               ))}
             </div>
@@ -150,7 +152,7 @@ function CalendarPage() {
             variant="glass"
             prefixIcon={<Download className="w-4 h-4" />}
           >
-            Export Data
+            {t("calendar.exportData")}
           </Button>
         </div>
       </div>
@@ -166,7 +168,7 @@ function CalendarPage() {
               : "text-on-surface-variant hover:text-on-surface",
           )}
         >
-          할 일 일정 (Tasks)
+          {t("calendar.tabTasks")}
           {viewMode === "TASKS" && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />
           )}
@@ -180,7 +182,7 @@ function CalendarPage() {
               : "text-on-surface-variant hover:text-on-surface",
           )}
         >
-          프로젝트 일정 (Timeline)
+          {t("calendar.tabTimeline")}
           {viewMode === "PROJECTS" && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary animate-zoom-in" />
           )}

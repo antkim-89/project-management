@@ -15,12 +15,14 @@ import { useTasks, useUpdateTask } from "@/hooks/api/useTasks";
 import type { Task } from "@/types/api";
 import { cn } from "@/lib/utils";
 import { useKanbanDragDrop } from "@/hooks/useKanbanDragDrop";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/tasks")({
   component: Tasks,
 });
 
 function Tasks() {
+  const { t } = useTranslation();
   const { data: tasks, isLoading, error } = useTasks();
   const updateTaskMutation = useUpdateTask();
 
@@ -89,11 +91,11 @@ function Tasks() {
 
   if (isLoading)
     return (
-      <div className="p-6 text-on-surface">Loading Tasks Kanban Board...</div>
+      <div className="p-6 text-on-surface">{t("tasks.loading")}</div>
     );
   if (error)
     return (
-      <div className="p-6 text-error">Error loading tasks from server.</div>
+      <div className="p-6 text-error">{t("tasks.error")}</div>
     );
 
   // Categorize tasks by status
@@ -120,7 +122,7 @@ function Tasks() {
   const columns = [
     {
       id: "TODO",
-      title: "할 일",
+      title: t("tasks.todo"),
       tasks: todoTasks,
       headerBg:
         "bg-outline-variant/10 text-on-surface-variant border-outline-variant/20",
@@ -129,7 +131,7 @@ function Tasks() {
     },
     {
       id: "IN_PROGRESS",
-      title: "진행 중",
+      title: t("tasks.inProgress"),
       tasks: inProgressTasks,
       headerBg: "bg-secondary/15 text-secondary border-secondary/20",
       badgeColor: "bg-secondary/20 text-secondary",
@@ -137,7 +139,7 @@ function Tasks() {
     },
     {
       id: "DONE",
-      title: "완료",
+      title: t("tasks.done"),
       tasks: doneTasks,
       headerBg: "bg-primary/15 text-primary border-primary/20",
       badgeColor: "bg-primary/20 text-primary",
@@ -151,11 +153,10 @@ function Tasks() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 shrink-0">
         <div>
           <h1 className="font-bold text-display-lg text-on-surface mb-1">
-            업무 관리
+            {t("common.tasks")}
           </h1>
           <p className="text-on-surface-variant text-body-md">
-            칸반보드를 통해 업무 상태를 직관적으로 파악하고 효율적으로
-            조율하세요.
+            {t("tasks.subtitle")}
           </p>
         </div>
         <Button
@@ -163,7 +164,7 @@ function Tasks() {
           onClick={handleAddTaskClick}
           prefixIcon={<Plus className="w-5 h-5" />}
         >
-          할 일 추가
+          {t("tasks.addTask")}
         </Button>
       </div>
 
@@ -209,7 +210,7 @@ function Tasks() {
             >
               {column.tasks.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center py-12 text-on-surface-variant/40 border border-dashed border-outline-variant/20 rounded-xl">
-                  <p className="text-label-md">이 컬럼에 업무가 없습니다.</p>
+                  <p className="text-label-md">{t("tasks.emptyColumn")}</p>
                 </div>
               ) : (
                 column.tasks.map((task) => {
@@ -233,7 +234,7 @@ function Tasks() {
                       {/* Project Tag */}
                       <div className="flex items-center justify-between">
                         <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded border border-primary/20 max-w-[150px] truncate">
-                          {task.project?.title || "연동 없음"}
+                          {task.project?.title || t("tasks.noProject")}
                         </span>
 
                         {/* Status Quick Controller for better interactivity */}
@@ -241,7 +242,7 @@ function Tasks() {
                           {column.id !== "TODO" && (
                             <button
                               onClick={(e) => handleMoveStatus(task, "prev", e)}
-                              title="이전 단계로 이동"
+                              title={t("tasks.moveToPrev")}
                               className="p-1 text-on-surface-variant hover:text-on-surface hover:bg-interaction-hover transition-colors cursor-pointer"
                             >
                               <ChevronLeft className="w-3.5 h-3.5" />
@@ -250,7 +251,7 @@ function Tasks() {
                           {column.id !== "DONE" && (
                             <button
                               onClick={(e) => handleMoveStatus(task, "next", e)}
-                              title="다음 단계로 이동"
+                              title={t("tasks.moveToNext")}
                               className="p-1 text-on-surface-variant hover:text-on-surface hover:bg-interaction-hover transition-colors cursor-pointer"
                             >
                               <ChevronRight className="w-3.5 h-3.5" />
@@ -311,7 +312,7 @@ function Tasks() {
                             </>
                           ) : (
                             <span className="text-xs italic text-on-surface-variant/40 flex items-center gap-1">
-                              <User className="w-3 h-3" /> 미지정
+                              <User className="w-3 h-3" /> {t("tasks.unassigned")}
                             </span>
                           )}
                         </div>

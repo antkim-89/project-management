@@ -112,14 +112,14 @@ export function Header() {
                     >
                       <UserIcon className="w-4 h-4" />
                       <span className="text-label-md font-bold">
-                        Profile Detail
+                        {t("header.profileDetail")}
                       </span>
                       <ExternalLink className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-50 transition-opacity" />
                     </button>
                     <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-on-surface-variant hover:bg-interaction-hover hover:text-on-surface transition-all cursor-pointer">
                       <Settings className="w-4 h-4" />
                       <span className="text-label-md font-bold">
-                        Account Settings
+                        {t("header.accountSettings")}
                       </span>
                     </button>
                     <div className="h-px bg-outline-variant/30 my-2" />

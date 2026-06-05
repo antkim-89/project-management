@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: projects } = useProjects();
   const { data: users } = useUsers();
   const { data: equipment } = useEquipment();
@@ -123,7 +123,7 @@ function Index() {
             {t("common.overview")}
           </h2>
           <p className="text-on-surface-variant text-body-md mt-1">
-            Monitor key metrics and manage your platform operations.
+            {t("dashboard.subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
@@ -132,7 +132,7 @@ function Index() {
             variant="outline"
             className="rounded text-label-md font-medium text-on-surface"
           >
-            This Month
+            {t("dashboard.thisMonth")}
           </Button>
         </div>
       </div>
@@ -144,25 +144,28 @@ function Index() {
           <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-primary/5 to-transparent pointer-events-none" />
           <div>
             <h3 className="text-headline-lg font-bold text-on-surface mb-2">
-              Welcome back
+              {t("header.welcome")}
             </h3>
             <p className="text-on-surface-variant text-body-lg">
-              Operational status is{" "}
-              <span className="text-secondary font-bold">Stable</span>. You have{" "}
-              {activeProjectsCount} active projects.
+              {t("header.statusMessage", {
+                status: t("header.stable"),
+                count: activeProjectsCount,
+              })}
             </p>
           </div>
           <div className="flex items-end justify-between mt-8">
             <div className="space-y-1">
               <p className="text-4xl font-mono font-bold leading-none text-on-surface">
-                {new Date().toLocaleTimeString([], {
+                {new Date().toLocaleTimeString(i18n.language, {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}{" "}
-                <span className="text-lg opacity-50 ml-1 font-normal">PM</span>
+                <span className="text-lg opacity-50 ml-1 font-normal">
+                  {new Date().getHours() >= 12 ? t("header.pm") : "AM"}
+                </span>
               </p>
               <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mt-2">
-                {new Date().toLocaleDateString(undefined, {
+                {new Date().toLocaleDateString(i18n.language, {
                   weekday: "long",
                   year: "numeric",
                   month: "long",
@@ -174,7 +177,7 @@ function Index() {
               <div className="text-right">
                 <p className="text-lg font-mono text-on-surface">24°C</p>
                 <p className="text-[10px] text-on-surface-variant uppercase font-bold">
-                  Sunny • Seoul
+                  {t("dashboard.sunnySeoul")}
                 </p>
               </div>
               <Sun className="text-primary w-8 h-8" />
@@ -185,18 +188,18 @@ function Index() {
         {/* Circular Progress / Insights */}
         <GlassCard className="col-span-12 lg:col-span-4 p-6 flex flex-col justify-between">
           <div className="flex justify-between items-center mb-4">
-            <h4 className="text-lg font-bold">Insights</h4>
+            <h4 className="text-lg font-bold">{t("dashboard.insights")}</h4>
             <MoreHorizontal className="text-on-surface-variant cursor-pointer" />
           </div>
           <CircularProgressChart />
           <div className="mt-6 space-y-3">
             <MetricItem
-              label="Task Completion"
+              label={t("dashboard.taskCompletion")}
               value="+12.4%"
               color="bg-primary"
             />
             <MetricItem
-              label="Average Wait"
+              label={t("dashboard.averageWait")}
               value="32 min"
               color="bg-outline-variant"
             />
@@ -206,7 +209,7 @@ function Index() {
         {/* 4 Stats Grid */}
         <StatCard
           icon={<Users className="w-5 h-5 text-emerald-400" />}
-          label="Total Personnel"
+          label={t("dashboard.totalPersonnel")}
           value={totalPersonnel.toString()}
           badge="Active"
           badgeColor="bg-emerald-400/10 text-emerald-400"
@@ -215,7 +218,7 @@ function Index() {
 
         <StatCard
           icon={<FolderKanban className="w-5 h-5 text-primary" />}
-          label="Total Active Projects"
+          label={t("dashboard.totalActiveProjects")}
           value={activeProjectsCount.toString()}
           badge="Stable"
           badgeColor="bg-surface-container-highest text-on-surface-variant"
@@ -224,7 +227,7 @@ function Index() {
 
         <StatCard
           icon={<Package className="w-5 h-5 text-rose-400" />}
-          label="Equipment Replacements"
+          label={t("dashboard.equipmentReplacements")}
           value={(equipment?.length || 0).toString()}
           badge="In Use"
           badgeColor="bg-rose-400/10 text-rose-400"
@@ -233,7 +236,7 @@ function Index() {
 
         <StatCard
           icon={<DollarSign className="w-5 h-5 text-purple-400" />}
-          label="Monthly M/M Cost"
+          label={t("dashboard.monthlyCost")}
           value={`₩${(monthlyCost / 1000000).toFixed(1)}M`}
           badge="On Budget"
           badgeColor="bg-purple-400/10 text-purple-400"
@@ -244,18 +247,18 @@ function Index() {
         <GlassCard className="col-span-12 lg:col-span-8 p-6 flex flex-col min-h-[340px]">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h4 className="text-lg font-bold">Manpower Availability</h4>
+              <h4 className="text-lg font-bold">{t("dashboard.manpowerAvailability")}</h4>
               <p className="text-sm text-on-surface-variant">
-                Fluctuations across the current quarter
+                {t("dashboard.manpowerSubtitle")}
               </p>
             </div>
             <div className="flex gap-2">
               <div className="flex items-center gap-1.5 px-3 py-1 bg-surface-container-low border border-outline-variant rounded-full text-[10px] text-on-surface-variant font-bold">
-                <span className="w-2 h-2 rounded-full bg-primary" /> Full-time
+                <span className="w-2 h-2 rounded-full bg-primary" /> {t("dashboard.fullTime")}
               </div>
               <div className="flex items-center gap-1.5 px-3 py-1 bg-surface-container-low border border-outline-variant rounded-full text-[10px] text-on-surface-variant font-bold">
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />{" "}
-                Contractors
+                {t("dashboard.contractors")}
               </div>
             </div>
           </div>
@@ -267,7 +270,7 @@ function Index() {
         {/* Calendar / Milestones */}
         <GlassCard className="col-span-12 lg:col-span-4 p-6">
           <div className="flex justify-between items-center mb-6">
-            <h4 className="text-lg font-bold">Milestones</h4>
+            <h4 className="text-lg font-bold">{t("dashboard.milestones")}</h4>
             <div className="flex gap-2">
               <Clock className="w-4 h-4 text-on-surface-variant cursor-pointer hover:text-on-surface" />
             </div>
@@ -300,7 +303,7 @@ function Index() {
           </div>
           <div className="space-y-3">
             <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-              Upcoming Today
+              {t("dashboard.upcomingToday")}
             </p>
             <MilestoneItem
               name="Project Alpha Deployment"
@@ -319,16 +322,16 @@ function Index() {
         <GlassCard className="col-span-12 lg:col-span-8 p-6">
           <div className="flex justify-between items-center mb-6">
             <h4 className="text-headline-md font-bold text-on-surface">
-              Quick Tasks & Approvals
+              {t("dashboard.quickTasks")}
             </h4>
             <Button variant="outline" className="text-primary text-label-caps font-bold uppercase tracking-widest hover:underline">
-              View All
+              {t("common.viewAll")}
             </Button>
           </div>
           <div className="space-y-4">
             {quickTasks.length === 0 ? (
               <div className="text-sm text-on-surface-variant/40 text-center py-8">
-                No pending approvals or active tasks.
+                {t("dashboard.noTasks")}
               </div>
             ) : (
               quickTasks.map((item) => (
@@ -345,11 +348,11 @@ function Index() {
 
         {/* Project Efficiency Bento Cell */}
         <GlassCard className="col-span-12 lg:col-span-4 p-6 flex flex-col">
-          <h4 className="text-lg font-bold mb-6">Project Cost Efficiency</h4>
+          <h4 className="text-lg font-bold mb-6">{t("dashboard.costEfficiency")}</h4>
           <div className="space-y-6">
             {topProjects.length === 0 ? (
               <div className="text-sm text-on-surface-variant/40 text-center py-6">
-                No active projects.
+                {t("dashboard.noActiveProjects")}
               </div>
             ) : (
               topProjects.map((p, idx) => (
@@ -365,7 +368,7 @@ function Index() {
           <div className="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-outline-variant/30">
             <div className="text-center">
               <p className="text-label-caps text-on-surface-variant font-bold uppercase mb-1">
-                Total Saving
+                {t("dashboard.totalSaving")}
               </p>
               <p className="text-headline-md font-bold font-mono text-emerald-400">
                 +$12.4k
@@ -373,7 +376,7 @@ function Index() {
             </div>
             <div className="text-center">
               <p className="text-label-caps text-on-surface-variant font-bold uppercase mb-1">
-                Est. Completion
+                {t("dashboard.estCompletion")}
               </p>
               <p className="text-headline-md font-bold font-mono text-on-surface">
                 Dec 2025

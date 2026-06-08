@@ -6,10 +6,11 @@
 
 ## 📚 문서 (Documentation)
 
-프로젝트 개발을 위한 규칙 및 가이드, 설계 문서입니다.
+프로젝트 개발을 위한 규칙 및 가이드, 설계 문서 및 프로젝트 릴리즈 관리 이력입니다.
 
-### 📋 프로그램 통합 스펙
+### 📋 프로그램 통합 스펙 및 릴리즈 이력
 - **[프로그램 통합 스펙 (Program Specification)](./docs/specs/program-spec.md)**: 시스템 전체 기능 요약, 시스템 아키텍처 및 디자인 사양
+- **[릴리즈 히스토리 (Release History)](./docs/release-history.md)**: 프로젝트 진행에 따른 버전별 릴리즈 이력 및 기획 변경 사유 기록
 
 ### 🚀 설치 및 시작
 - **[시작하기 (Getting Started)](./docs/guides/getting-started.md)**: 패키지 설치, DB 세팅, 실행 방법 및 VS Code 설정

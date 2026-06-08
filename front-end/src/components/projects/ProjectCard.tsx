@@ -10,7 +10,6 @@ interface ProjectCardProps {
   department: string;
   avatars: string[];
   avatarMore?: number;
-  mmCost: string;
   progress: number;
   period: string;
   statusText: string;
@@ -27,7 +26,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   department,
   avatars,
   avatarMore,
-  mmCost,
   progress,
   period,
   statusText,
@@ -103,20 +101,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       </div>
 
       <div className="mt-auto space-y-4">
-        <div className="grid grid-cols-2 gap-4 bg-surface-container-low p-3 rounded">
-          <div>
-            <p className="text-label-caps font-bold text-on-surface-variant tracking-wider mb-1">
-              M/M COST
-            </p>
-            <p
-              className={cn(
-                "text-label-md font-medium font-mono",
-                variant === "error" ? "text-error" : "text-on-surface",
-              )}
-            >
-              {mmCost}
-            </p>
-          </div>
+        <div className="bg-surface-container-low p-3 rounded">
           <div>
             <p className="text-label-caps font-bold text-on-surface-variant tracking-wider mb-1">
               PROGRESS

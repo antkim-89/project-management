@@ -44,7 +44,7 @@ function Index() {
 
   const activeProjectsCount = projects?.length || 0;
   const totalPersonnel = users?.length || 0;
-  const totalBudget = projects?.reduce((acc, p) => acc + p.budget, 0) || 0;
+  const totalBudget = projects?.reduce((acc, p) => acc + (p.price || 0), 0) || 0;
   const monthlyCost = totalBudget / 12;
 
   // 프로젝트별 진행률 상위 3개 계산

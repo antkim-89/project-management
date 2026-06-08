@@ -7,13 +7,13 @@ import {
   Check,
   History,
   FileText,
-  TrendingDown,
-  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BaseModal } from "@/components/base/BaseModal";
 import { ManageTeamModal } from "@/components/modal/ManageTeamModal";
 import { EditProjectModal } from "@/components/modal/EditProjectModal";
+import { useTranslation } from "react-i18next";
+import type { Task } from "@/types/api";
 
 interface ProjectDetailModalProps {
   isOpen: boolean;
@@ -24,6 +24,8 @@ interface ProjectDetailModalProps {
     title: string;
     subtitle: string;
     scope: string;
+    startDate: string;
+    endDate: string;
     team: { name: string; role: string; avatar: string }[];
     activities: {
       title: string;
@@ -32,14 +34,13 @@ interface ProjectDetailModalProps {
       type: "success" | "info" | "neutral";
     }[];
     financials: {
-      totalCost: string;
       burnRate: string;
       burnRatePercent: number;
       allocatedHours: string;
       consumedHours: string;
       infrastructureFee: string;
     };
-    milestones: { title: string; completed: boolean }[];
+    tasks: Task[];
   } | null;
 }
 
@@ -48,10 +49,56 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
   onClose,
   project,
 }) => {
+  const { t } = useTranslation();
   const [isManageTeamOpen, setIsManageTeamOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (!isOpen || !project) return null;
+
+  const todoTasks = project.tasks?.filter((t) => t.status === "TODO") || [];
+  const inProgressTasks = project.tasks?.filter((t) => t.status === "IN_PROGRESS") || [];
+  const doneTasks = project.tasks?.filter((t) => t.status === "DONE") || [];
+
+  const renderTaskItems = (tasksList: typeof project.tasks) => {
+    if (tasksList.length === 0) {
+      return (
+        <p className="text-[11px] text-on-surface-variant/40 italic px-2.5 py-3 text-center bg-surface-container-low/30 rounded-xl border border-dashed border-outline-variant/10">
+          {t("projects.detail.noTasksShort")}
+        </p>
+      );
+    }
+
+    const maxDisplay = 3;
+    const displayedTasks = tasksList.slice(0, maxDisplay);
+    const hasMore = tasksList.length > maxDisplay;
+    const moreCount = tasksList.length - maxDisplay;
+
+    return (
+      <div className="space-y-2">
+        {displayedTasks.map((task) => (
+          <div
+            key={task.id}
+            className="group p-3 rounded-xl bg-surface-container-high/70 border border-outline-variant/15 text-xs text-on-surface font-semibold hover:border-primary/20 hover:bg-surface-container-high hover:shadow-md transition-all duration-200 cursor-default select-none"
+          >
+            {/* Default: truncated single-line view */}
+            <div className="truncate w-full block group-hover:hidden">
+              {task.title}
+            </div>
+            
+            {/* Hover: expanded full text view */}
+            <div className="hidden group-hover:block whitespace-normal break-words leading-relaxed text-on-surface animate-fade-in">
+              {task.title}
+            </div>
+          </div>
+        ))}
+        {hasMore && (
+          <div className="text-center py-2 text-[10px] font-bold text-primary bg-primary/5 border border-primary/10 border-dashed rounded-xl animate-pulse">
+            ... + {moreCount} {t("projects.detail.moreTasks")}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const getStatusStyles = (status: string) => {
     switch (status) {
@@ -135,15 +182,15 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Info (Left 2/3) */}
-        <div className="lg:col-span-2 space-y-8">
+      <div className="space-y-8">
+        {/* Main Info */}
+        <div className="space-y-8">
           {/* Description */}
           <section>
             <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">
               Project Scope
             </h4>
-            <p className="text-body-lg text-on-surface/80 leading-relaxed bg-surface-container-low/30 p-4 rounded-xl border border-outline-variant/10 italic">
+            <p className="text-body-lg text-on-surface/80 leading-relaxed bg-surface-container-low/30 p-4 rounded-xl border border-outline-variant/10">
               {project.scope}
             </p>
           </section>
@@ -185,6 +232,56 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
             </div>
           </section>
 
+          {/* Tasks List */}
+          <section>
+            <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">
+              {t("projects.detail.tasksTitle")}
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* To Do */}
+              <div className="flex flex-col gap-3 p-4 rounded-2xl bg-surface-container-low/70 border border-outline-variant/20 shadow-sm">
+                <div className="flex justify-between items-center px-1 border-b border-outline-variant/20 pb-2.5 mb-0.5">
+                  <span className="text-[11px] font-bold text-on-surface-variant flex items-center gap-2 uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/40" />
+                    {t("projects.detail.statusTodo")}
+                  </span>
+                  <span className="text-[10px] font-bold font-mono px-2 py-0.5 bg-surface-container-highest text-on-surface-variant rounded-full border border-outline-variant/10">
+                    {todoTasks.length}
+                  </span>
+                </div>
+                {renderTaskItems(todoTasks)}
+              </div>
+
+              {/* In Progress */}
+              <div className="flex flex-col gap-3 p-4 rounded-2xl bg-surface-container-low/70 border border-outline-variant/20 shadow-sm">
+                <div className="flex justify-between items-center px-1 border-b border-outline-variant/20 pb-2.5 mb-0.5">
+                  <span className="text-[11px] font-bold text-secondary flex items-center gap-2 uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                    {t("projects.detail.statusInProgress")}
+                  </span>
+                  <span className="text-[10px] font-bold font-mono px-2 py-0.5 bg-secondary/10 text-secondary rounded-full border border-secondary/20">
+                    {inProgressTasks.length}
+                  </span>
+                </div>
+                {renderTaskItems(inProgressTasks)}
+              </div>
+
+              {/* Done */}
+              <div className="flex flex-col gap-3 p-4 rounded-2xl bg-surface-container-low/70 border border-outline-variant/20 shadow-sm">
+                <div className="flex justify-between items-center px-1 border-b border-outline-variant/20 pb-2.5 mb-0.5">
+                  <span className="text-[11px] font-bold text-primary flex items-center gap-2 uppercase tracking-wider">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    {t("projects.detail.statusDone")}
+                  </span>
+                  <span className="text-[10px] font-bold font-mono px-2 py-0.5 bg-primary/10 text-primary rounded-full border border-primary/20">
+                    {doneTasks.length}
+                  </span>
+                </div>
+                {renderTaskItems(doneTasks)}
+              </div>
+            </div>
+          </section>
+
           {/* Activity Log */}
           <section>
             <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">
@@ -219,104 +316,6 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                       {activity.time} · {activity.user}
                     </p>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* Metrics & Budget (Right 1/3) */}
-        <div className="space-y-8 bg-surface-container-low/40 p-6 rounded-2xl border border-outline-variant/30 h-fit sticky top-0">
-          <section>
-            <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-6">
-              Financial Health
-            </h4>
-
-            <div className="space-y-6">
-              <div>
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
-                  Total M/M Cost
-                </p>
-                <p className="text-3xl font-mono font-bold text-on-surface">
-                  {project.financials.totalCost}
-                </p>
-                <div className="flex items-center gap-1.5 text-secondary text-[11px] font-bold mt-1">
-                  <TrendingDown className="w-3 h-3" />
-                  12% below forecast
-                </div>
-              </div>
-
-              <div>
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
-                  Current Burn Rate
-                </p>
-                <p className="text-xl font-mono font-bold text-on-surface">
-                  {project.financials.burnRate}{" "}
-                  <span className="text-xs text-on-surface-variant font-sans">
-                    / day
-                  </span>
-                </p>
-                <div className="h-1.5 w-full bg-surface-variant rounded-full mt-2 overflow-hidden">
-                  <div
-                    className="h-full bg-primary"
-                    style={{ width: `${project.financials.burnRatePercent}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              <div className="pt-6 border-t border-outline-variant/30 space-y-3">
-                {[
-                  {
-                    label: "Allocated Hours",
-                    value: project.financials.allocatedHours,
-                  },
-                  {
-                    label: "Consumed Hours",
-                    value: project.financials.consumedHours,
-                  },
-                  {
-                    label: "Infrastructure Fee",
-                    value: project.financials.infrastructureFee,
-                  },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between items-center text-label-md"
-                  >
-                    <span className="text-on-surface-variant">
-                      {item.label}
-                    </span>
-                    <span className="font-mono font-bold text-on-surface">
-                      {item.value}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">
-              Key Milestones
-            </h4>
-            <div className="space-y-3">
-              {project.milestones.map((milestone, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  {milestone.completed ? (
-                    <CheckCircle2 className="w-5 h-5 text-secondary" />
-                  ) : (
-                    <div className="w-5 h-5 rounded-full border-2 border-outline-variant shrink-0" />
-                  )}
-                  <span
-                    className={cn(
-                      "text-label-md font-medium",
-                      milestone.completed
-                        ? "text-on-surface/60 line-through"
-                        : "text-on-surface",
-                    )}
-                  >
-                    {milestone.title}
-                  </span>
                 </div>
               ))}
             </div>

@@ -13,7 +13,7 @@ import { RadioGroup } from "@/components/base/Radio";
 import { useTranslation } from "react-i18next";
 
 import { useProjects } from "@/hooks/api/useProjects";
-import type { Project as APIProject } from "@/types/api";
+import type { Project as APIProject, Task } from "@/types/api";
 
 interface UIProject {
   id: string;
@@ -24,7 +24,6 @@ interface UIProject {
   scope: string;
   team: { name: string; role: string; avatar: string }[];
   financials: {
-    totalCost: string;
     burnRate: string;
     burnRatePercent: number;
     allocatedHours: string;
@@ -39,14 +38,16 @@ interface UIProject {
     type: "success" | "info" | "neutral";
   }[];
   avatars: string[];
-  mmCost: string;
   progress: number;
   period: string;
+  startDate: string;
+  endDate: string;
   statusText: string;
   statusIcon: ReactNode;
   periodIcon: ReactNode;
   variant: "secondary" | "error" | "primary" | "neutral";
   isAtRisk: boolean;
+  tasks: Task[];
 }
 
 export const Route = createFileRoute("/projects")({
@@ -75,6 +76,56 @@ function Projects() {
           : "ACTIVE"
       ) as "ACTIVE" | "AT RISK" | "COMPLETED" | "ON HOLD";
 
+      // 활동(Activities) 동적 매핑
+      const rawActivities: {
+        title: string;
+        date: Date;
+        user: string;
+        type: "success" | "info" | "neutral";
+      }[] = [];
+
+      if (p.createdAt) {
+        rawActivities.push({
+          title: t("projects.activity.created"),
+          date: new Date(p.createdAt),
+          user: "System",
+          type: "info" as const,
+        });
+      }
+
+      if (p.assignments && p.assignments.length > 0) {
+        p.assignments.forEach((a) => {
+          rawActivities.push({
+            title: t("projects.activity.memberAssigned", {
+              name: a.user?.name || t("projects.unknown"),
+              role: a.role,
+            }),
+            date: new Date(a.startDate || p.startDate),
+            user: "HR System",
+            type: "neutral" as const,
+          });
+        });
+      }
+
+      if (p.updatedAt && new Date(p.updatedAt).getTime() > new Date(p.createdAt).getTime() + 1000) {
+        rawActivities.push({
+          title: t("projects.activity.updated"),
+          date: new Date(p.updatedAt),
+          user: "Manager",
+          type: "success" as const,
+        });
+      }
+
+      // 최신 활동 순 정렬
+      rawActivities.sort((actA, actB) => actB.date.getTime() - actA.date.getTime());
+
+      const dynamicActivities = rawActivities.map((act) => ({
+        title: act.title,
+        time: act.date.toLocaleDateString(),
+        user: act.user,
+        type: act.type,
+      }));
+
       return {
         id: p.id,
         status: finalStatus,
@@ -89,7 +140,6 @@ function Projects() {
             avatar: a.user?.avatarUrl || "",
           })) || [],
         financials: {
-          totalCost: `$${p.budget.toLocaleString()}`,
           burnRate: "$0",
           burnRatePercent: 0,
           allocatedHours: "0 hrs",
@@ -97,13 +147,14 @@ function Projects() {
           infrastructureFee: "$0",
         },
         milestones: [],
-        activities: [],
+        activities: dynamicActivities,
         avatars:
           p.assignments?.map((a) => a.user?.avatarUrl || "").filter(Boolean) ||
           [],
-        mmCost: `$${(p.budget / 12).toFixed(0)}`,
-        progress: Math.min(100, Math.max(10, (p.budget % 80) + 15)), // 임시
+        progress: Math.min(100, Math.max(10, ((p.price || 0) % 80) + 15)), // 임시
         period: `${new Date(p.startDate).toLocaleDateString()} - ${new Date(p.endDate).toLocaleDateString()}`,
+        startDate: p.startDate ? new Date(p.startDate).toISOString().split("T")[0] : "",
+        endDate: p.endDate ? new Date(p.endDate).toISOString().split("T")[0] : "",
         statusText: p.status === "Active" ? t("projects.status.onTrack") : p.status,
         statusIcon: <TrendingUp className="w-4 h-4" />,
         periodIcon: <Calendar className="w-4 h-4" />,
@@ -113,6 +164,7 @@ function Projects() {
             ? "primary"
             : "secondary") as "secondary" | "error" | "primary" | "neutral",
         isAtRisk: p.status === "At Risk",
+        tasks: p.tasks || [],
       };
     }) || [];
 
@@ -136,7 +188,7 @@ function Projects() {
       <Breadcrumbs items={[{ label: t("common.projects") }]} />
 
       {/* Page Header & Filters */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-6 border-b border-outline-variant/30 pb-6">
         <div>
           <h2 className="font-bold text-display-lg text-on-surface mb-1">
             {t("projects.portfolio")}
@@ -145,33 +197,42 @@ function Projects() {
             {t("projects.subtitle")}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <RadioGroup
-            name="project-filter"
-            variant="segmented"
-            options={[
-              { value: "ALL", label: t("projects.all") },
-              { value: "ACTIVE", label: t("projects.active") },
-              { value: "ON HOLD", label: t("projects.onHold") },
-            ]}
-            value={activeFilter}
-            onChange={setActiveFilter}
-          />
-          <Select
-            value={selectedDept}
-            onChange={setSelectedDept}
-            options={[
-              { value: "All Departments", label: t("projects.allDepts") },
-              { value: "Software Engineering", label: t("projects.softwareEng") },
-              { value: "Network Ops", label: t("projects.networkOps") },
-              { value: "Cloud Infrastructure", label: t("projects.cloudInfra") },
-              { value: "Cyber Security", label: t("projects.cyberSec") },
-            ]}
-            className="min-w-[180px]"
-          />
-          <button className="flex items-center gap-2 text-on-surface-variant transition-all px-2 py-2 rounded cursor-pointer hover:bg-interaction-hover hover:text-on-surface active:bg-interaction-pressed active:scale-90">
-            <ListFilter className="w-5 h-5" />
-          </button>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full lg:w-auto">
+          <div className="max-w-full overflow-x-auto scrollbar-none -mx-6 px-6 sm:mx-0 sm:px-0">
+            <div className="inline-flex min-w-full sm:min-w-0">
+              <RadioGroup
+                name="project-filter"
+                variant="segmented"
+                options={[
+                  { value: "ALL", label: t("projects.all") },
+                  { value: "ACTIVE", label: t("projects.active") },
+                  { value: "AT RISK", label: t("projects.atRisk") },
+                  { value: "COMPLETED", label: t("projects.completed") },
+                  { value: "ON HOLD", label: t("projects.onHold") },
+                ]}
+                value={activeFilter}
+                onChange={setActiveFilter}
+                className="shrink-0"
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            <Select
+              value={selectedDept}
+              onChange={setSelectedDept}
+              options={[
+                { value: "All Departments", label: t("projects.allDepts") },
+                { value: "Software Engineering", label: t("projects.softwareEng") },
+                { value: "Network Ops", label: t("projects.networkOps") },
+                { value: "Cloud Infrastructure", label: t("projects.cloudInfra") },
+                { value: "Cyber Security", label: t("projects.cyberSec") },
+              ]}
+              className="min-w-[180px] flex-1 sm:flex-initial"
+            />
+            <button className="flex items-center justify-center gap-2 text-on-surface-variant transition-all p-2.5 rounded-xl border border-outline-variant/50 cursor-pointer hover:bg-interaction-hover hover:text-on-surface active:bg-interaction-pressed active:scale-95 bg-surface-container-low">
+              <ListFilter className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 

@@ -94,7 +94,6 @@ async function main() {
       status: 'Active',
       startDate: new Date('2026-01-01'),
       endDate: new Date('2026-12-31'),
-      budget: 500000,
       assignments: {
         create: [
           { userId: user1.id, role: 'Lead Developer', contributionPercentage: 80, startDate: new Date('2026-01-01'), endDate: new Date('2026-12-31') },
@@ -111,7 +110,6 @@ async function main() {
       status: 'At Risk',
       startDate: new Date('2026-03-01'),
       endDate: new Date('2026-09-30'),
-      budget: 250000,
       assignments: {
         create: [
           { userId: user1.id, role: 'Security Architect', contributionPercentage: 20, startDate: new Date('2026-03-01'), endDate: new Date('2026-09-30') },

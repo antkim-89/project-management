@@ -27,6 +27,11 @@ router.get('/', async (req: Request, res: Response) => {
           include: {
             user: true
           }
+        },
+        tasks: {
+          include: {
+            user: true
+          }
         }
       }
     });
@@ -71,6 +76,11 @@ router.get('/:id', async (req: Request, res: Response) => {
           include: {
             user: true
           }
+        },
+        tasks: {
+          include: {
+            user: true
+          }
         }
       }
     });
@@ -108,7 +118,7 @@ router.get('/:id', async (req: Request, res: Response) => {
  *         description: 프로젝트가 성공적으로 생성되었습니다.
  */
 router.post('/', async (req: Request, res: Response) => {
-  const { title, description, startDate, endDate, budget, totalManMonths, price, categoryId, requiredSkills } = req.body;
+  const { title, description, startDate, endDate, totalManMonths, price, categoryId, requiredSkills } = req.body;
   try {
     const newProject = await prisma.project.create({
       data: {
@@ -116,7 +126,6 @@ router.post('/', async (req: Request, res: Response) => {
         description,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
-        budget: parseFloat(budget),
         totalManMonths: totalManMonths ? parseFloat(totalManMonths) : undefined,
         price: price ? parseFloat(price) : undefined,
         categoryId: categoryId || undefined,
@@ -159,7 +168,7 @@ router.post('/', async (req: Request, res: Response) => {
  */
 router.put('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, description, status, startDate, endDate, budget, totalManMonths, price, categoryId, requiredSkills } = req.body;
+  const { title, description, status, startDate, endDate, totalManMonths, price, categoryId, requiredSkills } = req.body;
   try {
     const updatedProject = await prisma.project.update({
       where: { id },
@@ -169,7 +178,6 @@ router.put('/:id', async (req: Request, res: Response) => {
         status,
         startDate: startDate ? new Date(startDate) : undefined,
         endDate: endDate ? new Date(endDate) : undefined,
-        budget: budget ? parseFloat(budget) : undefined,
         totalManMonths: totalManMonths !== undefined ? parseFloat(totalManMonths) : undefined,
         price: price !== undefined ? parseFloat(price) : undefined,
         categoryId: categoryId || undefined,

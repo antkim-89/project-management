@@ -3,8 +3,9 @@ import { useState } from "react";
 import { BaseModal } from "@/components/base/BaseModal";
 import { CalendarPicker } from "@/components/base/CalendarPicker";
 import { useUpdateProject } from "@/hooks/api/useProjects";
-import { Calendar, DollarSign, Activity } from "lucide-react";
+import { Calendar, Activity } from "lucide-react";
 import { RadioGroup } from "@/components/base/Radio";
+import { useTranslation } from "react-i18next";
 
 interface EditProjectModalProps {
   isOpen: boolean;
@@ -14,9 +15,8 @@ interface EditProjectModalProps {
     title: string;
     scope: string;
     status: "ACTIVE" | "AT RISK" | "COMPLETED" | "ON HOLD" | string;
-    financials: {
-      totalCost: string;
-    };
+    startDate?: string;
+    endDate?: string;
   } | null;
 }
 
@@ -25,6 +25,7 @@ export function EditProjectModal({
   onClose,
   project,
 }: EditProjectModalProps) {
+  const { t } = useTranslation();
   const updateProjectMutation = useUpdateProject();
 
   const getDbStatus = (statusVal: string) => {
@@ -40,18 +41,15 @@ export function EditProjectModal({
   // Form states initialized directly from props (component unmounts when closed)
   const [title, setTitle] = useState(project?.title || "");
   const [description, setDescription] = useState(project?.scope || "");
-  const [budget, setBudget] = useState(
-    () => project?.financials?.totalCost?.replace(/[^0-9.-]+/g, "") || "",
-  );
   const [status, setStatus] = useState(() => getDbStatus(project?.status || "Active"));
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(project?.startDate || "");
+  const [endDate, setEndDate] = useState(project?.endDate || "");
 
   const handleUpdateProject = async () => {
     if (!project) return;
 
     if (!title) {
-      alert("Project Title is required.");
+      alert(t("projects.edit.titleRequired"));
       return;
     }
 
@@ -63,7 +61,6 @@ export function EditProjectModal({
             title,
             description,
             status,
-            ...(budget && { budget: parseFloat(budget) }),
             ...(startDate && { startDate: new Date(startDate) as any }),
             ...(endDate && { endDate: new Date(endDate) as any }),
           },
@@ -76,13 +73,13 @@ export function EditProjectModal({
           },
           onError: (err) => {
             console.error(err);
-            alert("Failed to update project.");
+            alert(t("projects.edit.updateFailed"));
           },
         },
       );
     } catch (error) {
       console.error(error);
-      alert("An error occurred while updating.");
+      alert(t("projects.edit.updateError"));
     }
   };
 
@@ -94,7 +91,7 @@ export function EditProjectModal({
         className=" px-4 h-10 cursor-pointer"
         disabled={updateProjectMutation.isPending}
       >
-        Cancel
+        {t("projects.edit.cancel")}
       </Button>
       <Button
         variant="primary"
@@ -102,7 +99,7 @@ export function EditProjectModal({
         className=" px-6 h-10 cursor-pointer"
         disabled={updateProjectMutation.isPending || !title}
       >
-        {updateProjectMutation.isPending ? "Saving..." : "Save Changes"}
+        {updateProjectMutation.isPending ? t("projects.edit.saving") : t("projects.edit.saveChanges")}
       </Button>
     </div>
   );
@@ -111,14 +108,14 @@ export function EditProjectModal({
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Project Details"
+      title={t("projects.edit.title")}
       footer={footer}
       size="md"
     >
       <div className="flex flex-col gap-5 py-2 animate-fade-in">
         <div>
           <label className="block text-label-caps font-bold text-on-surface-variant mb-1.5">
-            Project Title *
+            {t("projects.edit.projectTitle")}
           </label>
           <input
             type="text"
@@ -131,7 +128,7 @@ export function EditProjectModal({
 
         <div>
           <label className="block text-label-caps font-bold text-on-surface-variant mb-1.5">
-            Scope Description
+            {t("projects.edit.scopeDescription")}
           </label>
           <textarea
             rows={3}
@@ -142,46 +139,34 @@ export function EditProjectModal({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-              <Activity className="w-4 h-4 text-primary" /> Status
-            </label>
-            <div className="flex flex-col">
-              <RadioGroup
-                name="edit-project-status"
-                variant="segmented"
-                options={[
-                  { value: "Active", label: "ACTIVE" },
-                  { value: "At Risk", label: "AT RISK" },
-                  { value: "Completed", label: "COMPLETED" },
-                  { value: "On Hold", label: "ON HOLD" },
-                ]}
-                value={status}
-                onChange={setStatus}
-                className="w-full flex-nowrap gap-1"
-                optionClassName="flex-1 text-center py-2"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-              <DollarSign className="w-4 h-4 text-primary" /> Budget (USD)
-            </label>
-            <input
-              type="number"
-              placeholder="e.g. 500000"
-              value={budget}
-              onChange={(e) => setBudget(e.target.value)}
-              className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors"
+        <div>
+          <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
+            <Activity className="w-4 h-4 text-primary" /> {t("projects.edit.status")}
+          </label>
+          <div className="flex flex-col">
+            <RadioGroup
+              name="edit-project-status"
+              variant="segmented"
+              options={[
+                { value: "Active", label: "ACTIVE" },
+                { value: "At Risk", label: "AT RISK" },
+                { value: "Completed", label: "COMPLETED" },
+                { value: "On Hold", label: "ON HOLD" },
+              ]}
+              value={status}
+              onChange={setStatus}
+              className="w-full flex-nowrap gap-1"
+              optionClassName="flex-1 text-center py-2"
             />
           </div>
         </div>
 
+
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-              <Calendar className="w-4 h-4 text-secondary" /> Update Start Date
+              <Calendar className="w-4 h-4 text-secondary" /> {t("projects.edit.startDate")}
             </label>
             <CalendarPicker
               value={startDate}
@@ -190,7 +175,7 @@ export function EditProjectModal({
           </div>
           <div>
             <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-              <Calendar className="w-4 h-4 text-secondary" /> Update End Date
+              <Calendar className="w-4 h-4 text-secondary" /> {t("projects.edit.endDate")}
             </label>
             <CalendarPicker
               value={endDate}

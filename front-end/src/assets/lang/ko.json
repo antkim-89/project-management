@@ -76,6 +76,8 @@
     "viewMore": "프로젝트 더 보기",
     "all": "전체",
     "active": "진행 중",
+    "atRisk": "위험",
+    "completed": "완료",
     "onHold": "보류됨",
     "allDepts": "모든 부서",
     "softwareEng": "소프트웨어 엔지니어링",
@@ -87,6 +89,37 @@
     "unknown": "알 수 없음",
     "status": {
       "onTrack": "진행 원활"
+    },
+    "edit": {
+      "title": "프로젝트 사양 수정",
+      "projectTitle": "프로젝트 제목 *",
+      "scopeDescription": "범위 및 상세 설명",
+      "status": "프로젝트 상태",
+      "budget": "예산 비용 (USD)",
+      "startDate": "프로젝트 시작일",
+      "endDate": "프로젝트 종료일",
+      "cancel": "취소",
+      "saveChanges": "변경사항 저장",
+      "saving": "저장 중...",
+      "titleRequired": "프로젝트 제목은 필수 항목입니다.",
+      "updateFailed": "프로젝트 정보 갱신에 실패했습니다.",
+      "updateError": "오류로 인해 프로젝트 정보를 갱신하지 못했습니다."
+    },
+    "activity": {
+      "created": "프로젝트가 시스템에 등록되었습니다.",
+      "memberAssigned": "{{name}}님이 {{role}} 역할로 배정되었습니다.",
+      "updated": "프로젝트 상세 사양이 업데이트되었습니다."
+    },
+    "detail": {
+      "tasksTitle": "연동된 할 일 목록",
+      "assignee": "담당자",
+      "unassigned": "미지정",
+      "noTasks": "이 프로젝트에 연동된 할 일이 없습니다.",
+      "statusTodo": "진행 전",
+      "statusInProgress": "진행 중",
+      "statusDone": "완료",
+      "noTasksShort": "할 일 없음",
+      "moreTasks": "개 더 있음"
     }
   },
   "assets": {

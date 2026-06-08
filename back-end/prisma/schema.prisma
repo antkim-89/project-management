@@ -41,7 +41,6 @@ model Project {
   status         String          @default("Active") // Active, At Risk, Completed
   startDate      DateTime
   endDate        DateTime
-  budget         Float
   totalManMonths Float?
   price          Float?
   categoryId     String?

@@ -40,7 +40,6 @@ erDiagram
         string status "Active | At Risk | Completed"
         datetime startDate
         datetime endDate
-        float budget
         float totalManMonths
         float price
         string categoryId FK

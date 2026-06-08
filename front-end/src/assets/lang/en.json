@@ -76,6 +76,8 @@
     "viewMore": "View More Projects",
     "all": "ALL",
     "active": "ACTIVE",
+    "atRisk": "AT RISK",
+    "completed": "COMPLETED",
     "onHold": "ON HOLD",
     "allDepts": "All Departments",
     "softwareEng": "Software Engineering",
@@ -87,6 +89,37 @@
     "unknown": "Unknown",
     "status": {
       "onTrack": "On Track"
+    },
+    "edit": {
+      "title": "Edit Project Details",
+      "projectTitle": "Project Title *",
+      "scopeDescription": "Scope Description",
+      "status": "Status",
+      "budget": "Budget (USD)",
+      "startDate": "Update Start Date",
+      "endDate": "Update End Date",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "titleRequired": "Project Title is required.",
+      "updateFailed": "Failed to update project.",
+      "updateError": "An error occurred while updating."
+    },
+    "activity": {
+      "created": "Project registered in system.",
+      "memberAssigned": "{{name}} has been assigned as {{role}}.",
+      "updated": "Project specifications updated."
+    },
+    "detail": {
+      "tasksTitle": "Linked Tasks List",
+      "assignee": "Assignee",
+      "unassigned": "Unassigned",
+      "noTasks": "No tasks linked to this project.",
+      "statusTodo": "To Do",
+      "statusInProgress": "In Progress",
+      "statusDone": "Completed",
+      "noTasksShort": "No tasks",
+      "moreTasks": "more tasks"
     }
   },
   "assets": {

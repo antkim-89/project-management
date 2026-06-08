@@ -34,13 +34,13 @@ export interface Project {
   status: string;
   startDate: string;
   endDate: string;
-  budget: number;
   totalManMonths?: number;
   price?: number;
   categoryId?: string;
   category?: ProjectCategory;
   requiredSkills?: string[] | ProjectSkill[];
   assignments?: Assignment[];
+  tasks?: Task[];
   createdAt: string;
   updatedAt: string;
 }

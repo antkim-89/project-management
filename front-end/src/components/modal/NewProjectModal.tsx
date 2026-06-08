@@ -52,7 +52,6 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
   // Form states
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [budget, setBudget] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [totalManMonths, setTotalManMonths] = useState("");
@@ -121,7 +120,7 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
   };
 
   const handleInitiateProject = async () => {
-    if (!title || !startDate || !endDate || !budget) {
+    if (!title || !startDate || !endDate) {
       alert("Please fill out all required fields.");
       return;
     }
@@ -134,7 +133,6 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
           description,
           startDate: new Date(startDate) as any,
           endDate: new Date(endDate) as any,
-          budget: parseFloat(budget),
           totalManMonths: totalManMonths ? parseFloat(totalManMonths) : undefined,
           price: price ? parseFloat(price) : undefined,
           categoryId: categoryId || undefined,
@@ -176,7 +174,6 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
   const handleClose = () => {
     setTitle("");
     setDescription("");
-    setBudget("");
     setTotalManMonths("");
     setPrice("");
     setCategoryId("");
@@ -212,7 +209,7 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
           <button
             onClick={() => setStep(2)}
             className="btn-primary px-6 h-10 cursor-pointer"
-            disabled={!title || !startDate || !endDate || !budget}
+            disabled={!title || !startDate || !endDate}
           >
             Allocate Resources
           </button>
@@ -315,7 +312,7 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
                 Total Man-Months
@@ -327,18 +324,6 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                 onChange={(e) => setTotalManMonths(e.target.value)}
                 className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors"
                 step="0.1"
-              />
-            </div>
-            <div>
-              <label className="text-label-caps font-bold text-on-surface-variant mb-1.5 flex items-center gap-1">
-                <DollarSign className="w-4 h-4 text-primary" /> Budget Cost (USD) *
-              </label>
-              <input
-                type="number"
-                placeholder="e.g. 500000"
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                className="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface outline-none focus:border-primary transition-colors"
               />
             </div>
             <div>

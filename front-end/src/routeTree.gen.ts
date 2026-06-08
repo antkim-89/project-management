@@ -13,7 +13,9 @@ import { Route as TeamsRouteImport } from './routes/teams'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as FilesRouteImport } from './routes/files'
+import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as AboutRouteImport } from './routes/about'
@@ -39,9 +41,19 @@ const ProjectsRoute = ProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FilesRoute = FilesRouteImport.update({
   id: '/files',
   path: '/files',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChangePasswordRoute = ChangePasswordRouteImport.update({
+  id: '/change-password',
+  path: '/change-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalendarRoute = CalendarRouteImport.update({
@@ -70,7 +82,9 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/assets': typeof AssetsRoute
   '/calendar': typeof CalendarRoute
+  '/change-password': typeof ChangePasswordRoute
   '/files': typeof FilesRoute
+  '/login': typeof LoginRoute
   '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
@@ -81,7 +95,9 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/assets': typeof AssetsRoute
   '/calendar': typeof CalendarRoute
+  '/change-password': typeof ChangePasswordRoute
   '/files': typeof FilesRoute
+  '/login': typeof LoginRoute
   '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
@@ -93,7 +109,9 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/assets': typeof AssetsRoute
   '/calendar': typeof CalendarRoute
+  '/change-password': typeof ChangePasswordRoute
   '/files': typeof FilesRoute
+  '/login': typeof LoginRoute
   '/projects': typeof ProjectsRoute
   '/settings': typeof SettingsRoute
   '/tasks': typeof TasksRoute
@@ -106,7 +124,9 @@ export interface FileRouteTypes {
     | '/about'
     | '/assets'
     | '/calendar'
+    | '/change-password'
     | '/files'
+    | '/login'
     | '/projects'
     | '/settings'
     | '/tasks'
@@ -117,7 +137,9 @@ export interface FileRouteTypes {
     | '/about'
     | '/assets'
     | '/calendar'
+    | '/change-password'
     | '/files'
+    | '/login'
     | '/projects'
     | '/settings'
     | '/tasks'
@@ -128,7 +150,9 @@ export interface FileRouteTypes {
     | '/about'
     | '/assets'
     | '/calendar'
+    | '/change-password'
     | '/files'
+    | '/login'
     | '/projects'
     | '/settings'
     | '/tasks'
@@ -140,7 +164,9 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AssetsRoute: typeof AssetsRoute
   CalendarRoute: typeof CalendarRoute
+  ChangePasswordRoute: typeof ChangePasswordRoute
   FilesRoute: typeof FilesRoute
+  LoginRoute: typeof LoginRoute
   ProjectsRoute: typeof ProjectsRoute
   SettingsRoute: typeof SettingsRoute
   TasksRoute: typeof TasksRoute
@@ -177,11 +203,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/files': {
       id: '/files'
       path: '/files'
       fullPath: '/files'
       preLoaderRoute: typeof FilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/change-password': {
+      id: '/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof ChangePasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calendar': {
@@ -220,7 +260,9 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AssetsRoute: AssetsRoute,
   CalendarRoute: CalendarRoute,
+  ChangePasswordRoute: ChangePasswordRoute,
   FilesRoute: FilesRoute,
+  LoginRoute: LoginRoute,
   ProjectsRoute: ProjectsRoute,
   SettingsRoute: SettingsRoute,
   TasksRoute: TasksRoute,

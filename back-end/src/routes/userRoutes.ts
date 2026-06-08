@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import prisma from '../lib/prisma';
+import bcrypt from 'bcryptjs';
 
 const router = Router();
 
@@ -52,11 +53,20 @@ router.get('/', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
   const { email, name, rankId, avatarUrl } = req.body;
   try {
+    const hashedInitialPassword = await bcrypt.hash('itmsg4u!', 10);
     const newUser = await prisma.user.create({
-      data: { email, name, rankId, avatarUrl }
+      data: {
+        email,
+        name,
+        rankId,
+        avatarUrl,
+        password: hashedInitialPassword,
+        mustChangePassword: true
+      }
     });
     res.status(201).json(newUser);
   } catch (error) {
+    console.error('Failed to create user:', error);
     res.status(500).json({ error: 'Failed to create user' });
   }
 });

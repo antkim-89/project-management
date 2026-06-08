@@ -234,26 +234,28 @@ export function ManageTeamModal({
         </div>
 
         {/* Resource Search Strip */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+          <div className="relative sm:col-span-2 w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-on-surface-variant" />
             <input
               type="text"
               placeholder="Search resources by name or rank..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
+              className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors h-[42px]"
             />
           </div>
-          <Select
-            value={selectedSkill}
-            onChange={setSelectedSkill}
-            options={[
-              { value: "ALL", label: "All Skills" },
-              ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
-            ]}
-            className="min-w-[150px]"
-          />
+          <div className="w-full">
+            <Select
+              value={selectedSkill}
+              onChange={setSelectedSkill}
+              options={[
+                { value: "ALL", label: "All Skills" },
+                ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
+              ]}
+              className="w-full"
+            />
+          </div>
         </div>
 
         {/* Allocation Resource Cards Grid */}

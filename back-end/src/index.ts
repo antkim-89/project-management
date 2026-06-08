@@ -7,6 +7,8 @@ import swaggerJsdoc from 'swagger-jsdoc';
 // Routes
 import projectRoutes from './routes/projectRoutes';
 import userRoutes from './routes/userRoutes';
+import authRoutes from './routes/authRoutes';
+import teamRoutes from './routes/teamRoutes';
 import rankRoutes from './routes/rankRoutes';
 import assignmentRoutes from './routes/assignmentRoutes';
 import equipmentRoutes from './routes/equipmentRoutes';
@@ -47,8 +49,10 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', ...(swaggerUi.serve as any), swaggerUi.setup(swaggerSpec) as any);
 
 // --- Route Mapping ---
+app.use('/auth', authRoutes);
 app.use('/projects', projectRoutes);
 app.use('/users', userRoutes);
+app.use('/teams', teamRoutes);
 app.use('/ranks', rankRoutes);
 app.use('/assignments', assignmentRoutes);
 app.use('/equipments', equipmentRoutes);

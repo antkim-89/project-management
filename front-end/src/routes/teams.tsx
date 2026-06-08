@@ -7,8 +7,6 @@ import {
   CalendarCheck,
   DollarSign,
   Search,
-  Filter,
-  Download,
   Table,
   Network,
 } from "lucide-react";
@@ -21,6 +19,12 @@ import { Pagination } from "@/components/base/Pagination";
 import type { User, SkillSet } from "@/types/api";
 import { UserLeaveView } from "@/components/teams/UserLeaveView";
 import { useTranslation } from "react-i18next";
+import { AddMemberModal } from "@/components/modal/AddMemberModal";
+import { CreateTeamModal } from "@/components/modal/CreateTeamModal";
+import { ManageTeamMembersModal } from "@/components/modal/ManageTeamMembersModal";
+import { useTeams, useDeleteTeam } from "@/hooks/api/useTeams";
+import type { Team } from "@/hooks/api/useTeams";
+import { Plus, Trash2 } from "lucide-react";
 
 interface UserSkill {
   id: string;
@@ -40,8 +44,16 @@ export const Route = createFileRoute("/teams")({
 function Teams() {
   const { t } = useTranslation();
   const { data: users, isLoading, error } = useUsers();
-  const [activeTab, setActiveTab] = useState<"TABLE" | "ORG_CHART" | "LEAVE">("TABLE");
+  const [activeTab, setActiveTab] = useState<"TABLE" | "ORG_CHART" | "LEAVE" | "ORGANIZATION">("TABLE");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isCreateTeamModalOpen, setIsCreateTeamModalOpen] = useState(false);
+  const [isManageMembersModalOpen, setIsManageMembersModalOpen] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+
+  const { data: teams } = useTeams();
+  const deleteTeamMutation = useDeleteTeam();
+
   const [selectedSkill, setSelectedSkill] = useState("ALL");
   const [selectedRank, setSelectedRank] = useState("ALL");
   
@@ -131,11 +143,21 @@ function Teams() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button variant="glass" prefixIcon={<Filter className="w-4 h-4" />}>
-            {t("teams.advancedFilters")}
+          <Button
+            variant="primary"
+            prefixIcon={<Plus className="w-4 h-4" />}
+            onClick={() => setIsAddModalOpen(true)}
+            className="cursor-pointer font-bold"
+          >
+            임직원 추가
           </Button>
-          <Button variant="primary" prefixIcon={<Download className="w-4 h-4" />}>
-            {t("teams.exportData")}
+          <Button
+            variant="primary"
+            prefixIcon={<Plus className="w-4 h-4" />}
+            onClick={() => setIsCreateTeamModalOpen(true)}
+            className="cursor-pointer font-bold"
+          >
+            조직 생성
           </Button>
         </div>
       </div>
@@ -175,11 +197,11 @@ function Teams() {
       </div>
 
       {/* Tabs Selector */}
-      <div className="flex border-b border-outline-variant/30 mb-8 gap-2">
+      <div className="flex border-b border-outline-variant/30 mb-8 gap-2 overflow-x-auto">
         <button
           onClick={() => setActiveTab("TABLE")}
           className={cn(
-            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer",
+            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer shrink-0",
             activeTab === "TABLE"
               ? "border-primary text-primary"
               : "border-transparent text-on-surface-variant hover:text-on-surface",
@@ -190,7 +212,7 @@ function Teams() {
         <button
           onClick={() => setActiveTab("ORG_CHART")}
           className={cn(
-            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer",
+            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer shrink-0",
             activeTab === "ORG_CHART"
               ? "border-primary text-primary"
               : "border-transparent text-on-surface-variant hover:text-on-surface",
@@ -201,7 +223,7 @@ function Teams() {
         <button
           onClick={() => setActiveTab("LEAVE")}
           className={cn(
-            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer",
+            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer shrink-0",
             activeTab === "LEAVE"
               ? "border-primary text-primary"
               : "border-transparent text-on-surface-variant hover:text-on-surface",
@@ -209,22 +231,33 @@ function Teams() {
         >
           <CalendarCheck className="w-4.5 h-4.5" /> {t("teams.leaveManagement")}
         </button>
+        <button
+          onClick={() => setActiveTab("ORGANIZATION")}
+          className={cn(
+            "pb-3 px-4 font-bold text-label-caps tracking-wider border-b-2 transition-all flex items-center gap-2 cursor-pointer shrink-0",
+            activeTab === "ORGANIZATION"
+              ? "border-primary text-primary"
+              : "border-transparent text-on-surface-variant hover:text-on-surface",
+          )}
+        >
+          <Users className="w-4.5 h-4.5" /> 조직 구성 관리
+        </button>
       </div>
 
       {/* Search & Filter Strip */}
-      {activeTab !== "LEAVE" && (
-        <div className="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col md:flex-row items-center gap-4 mb-8">
-          <div className="relative flex-1 w-full">
+      {activeTab !== "LEAVE" && activeTab !== "ORGANIZATION" && (
+        <div className="bg-surface-container-low border border-outline-variant rounded-xl p-4 grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 items-center">
+          <div className="relative md:col-span-2 w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-on-surface-variant" />
             <input
               type="text"
               placeholder={t("teams.searchPlaceholder")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
+              className="w-full bg-surface-container border border-outline-variant rounded-lg pl-10 pr-4 py-2 text-on-surface text-label-md outline-none focus:border-primary transition-colors h-[42px]"
             />
           </div>
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <div className="w-full">
             <Select
               value={selectedSkill}
               onChange={setSelectedSkill}
@@ -232,8 +265,10 @@ function Teams() {
                 { value: "ALL", label: t("teams.allSkills") },
                 ...uniqueSkills.map((skill) => ({ value: skill, label: skill })),
               ]}
-              className="min-w-[150px]"
+              className="w-full"
             />
+          </div>
+          <div className="w-full">
             <Select
               value={selectedRank}
               onChange={setSelectedRank}
@@ -241,7 +276,7 @@ function Teams() {
                 { value: "ALL", label: t("teams.rankAll") },
                 ...uniqueRanksList.map((rank) => ({ value: rank, label: rank })),
               ]}
-              className="min-w-[150px]"
+              className="w-full"
             />
           </div>
         </div>
@@ -428,6 +463,93 @@ function Teams() {
         <UserLeaveView />
       )}
 
+      {activeTab === "ORGANIZATION" && (
+        <div className="space-y-6 animate-fade-in">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-headline-md font-bold text-on-surface">
+              조직 리스트
+            </h3>
+            <span className="font-mono text-label-sm text-on-surface-variant bg-surface-container/40 border border-outline-variant/20 px-2.5 py-1 rounded">
+              {teams?.length || 0} 개의 활성 조직
+            </span>
+          </div>
+
+          {teams && teams.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {teams.map((team) => (
+                <div
+                  key={team.id}
+                  className="bg-surface-container border border-outline-variant/40 hover:border-primary/50 hover:shadow-primary/5 transition-all duration-300 rounded-2xl p-5 flex flex-col justify-between shadow-md group min-h-[190px]"
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <h4 className="text-headline-md font-bold text-on-surface group-hover:text-primary transition-colors">
+                        {team.name}
+                      </h4>
+                      <button
+                        onClick={() => {
+                          if (confirm(`${team.name} 조직을 정말 삭제하시겠습니까?`)) {
+                            deleteTeamMutation.mutate(team.id);
+                          }
+                        }}
+                        className="text-on-surface-variant hover:text-error cursor-pointer p-1 rounded-md hover:bg-interaction-hover transition-colors shrink-0"
+                        title="조직 삭제"
+                      >
+                        <Trash2 className="w-4.5 h-4.5" />
+                      </button>
+                    </div>
+                    {team.description && (
+                      <p className="text-body-sm text-on-surface-variant font-light mt-2 line-clamp-2 leading-relaxed">
+                        {team.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-outline-variant/20 flex items-center justify-between gap-4 shrink-0">
+                    {/* 소속 조직원 수 및 아바타 목록 */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex -space-x-2 overflow-hidden">
+                        {team.users.slice(0, 3).map((u) => (
+                          <img
+                            key={u.id}
+                            src={u.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80"}
+                            alt={u.name}
+                            className="inline-block h-6.5 w-6.5 rounded-full ring-2 ring-surface-container object-cover"
+                            title={u.name}
+                          />
+                        ))}
+                        {team.users.length > 3 && (
+                          <div className="inline-flex h-6.5 w-6.5 items-center justify-center rounded-full bg-surface-container-high ring-2 ring-surface-container text-[10px] font-bold text-on-surface-variant">
+                            +{team.users.length - 3}
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-label-sm text-on-surface-variant font-medium">
+                        {team.users.length}명 소속
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setSelectedTeam(team);
+                        setIsManageMembersModalOpen(true);
+                      }}
+                      className="px-3 py-1.5 text-label-sm font-bold border border-outline hover:border-primary text-on-surface hover:text-primary rounded-lg transition-colors cursor-pointer"
+                    >
+                      인원 구성
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-surface-container-low border border-outline-variant/30 rounded-2xl p-12 text-center text-on-surface-variant/40 font-light text-body-md shadow-inner">
+              등록된 조직(팀)이 없습니다. 상단의 '조직 생성' 버튼을 통해 새 조직을 개설해 주세요.
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Pagination */}
       {activeTab === "TABLE" && (
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -444,6 +566,27 @@ function Teams() {
             onPageChange={setCurrentPage}
           />
         </div>
+      )}
+
+      <AddMemberModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
+
+      <CreateTeamModal
+        isOpen={isCreateTeamModalOpen}
+        onClose={() => setIsCreateTeamModalOpen(false)}
+      />
+
+      {selectedTeam && (
+        <ManageTeamMembersModal
+          isOpen={isManageMembersModalOpen}
+          onClose={() => {
+            setIsManageMembersModalOpen(false);
+            setSelectedTeam(null);
+          }}
+          team={selectedTeam}
+        />
       )}
     </div>
   );

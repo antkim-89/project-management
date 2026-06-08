@@ -1,6 +1,6 @@
 import { Button } from "@/components/base/Button";
 import { useState, useRef } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Briefcase,
   Globe,
@@ -17,7 +17,8 @@ import { BasePopover } from "@/components/base/BasePopover";
 
 export function Header() {
   const { t, i18n } = useTranslation();
-  const { user, isAuthenticated, login, logout } = useAuthStore();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuthStore();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -138,7 +139,7 @@ export function Header() {
             ) : (
               <Button
                 variant="primary"
-                onClick={login}
+                onClick={() => navigate({ to: "/login" })}
                 prefixIcon={<LogIn className="w-4 h-4" />}
               >
                 {t("common.login")}

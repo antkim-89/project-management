@@ -1,10 +1,12 @@
 /// <reference types="node" />
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Seeding database...');
+  const hashedInitialPassword = await bcrypt.hash('itmsg4u!', 10);
 
   // Clean up existing data to avoid conflicts
   console.log('🧹 Clearing existing data...');
@@ -18,6 +20,7 @@ async function main() {
   await prisma.project.deleteMany({});
   await prisma.rank.deleteMany({});
   await prisma.projectRole.deleteMany({});
+  await prisma.team.deleteMany({});
 
   // 1. Ranks
   console.log('👥 Seeding Ranks...');
@@ -25,6 +28,13 @@ async function main() {
     prisma.rank.create({ data: { name: 'Junior', baseSalary: 30000000 } }),
     prisma.rank.create({ data: { name: 'Senior', baseSalary: 60000000 } }),
     prisma.rank.create({ data: { name: 'Manager', baseSalary: 80000000 } }),
+  ]);
+
+  // 1.5. Teams
+  console.log('🏢 Seeding Teams...');
+  const teams = await Promise.all([
+    prisma.team.create({ data: { name: 'Software Engineering', description: 'Core software design and implementation.' } }),
+    prisma.team.create({ data: { name: 'Design & UX', description: 'Product user experience and layout design.' } }),
   ]);
 
   // 2. SkillSets
@@ -43,8 +53,11 @@ async function main() {
     data: {
       email: 'john@example.com',
       name: 'John Doe',
+      password: hashedInitialPassword,
+      mustChangePassword: true,
       avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
       rankId: ranks[1].id, // Senior
+      teamId: teams[0].id, // Software Engineering
       skills: {
         create: [
           { skillSetId: skills[0].id, proficiency: 5 },
@@ -58,8 +71,11 @@ async function main() {
     data: {
       email: 'jane@example.com',
       name: 'Jane Smith',
+      password: hashedInitialPassword,
+      mustChangePassword: true,
       avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80',
       rankId: ranks[0].id, // Junior
+      teamId: teams[1].id, // Design & UX
       skills: {
         create: [
           { skillSetId: skills[2].id, proficiency: 3 },

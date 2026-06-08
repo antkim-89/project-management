@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
 
@@ -20,27 +21,70 @@ export function BasePopover({
   className = "",
 }: BasePopoverProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [popoverRect, setPopoverRect] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    right: number;
+  } | null>(null);
 
   // Use the custom hook for outside clicks
   useClickOutside(popoverRef, onClose, triggerRef);
 
-  if (!isOpen) return null;
-
-  const positionClasses = {
-    bottomRight: "right-0 top-full mt-2",
-    bottomLeft: "left-0 top-full mt-2",
+  const updatePosition = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPopoverRect({
+        top: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+        right: rect.right,
+      });
+    }
   };
 
-  return (
+  useEffect(() => {
+    if (isOpen) {
+      updatePosition();
+      const handleScrollOrResize = () => {
+        updatePosition();
+      };
+      window.addEventListener("scroll", handleScrollOrResize, true);
+      window.addEventListener("resize", handleScrollOrResize);
+      return () => {
+        window.removeEventListener("scroll", handleScrollOrResize, true);
+        window.removeEventListener("resize", handleScrollOrResize);
+      };
+    }
+  }, [isOpen, triggerRef]);
+
+  if (!isOpen) return null;
+
+  const dynamicStyle: React.CSSProperties = {
+    position: "fixed",
+    top: popoverRect ? `${popoverRect.top}px` : undefined,
+  };
+
+  if (popoverRect) {
+    if (position === "bottomLeft") {
+      dynamicStyle.left = `${popoverRect.left}px`;
+    } else {
+      dynamicStyle.right = `${window.innerWidth - popoverRect.right}px`;
+    }
+  }
+
+  return createPortal(
     <div
       ref={popoverRef}
+      style={dynamicStyle}
       className={cn(
-        "absolute z-[45] bg-surface-container border border-outline-variant rounded-xl shadow-2xl animate-slide-in-top min-w-[200px]",
-        positionClasses[position],
+        "z-[200] mt-2 bg-surface-container border border-outline-variant rounded-xl shadow-2xl animate-slide-in-top min-w-[200px]",
         className,
       )}
+      onClick={(e) => e.stopPropagation()}
     >
       {children}
-    </div>
+    </div>,
+    document.body
   );
 }

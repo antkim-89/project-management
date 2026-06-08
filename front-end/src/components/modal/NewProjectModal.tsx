@@ -6,6 +6,7 @@ import { useUsers } from "@/hooks/api/useUsers";
 import { useCreateProject } from "@/hooks/api/useProjects";
 import { useProjectCategories } from "@/hooks/api/useProjectCategories";
 import { useSkills } from "@/hooks/api/useSkills";
+import { useProjectRoles } from "@/hooks/api/useProjectRoles";
 import { Select } from "@/components/base/Select";
 import api from "@/lib/axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -62,6 +63,7 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
   // Fetch reference data
   const { data: projectCategories } = useProjectCategories();
   const { data: allSkills } = useSkills();
+  const { data: projectRoles } = useProjectRoles();
 
   // Resource Allocation states
   const [allocations, setAllocations] = useState<Allocation[]>([]);
@@ -99,11 +101,12 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
     if (exists) {
       setAllocations(allocations.filter((a) => a.userId !== user.id));
     } else {
+      const defaultRole = projectRoles && projectRoles.length > 0 ? projectRoles[0].name : "Developer";
       setAllocations([
         ...allocations,
         {
           userId: user.id,
-          role: "Developer", // Default role
+          role: defaultRole, // Default role from settings
           name: user.name,
           avatarUrl: user.avatarUrl || "",
         },
@@ -475,14 +478,14 @@ export function NewProjectModal({ isOpen, onClose }: NewProjectModalProps) {
                         <label className="text-[10px] font-bold text-primary uppercase tracking-wider flex items-center gap-1">
                           <Briefcase className="w-3 h-3" /> Project Role
                         </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Lead Developer, QA Engineer..."
+                        <Select
                           value={currentAlloc?.role || ""}
-                          onChange={(e) =>
-                            handleRoleChange(user.id, e.target.value)
-                          }
-                          className="w-full bg-surface-container border border-primary/30 rounded px-2.5 py-1 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
+                          onChange={(val) => handleRoleChange(user.id, val)}
+                          options={[
+                            { value: "", label: "Select Role..." },
+                            ...(projectRoles?.map((r) => ({ value: r.name, label: r.name })) || [])
+                          ]}
+                          className="w-full"
                         />
                       </div>
                     )}

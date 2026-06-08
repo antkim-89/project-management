@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Button } from "@/components/base/Button";
 import { createFileRoute } from "@tanstack/react-router";
-import { User, Bell, Lock, Globe, Palette, LayoutGrid, Code2, Trash2, Plus, Clock } from "lucide-react";
+import { User, Bell, Lock, Globe, Palette, LayoutGrid, Code2, Trash2, Plus, Clock, Briefcase } from "lucide-react";
 import { Breadcrumbs } from "@/components/base/Breadcrumbs";
 import { GlassCard } from "@/components/base/GlassCard";
 import { useProjectCategories, useCreateProjectCategory, useDeleteProjectCategory } from "@/hooks/api/useProjectCategories";
 import { useSkills, useCreateSkill, useDeleteSkill } from "@/hooks/api/useSkills";
 import { useEquipmentSettings, useUpdateEquipmentSetting } from "@/hooks/api/useEquipment";
+import { useProjectRoles, useCreateProjectRole, useDeleteProjectRole } from "@/hooks/api/useProjectRoles";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/settings")({
@@ -54,6 +55,11 @@ function WorkspaceSettings() {
   const [newSkillName, setNewSkillName] = useState("");
   const [newSkillCategory, setNewSkillCategory] = useState("Frontend");
 
+  const { data: roles, isLoading: isRolesLoading } = useProjectRoles();
+  const createRole = useCreateProjectRole();
+  const deleteRole = useDeleteProjectRole();
+  const [newRoleName, setNewRoleName] = useState("");
+
   // 장비 수명 설정 관련
   const { data: eqSettings, isLoading: isEqSettingsLoading } = useEquipmentSettings();
   const updateEqSetting = useUpdateEquipmentSetting();
@@ -86,6 +92,13 @@ function WorkspaceSettings() {
     if (!newSkillName.trim() || !newSkillCategory.trim()) return;
     await createSkill.mutateAsync({ name: newSkillName, category: newSkillCategory });
     setNewSkillName("");
+  };
+
+  const handleCreateRole = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newRoleName.trim()) return;
+    await createRole.mutateAsync(newRoleName);
+    setNewRoleName("");
   };
 
   const handleUpdateUsefulLife = async (type: string, life: number) => {
@@ -139,6 +152,51 @@ function WorkspaceSettings() {
                   onClick={() => deleteCategory.mutate(cat.id)}
                   className="text-on-surface-variant hover:text-error opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
                   title={t("settings.deleteCategory")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </GlassCard>
+
+      {/* Project Roles Section */}
+      <GlassCard className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center">
+            <Briefcase className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-headline-sm font-bold text-on-surface">{t("settings.projectRoles")}</h3>
+            <p className="text-body-sm text-on-surface-variant">{t("settings.projectRolesDesc")}</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleCreateRole} className="flex gap-2 mb-6">
+          <input
+            type="text"
+            value={newRoleName}
+            onChange={(e) => setNewRoleName(e.target.value)}
+            placeholder={t("settings.newRolePlaceholder")}
+            className="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors"
+          />
+          <Button type="submit" variant="primary" prefixIcon={<Plus className="w-4 h-4" />}>
+            {t("settings.addRole")}
+          </Button>
+        </form>
+
+        {isRolesLoading ? (
+          <div className="text-center py-4 text-on-surface-variant">{t("settings.loadingRoles")}</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {roles?.map((role) => (
+              <div key={role.id} className="flex items-center justify-between p-3 bg-surface-container rounded-lg border border-outline-variant/50 group hover:border-outline transition-colors">
+                <span className="font-medium text-on-surface">{role.name}</span>
+                <button
+                  onClick={() => deleteRole.mutate(role.id)}
+                  className="text-on-surface-variant hover:text-error opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                  title={t("settings.deleteRole")}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -304,31 +362,31 @@ function Settings() {
 
       {activeTab === "general" ? (
         <div className="flex flex-col gap-4 max-w-3xl animate-fade-in">
-          {SettingItem({
-            icon: <User />,
-            title: t("settings.profileTitle"),
-            description: t("settings.profileDesc"),
-          })}
-          {SettingItem({
-            icon: <Palette />,
-            title: t("settings.appearanceTitle"),
-            description: t("settings.appearanceDesc"),
-          })}
-          {SettingItem({
-            icon: <Bell />,
-            title: t("settings.notificationsTitle"),
-            description: t("settings.notificationsDesc"),
-          })}
-          {SettingItem({
-            icon: <Lock />,
-            title: t("settings.securityTitle"),
-            description: t("settings.securityDesc"),
-          })}
-          {SettingItem({
-            icon: <Globe />,
-            title: t("settings.languageTitle"),
-            description: t("settings.languageDesc"),
-          })}
+          <SettingItem
+            icon={<User />}
+            title={t("settings.profileTitle")}
+            description={t("settings.profileDesc")}
+          />
+          <SettingItem
+            icon={<Palette />}
+            title={t("settings.appearanceTitle")}
+            description={t("settings.appearanceDesc")}
+          />
+          <SettingItem
+            icon={<Bell />}
+            title={t("settings.notificationsTitle")}
+            description={t("settings.notificationsDesc")}
+          />
+          <SettingItem
+            icon={<Lock />}
+            title={t("settings.securityTitle")}
+            description={t("settings.securityDesc")}
+          />
+          <SettingItem
+            icon={<Globe />}
+            title={t("settings.languageTitle")}
+            description={t("settings.languageDesc")}
+          />
         </div>
       ) : (
         <WorkspaceSettings />

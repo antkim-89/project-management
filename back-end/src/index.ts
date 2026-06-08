@@ -14,6 +14,7 @@ import leaveRoutes from './routes/leaveRoutes';
 import skillRoutes from './routes/skillRoutes';
 import taskRoutes from './routes/taskRoutes';
 import projectCategoryRoutes from './routes/projectCategoryRoutes';
+import projectRoleRoutes from './routes/projectRoleRoutes';
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use('/leave-requests', leaveRoutes);
 app.use('/skill-sets', skillRoutes);
 app.use('/tasks', taskRoutes);
 app.use('/project-categories', projectCategoryRoutes);
+app.use('/project-roles', projectRoleRoutes);
 
 // --- Basic API ---
 

@@ -17,6 +17,7 @@ async function main() {
   await prisma.skillSet.deleteMany({});
   await prisma.project.deleteMany({});
   await prisma.rank.deleteMany({});
+  await prisma.projectRole.deleteMany({});
 
   // 1. Ranks
   console.log('👥 Seeding Ranks...');
@@ -156,6 +157,17 @@ async function main() {
       },
     ],
   });
+
+  // 6. Project Roles
+  console.log('💼 Seeding ProjectRoles...');
+  await Promise.all([
+    prisma.projectRole.create({ data: { name: 'PM' } }),
+    prisma.projectRole.create({ data: { name: 'Lead Developer' } }),
+    prisma.projectRole.create({ data: { name: 'Frontend Developer' } }),
+    prisma.projectRole.create({ data: { name: 'Backend Developer' } }),
+    prisma.projectRole.create({ data: { name: 'Designer' } }),
+    prisma.projectRole.create({ data: { name: 'QA Engineer' } }),
+  ]);
 
   console.log('✅ Seeding completed!');
 }

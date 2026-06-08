@@ -244,7 +244,13 @@
     "devops": "데브옵스",
     "database": "데이터베이스",
     "design": "디자인",
-    "other": "기타"
+    "other": "기타",
+    "projectRoles": "프로젝트 역할",
+    "projectRolesDesc": "사용 가능한 프로젝트 역할(예: PM, 개발자, QA)을 관리합니다.",
+    "newRolePlaceholder": "새 역할 이름...",
+    "addRole": "역할 추가",
+    "loadingRoles": "역할 목록을 불러오는 중...",
+    "deleteRole": "역할 삭제"
   },
   "tasks": {
     "loading": "작업 칸반보드를 불러오는 중...",

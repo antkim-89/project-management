@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +34,12 @@ export const Select: React.FC<SelectProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [dropdownRect, setDropdownRect] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    openDirection: "up" | "down";
+  } | null>(null);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -41,6 +48,10 @@ export const Select: React.FC<SelectProps> = ({
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
+        const target = event.target as HTMLElement;
+        if (target.closest(".select-portal-dropdown")) {
+          return;
+        }
         setIsOpen(false);
       }
     };
@@ -49,6 +60,38 @@ export const Select: React.FC<SelectProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const updateDropdownPosition = () => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const triggerCenterY = rect.top + rect.height / 2;
+      const viewportHalfY = window.innerHeight / 2;
+      const openDirection = triggerCenterY > viewportHalfY ? "up" : "down";
+      setDropdownRect({
+        top: openDirection === "up" ? rect.top : rect.bottom,
+        left: rect.left,
+        width: rect.width,
+        openDirection,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updateDropdownPosition();
+
+      const handleScrollOrResize = () => {
+        updateDropdownPosition();
+      };
+      // capture scroll to trace modal scroll
+      window.addEventListener("scroll", handleScrollOrResize, true);
+      window.addEventListener("resize", handleScrollOrResize);
+      return () => {
+        window.removeEventListener("scroll", handleScrollOrResize, true);
+        window.removeEventListener("resize", handleScrollOrResize);
+      };
+    }
+  }, [isOpen]);
 
   const selectedOption = options.find((opt) => opt.value === value);
 
@@ -93,13 +136,20 @@ export const Select: React.FC<SelectProps> = ({
         />
       </div>
 
-      {/* Dropdown Menu */}
-      {isOpen && (
+      {/* Dropdown Menu via Portal */}
+      {isOpen && dropdownRect && createPortal(
         <div
           className={cn(
-            "absolute top-full left-0 right-0 mt-2 z-[40] rounded-[10px] border border-glass-border bg-glass-bg/95 backdrop-blur-xl shadow-2xl max-h-60 overflow-y-auto animate-fade-in p-1",
+            "select-portal-dropdown fixed z-[200] rounded-[10px] border border-glass-border bg-glass-bg/95 backdrop-blur-xl shadow-2xl max-h-60 overflow-y-auto animate-fade-in p-1",
             dropdownClassName
           )}
+          style={{
+            top: `${dropdownRect.top}px`,
+            left: `${dropdownRect.left}px`,
+            width: `${dropdownRect.width}px`,
+            transform: dropdownRect.openDirection === "up" ? "translateY(-100%)" : undefined,
+            marginTop: dropdownRect.openDirection === "up" ? "-8px" : "8px",
+          }}
         >
           {options.length === 0 ? (
             <div className="text-on-surface-variant text-body-md py-3 px-4 text-center">
@@ -125,7 +175,8 @@ export const Select: React.FC<SelectProps> = ({
               );
             })
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -42,9 +43,43 @@ export function CalendarPicker({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const [dropdownRect, setDropdownRect] = useState<{
+    top: number;
+    left: number;
+    openDirection: "up" | "down";
+  } | null>(null);
 
   // Close calendar popover on click outside
   useClickOutside(containerRef, () => setIsOpen(false), triggerRef);
+
+  const updateDropdownPosition = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      const triggerCenterY = rect.top + rect.height / 2;
+      const viewportHalfY = window.innerHeight / 2;
+      const openDirection = triggerCenterY > viewportHalfY ? "up" : "down";
+      setDropdownRect({
+        top: openDirection === "up" ? rect.top : rect.bottom,
+        left: rect.left,
+        openDirection,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      updateDropdownPosition();
+      const handleScrollOrResize = () => {
+        updateDropdownPosition();
+      };
+      window.addEventListener("scroll", handleScrollOrResize, true);
+      window.addEventListener("resize", handleScrollOrResize);
+      return () => {
+        window.removeEventListener("scroll", handleScrollOrResize, true);
+        window.removeEventListener("resize", handleScrollOrResize);
+      };
+    }
+  }, [isOpen]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -223,11 +258,18 @@ export function CalendarPicker({
         </span>
       </div>
 
-      {/* Calendar Popover */}
-      {isOpen && (
+      {/* Calendar Popover via Portal */}
+      {isOpen && dropdownRect && createPortal(
         <div
           ref={containerRef}
-          className="absolute z-[50] top-full mt-2 left-0 w-80 bg-surface-container-high/95 backdrop-blur-md border border-outline-variant/35 rounded-[20px] p-4 shadow-2xl animate-fade-in flex flex-col gap-4 select-none"
+          style={{
+            position: "fixed",
+            top: `${dropdownRect.top}px`,
+            left: `${dropdownRect.left}px`,
+            transform: dropdownRect.openDirection === "up" ? "translateY(-100%)" : undefined,
+            marginTop: dropdownRect.openDirection === "up" ? "-8px" : "8px",
+          }}
+          className="z-[200] w-80 bg-surface-container-high/95 backdrop-blur-md border border-outline-variant/35 rounded-[20px] p-4 shadow-2xl animate-fade-in flex flex-col gap-4 select-none"
         >
           {/* Header: Month & Navigation */}
           <div className="flex items-center justify-between">
@@ -326,7 +368,8 @@ export function CalendarPicker({
               );
             })}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

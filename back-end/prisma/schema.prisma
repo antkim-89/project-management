@@ -138,3 +138,8 @@ model ProjectSkill {
 
   @@unique([projectId, skillSetId])
 }
+
+model ProjectRole {
+  id   String @id @default(cuid())
+  name String @unique
+}

@@ -27,13 +27,23 @@ export function EditProjectModal({
 }: EditProjectModalProps) {
   const updateProjectMutation = useUpdateProject();
 
+  const getDbStatus = (statusVal: string) => {
+    switch (statusVal) {
+      case "ACTIVE": return "Active";
+      case "AT RISK": return "At Risk";
+      case "COMPLETED": return "Completed";
+      case "ON HOLD": return "On Hold";
+      default: return statusVal;
+    }
+  };
+
   // Form states initialized directly from props (component unmounts when closed)
   const [title, setTitle] = useState(project?.title || "");
   const [description, setDescription] = useState(project?.scope || "");
   const [budget, setBudget] = useState(
     () => project?.financials?.totalCost?.replace(/[^0-9.-]+/g, "") || "",
   );
-  const [status, setStatus] = useState(project?.status || "ACTIVE");
+  const [status, setStatus] = useState(() => getDbStatus(project?.status || "Active"));
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -142,14 +152,14 @@ export function EditProjectModal({
                 name="edit-project-status"
                 variant="segmented"
                 options={[
-                  { value: "ACTIVE", label: "ACTIVE" },
-                  { value: "AT RISK", label: "AT RISK" },
-                  { value: "COMPLETED", label: "COMPLETED" },
-                  { value: "ON HOLD", label: "ON HOLD" },
+                  { value: "Active", label: "ACTIVE" },
+                  { value: "At Risk", label: "AT RISK" },
+                  { value: "Completed", label: "COMPLETED" },
+                  { value: "On Hold", label: "ON HOLD" },
                 ]}
                 value={status}
                 onChange={setStatus}
-                className="w-full flex-wrap gap-1"
+                className="w-full flex-nowrap gap-1"
                 optionClassName="flex-1 text-center py-2"
               />
             </div>

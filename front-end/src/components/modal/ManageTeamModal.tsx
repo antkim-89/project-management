@@ -3,6 +3,7 @@ import { useState } from "react";
 import { BaseModal } from "@/components/base/BaseModal";
 import { useUsers } from "@/hooks/api/useUsers";
 import { useProjectDetail } from "@/hooks/api/useProjects";
+import { useProjectRoles } from "@/hooks/api/useProjectRoles";
 import api from "@/lib/axios";
 import { Select } from "@/components/base/Select";
 import { useQueryClient } from "@tanstack/react-query";
@@ -43,6 +44,7 @@ export function ManageTeamModal({
   const { data: allUsers, isLoading: usersLoading } = useUsers();
   const { data: project, isLoading: projectLoading } =
     useProjectDetail(projectId);
+  const { data: projectRoles } = useProjectRoles();
 
   // Allocation local state
   const [allocations, setAllocations] = useState<
@@ -101,11 +103,12 @@ export function ManageTeamModal({
       setAllocations(nextAllocations);
     } else {
       // If not selected, select it
+      const defaultRole = projectRoles && projectRoles.length > 0 ? projectRoles[0].name : "Developer";
       setAllocations({
         ...allocations,
         [user.id]: {
           userId: user.id,
-          role: "Developer", // Default role
+          role: defaultRole, // Default role from settings
           isInitiallyAllocated: false,
         },
       });
@@ -332,14 +335,14 @@ export function ManageTeamModal({
                       <label className="text-[10px] font-bold text-primary uppercase tracking-wider flex items-center gap-1">
                         <Briefcase className="w-3 h-3" /> Project Role
                       </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Lead Developer, QA Engineer..."
+                      <Select
                         value={currentAlloc?.role || ""}
-                        onChange={(e) =>
-                          handleRoleChange(user.id, e.target.value)
-                        }
-                        className="w-full bg-surface-container border border-primary/30 rounded px-2.5 py-1 text-on-surface text-label-md outline-none focus:border-primary transition-colors"
+                        onChange={(val) => handleRoleChange(user.id, val)}
+                        options={[
+                          { value: "", label: "Select Role..." },
+                          ...(projectRoles?.map((r) => ({ value: r.name, label: r.name })) || [])
+                        ]}
+                        className="w-full"
                       />
                     </div>
                   )}

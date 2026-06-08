@@ -244,7 +244,13 @@
     "devops": "DevOps",
     "database": "Database",
     "design": "Design",
-    "other": "Other"
+    "other": "Other",
+    "projectRoles": "Project Roles",
+    "projectRolesDesc": "Manage available project roles (e.g., PM, Developer, QA)",
+    "newRolePlaceholder": "New Role Name...",
+    "addRole": "Add Role",
+    "loadingRoles": "Loading roles...",
+    "deleteRole": "Delete role"
   },
   "tasks": {
     "loading": "Loading Tasks Kanban Board...",

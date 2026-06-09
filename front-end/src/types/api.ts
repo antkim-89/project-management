@@ -11,6 +11,7 @@ export interface User {
   avatarUrl?: string;
   rankId: string;
   rank?: Rank;
+  assignments?: Assignment[];
   createdAt: string;
   updatedAt: string;
 }

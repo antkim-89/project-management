@@ -29,6 +29,11 @@ interface UIProject {
     allocatedHours: string;
     consumedHours: string;
     infrastructureFee: string;
+    monthlyCost: string;
+    estimatedTotalCost: string;
+    expectedMargin: string;
+    marginPercent: number;
+    salePrice: string;
   };
   milestones: { title: string; completed: boolean }[];
   activities: {
@@ -139,13 +144,36 @@ function Projects() {
             role: a.role,
             avatar: a.user?.avatarUrl || "",
           })) || [],
-        financials: {
-          burnRate: "$0",
-          burnRatePercent: 0,
-          allocatedHours: "0 hrs",
-          consumedHours: "0 hrs",
-          infrastructureFee: "$0",
-        },
+        financials: (() => {
+          const start = new Date(p.startDate);
+          const end = new Date(p.endDate);
+          const totalMonths = Math.max(1, (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()));
+          
+          let monthlyTotalCost = 0;
+          p.assignments?.forEach((a) => {
+            const baseSalary = a.user?.rank?.baseSalary || 0;
+            const contribution = a.contributionPercentage || 100;
+            monthlyTotalCost += baseSalary * (contribution / 100);
+          });
+          
+          const estimatedTotalCost = monthlyTotalCost * totalMonths;
+          const projectPrice = p.price || 0;
+          const expectedMargin = Math.max(0, projectPrice - estimatedTotalCost);
+          const marginPercent = projectPrice > 0 ? Math.round((expectedMargin / projectPrice) * 100) : 0;
+          
+          return {
+            burnRate: "₩0",
+            burnRatePercent: 0,
+            allocatedHours: "0 hrs",
+            consumedHours: "0 hrs",
+            infrastructureFee: "₩0",
+            monthlyCost: `₩${monthlyTotalCost.toLocaleString()}`,
+            estimatedTotalCost: `₩${estimatedTotalCost.toLocaleString()}`,
+            expectedMargin: `₩${expectedMargin.toLocaleString()}`,
+            marginPercent,
+            salePrice: `₩${projectPrice.toLocaleString()}`,
+          };
+        })(),
         milestones: [],
         activities: dynamicActivities,
         avatars:

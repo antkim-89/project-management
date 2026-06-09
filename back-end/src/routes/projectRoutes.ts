@@ -25,7 +25,11 @@ router.get('/', async (req: Request, res: Response) => {
         },
         assignments: {
           include: {
-            user: true
+            user: {
+              include: {
+                rank: true
+              }
+            }
           }
         },
         tasks: {
@@ -74,7 +78,11 @@ router.get('/:id', async (req: Request, res: Response) => {
         },
         assignments: {
           include: {
-            user: true
+            user: {
+              include: {
+                rank: true
+              }
+            }
           }
         },
         tasks: {

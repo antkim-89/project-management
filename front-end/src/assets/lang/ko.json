@@ -21,7 +21,9 @@
     "delete": "삭제",
     "add": "추가",
     "status": "상태",
-    "action": "작업"
+    "action": "작업",
+    "prev": "이전",
+    "next": "다음"
   },
   "header": {
     "search": "프로젝트 검색...",
@@ -120,6 +122,23 @@
       "statusDone": "완료",
       "noTasksShort": "할 일 없음",
       "moreTasks": "개 더 있음"
+    },
+    "manageTeam": {
+      "title": "팀 관리 - {{title}}",
+      "loading": "불러오는 중...",
+      "cancel": "취소",
+      "saveTeam": "팀 저장",
+      "saving": "변경 사항 저장 중...",
+      "updateFailed": "프로젝트 팀 갱신에 실패했습니다.",
+      "helperText": "회사 엔지니어를 검색하고 역할을 배정하십시오. 선택된 인원은 이 프로젝트에 배정되며, 선택 해제된 인원은 팀에서 제외됩니다.",
+      "searchPlaceholder": "이름, 직급으로 검색...",
+      "allSkills": "모든 기술 스택",
+      "loadingResources": "리소스 정보를 불러오는 중...",
+      "noSkills": "보유 기술 없음",
+      "projectRole": "프로젝트 역할",
+      "selectRole": "역할 선택...",
+      "noResourcesFound": "일치하는 리소스를 찾을 수 없습니다.",
+      "selectionSummary": "현재 `{{title}}` 프로젝트에 {{count}}명의 멤버를 선택 중입니다."
     }
   },
   "assets": {

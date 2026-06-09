@@ -19,7 +19,12 @@ router.get('/', async (req: Request, res: Response) => {
     const users = await prisma.user.findMany({
       include: {
         rank: true,
-        skills: { include: { skillSet: true } }
+        skills: { include: { skillSet: true } },
+        assignments: {
+          include: {
+            project: true
+          }
+        }
       }
     });
     res.json(users);

@@ -4,9 +4,12 @@ import { Button } from "@/components/base/Button";
 import { useUsers } from "@/hooks/api/useUsers";
 import { useUpdateTeamMembers } from "@/hooks/api/useTeams";
 import type { Team } from "@/hooks/api/useTeams";
-import { Search, AlertCircle, Check, Users } from "lucide-react";
+import { Search, AlertCircle, Check, Users, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { Pagination } from "@/components/base/Pagination";
+
+
 
 interface ManageTeamMembersModalProps {
   isOpen: boolean;
@@ -26,6 +29,10 @@ export function ManageTeamMembersModal({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
+
+  // Pagination States
+  const ITEMS_PER_PAGE = 6;
+  const [currentPage, setCurrentPage] = useState(1);
 
   // 모달이 열릴 때 혹은 team이 바뀔 때 초기 선택 상태를 설정
   useEffect(() => {
@@ -74,6 +81,19 @@ export function ManageTeamMembersModal({
       })
     : [];
 
+  const totalItems = filteredUsers.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+  const normalizedPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+  const startIndex = (normalizedPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
+  const selectedUsers = users
+    ? users.filter((u) => selectedUserIds.has(u.id))
+    : [];
+
+
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -119,10 +139,57 @@ export function ManageTeamMembersModal({
             type="text"
             placeholder="이름, 이메일 또는 직급으로 멤버 검색..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full h-[42px] bg-surface-container border border-outline-variant/40 text-on-surface rounded-xl pl-10 pr-4 text-body-md outline-none focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
           />
         </div>
+
+        {/* Selected Members Preview Row */}
+        {selectedUsers.length > 0 && (
+          <div className="flex flex-col gap-2 p-3 bg-secondary/5 border border-secondary/20 rounded-xl animate-fade-in shrink-0">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5" />
+                선택된 조직원 ({selectedUsers.length}명)
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2 max-h-[110px] overflow-y-auto pr-1">
+              {selectedUsers.map((user) => (
+                <div
+                  key={`selected-${user.id}`}
+                  className="flex items-center gap-1.5 bg-surface border border-outline-variant/60 rounded-full pl-1.5 pr-2.5 py-1 text-label-sm font-medium hover:border-error/30 hover:bg-error/5 group transition-all"
+                >
+                  <img
+                    src={
+                      user.avatarUrl ||
+                      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80"
+                    }
+                    alt={user.name}
+                    className="w-5 h-5 rounded-full object-cover border border-outline-variant"
+                  />
+                  <span className="text-on-surface truncate max-w-[80px]">
+                    {user.name}
+                  </span>
+                  {user.rank?.name && (
+                    <span className="text-[9px] bg-secondary/10 border border-secondary/20 text-secondary px-1.5 py-0.2 rounded font-sans uppercase font-bold">
+                      {user.rank.name}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleUser(user.id)}
+                    className="text-on-surface-variant hover:text-error transition-colors ml-1 p-0.5 rounded-full hover:bg-white/10 cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Members Checklist Area */}
         <div className="flex-1 overflow-y-auto border border-outline-variant/30 rounded-xl divide-y divide-outline-variant/20 bg-surface-container-low/30 pr-1">
@@ -130,12 +197,12 @@ export function ManageTeamMembersModal({
             <div className="text-center py-8 text-sm text-on-surface-variant">
               임직원 목록을 로드하는 중...
             </div>
-          ) : filteredUsers.length === 0 ? (
+          ) : totalItems === 0 ? (
             <div className="text-center py-8 text-sm text-on-surface-variant/50 font-light">
               검색 조건에 맞는 임직원이 없습니다.
             </div>
           ) : (
-            filteredUsers.map((member) => {
+            paginatedUsers.map((member) => {
               const isChecked = selectedUserIds.has(member.id);
               return (
                 <div
@@ -186,6 +253,25 @@ export function ManageTeamMembersModal({
             })
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center pt-2 border-t border-outline-variant/20 select-none shrink-0">
+            <span className="text-[11px] font-medium text-on-surface-variant font-mono">
+              {t("teams.showingEntries", {
+                start: totalItems > 0 ? startIndex + 1 : 0,
+                end: endIndex,
+                total: totalItems,
+              })}
+            </span>
+            <Pagination
+              currentPage={normalizedPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        )}
+
       </div>
     </BaseModal>
   );

@@ -39,6 +39,11 @@ interface ProjectDetailModalProps {
       allocatedHours: string;
       consumedHours: string;
       infrastructureFee: string;
+      monthlyCost: string;
+      estimatedTotalCost: string;
+      expectedMargin: string;
+      marginPercent: number;
+      salePrice: string;
     };
     tasks: Task[];
   } | null;
@@ -182,9 +187,9 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
         </div>
       </div>
 
-      <div className="space-y-8">
-        {/* Main Info */}
-        <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Info (Left 2/3) */}
+        <div className="lg:col-span-2 space-y-8">
           {/* Description */}
           <section>
             <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest mb-4">
@@ -318,6 +323,80 @@ export const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          </section>
+        </div>
+
+        {/* Financials & Margin Summary (Right 1/3) */}
+        <div className="space-y-6 bg-surface-container-low/40 p-6 rounded-2xl border border-outline-variant/30 h-fit sticky top-0 animate-fade-in">
+          <section className="space-y-5">
+            <div className="flex justify-between items-center border-b border-outline-variant/20 pb-3">
+              <h4 className="text-label-caps font-bold text-on-surface-variant tracking-widest">
+                Profitability Analysis
+              </h4>
+              {project.financials.marginPercent < 10 && (
+                <span className="text-[10px] font-bold text-error bg-error/10 border border-error/20 px-2.5 py-0.5 rounded animate-pulse">
+                  Low Margin
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                  Sale Price (수주 금액)
+                </p>
+                <p className="text-xl font-mono font-bold text-on-surface">
+                  {project.financials.salePrice}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                  Est. Manpower Cost (예상 인건비)
+                </p>
+                <p className="text-xl font-mono font-bold text-on-surface">
+                  {project.financials.estimatedTotalCost}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                  Monthly Manpower Cost (월 인건비)
+                </p>
+                <p className="text-sm font-mono text-on-surface-variant">
+                  {project.financials.monthlyCost} / month
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-outline-variant/10">
+                <div className="flex justify-between items-baseline mb-1">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+                    Expected Margin (예상 마진)
+                  </p>
+                  <p className="text-xs font-mono font-bold text-secondary">
+                    {project.financials.marginPercent}%
+                  </p>
+                </div>
+                <p className="text-2xl font-mono font-bold text-secondary mb-3">
+                  {project.financials.expectedMargin}
+                </p>
+                
+                {/* Gauge Bar */}
+                <div className="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+                  <div
+                    className={cn(
+                      "h-full transition-all duration-500",
+                      project.financials.marginPercent < 10
+                        ? "bg-error"
+                        : project.financials.marginPercent < 30
+                          ? "bg-amber-400"
+                          : "bg-secondary"
+                    )}
+                    style={{ width: `${project.financials.marginPercent}%` }}
+                  />
+                </div>
+              </div>
             </div>
           </section>
         </div>

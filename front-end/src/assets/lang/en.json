@@ -21,7 +21,9 @@
     "delete": "Delete",
     "add": "Add",
     "status": "Status",
-    "action": "Action"
+    "action": "Action",
+    "prev": "Prev",
+    "next": "Next"
   },
   "header": {
     "search": "Search projects...",
@@ -120,6 +122,23 @@
       "statusDone": "Completed",
       "noTasksShort": "No tasks",
       "moreTasks": "more tasks"
+    },
+    "manageTeam": {
+      "title": "Manage Team - {{title}}",
+      "loading": "Loading...",
+      "cancel": "Cancel",
+      "saveTeam": "Save Team",
+      "saving": "Saving Changes...",
+      "updateFailed": "Failed to update project team.",
+      "helperText": "Search company engineers and assign roles. Selected personnel will be allocated to this project. Deselected personnel will be removed from the team.",
+      "searchPlaceholder": "Search resources by name or rank...",
+      "allSkills": "All Skills",
+      "loadingResources": "Loading resources...",
+      "noSkills": "No skills",
+      "projectRole": "Project Role",
+      "selectRole": "Select Role...",
+      "noResourcesFound": "No matching resources found.",
+      "selectionSummary": "Currently selecting {{count}} members for `{{title}}`"
     }
   },
   "assets": {
